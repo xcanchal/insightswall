@@ -11,104 +11,108 @@ export const notificationTypeEnum = pgEnum('notification_type', [
 	'ROADMAP_STATUS_CHANGED',
 ]);
 
+export const timestamps = {
+	createdAt: timestamp().defaultNow().notNull(),
+	updatedAt: timestamp(),
+	/* deletedAt: timestamp(), */
+};
+
 export const users = pgTable('users', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	email: text('email').notNull().unique(),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
+	id: uuid().primaryKey().defaultRandom(),
+	email: text().notNull().unique(),
+	...timestamps,
 });
 
 export const projects = pgTable('projects', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	name: text('name').notNull(),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
+	id: uuid().primaryKey().defaultRandom(),
+	name: text().notNull().unique(),
+	...timestamps,
 });
 
 export const projectMembers = pgTable(
 	'project_members',
 	{
-		projectId: uuid('project_id')
+		projectId: uuid()
 			.notNull()
 			.references(() => projects.id, { onDelete: 'cascade' }),
-		userId: uuid('user_id')
+		userId: uuid()
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		role: memberRoleEnum('role').notNull().default('USER'),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
+		role: memberRoleEnum().notNull().default('USER'),
+		...timestamps,
 	},
 	(t) => [primaryKey({ columns: [t.projectId, t.userId] })]
 );
 
 export const suggestions = pgTable('suggestions', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	projectId: uuid('project_id')
+	id: uuid().primaryKey().defaultRandom(),
+	projectId: uuid()
 		.notNull()
 		.references(() => projects.id, { onDelete: 'cascade' }),
-	userId: uuid('user_id')
+	userId: uuid()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	title: text('title').notNull(),
-	description: text('description').notNull().default(''),
-	status: suggestionStatusEnum('status').notNull().default('CREATED'),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
+	description: text().notNull(),
+	status: suggestionStatusEnum().notNull().default('CREATED'),
+	...timestamps,
 });
 
 export const votes = pgTable(
 	'votes',
 	{
-		userId: uuid('user_id')
+		userId: uuid()
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
-		suggestionId: uuid('suggestion_id')
+		suggestionId: uuid()
 			.notNull()
 			.references(() => suggestions.id, { onDelete: 'cascade' }),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
+		...timestamps,
 	},
 	(t) => [primaryKey({ columns: [t.userId, t.suggestionId] })]
 );
 
 export const comments = pgTable('comments', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	userId: uuid('user_id')
+	id: uuid().primaryKey().defaultRandom(),
+	userId: uuid()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	suggestionId: uuid('suggestion_id')
+	suggestionId: uuid()
 		.notNull()
 		.references(() => suggestions.id, { onDelete: 'cascade' }),
-	message: text('message').notNull(),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
+	message: text().notNull(),
+	...timestamps,
 });
 
 export const roadmapItems = pgTable(
 	'roadmap_items',
 	{
-		id: uuid('id').primaryKey().defaultRandom(),
-		projectId: uuid('project_id')
+		id: uuid().primaryKey().defaultRandom(),
+		projectId: uuid()
 			.notNull()
 			.references(() => projects.id, { onDelete: 'cascade' }),
-		suggestionId: uuid('suggestion_id')
+		suggestionId: uuid()
 			.notNull()
 			.unique()
 			.references(() => suggestions.id, { onDelete: 'cascade' }),
-		status: roadmapStatusEnum('status').notNull().default('PLANNED'),
+		status: roadmapStatusEnum().notNull().default('PLANNED'),
 		position: integer('position').notNull(),
-		createdAt: timestamp('created_at').defaultNow().notNull(),
+		...timestamps,
 	},
 	(t) => [uniqueIndex('roadmap_items_project_status_position_idx').on(t.projectId, t.status, t.position)]
 );
 
 export const notifications = pgTable('notifications', {
-	id: uuid('id').primaryKey().defaultRandom(),
-	userId: uuid('user_id')
+	id: uuid().primaryKey().defaultRandom(),
+	userId: uuid()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	projectId: uuid('project_id')
+	projectId: uuid()
 		.notNull()
 		.references(() => projects.id, { onDelete: 'cascade' }),
-	suggestionId: uuid('suggestion_id').references(() => suggestions.id, { onDelete: 'set null' }),
-	roadmapItemId: uuid('roadmap_item_id').references(() => roadmapItems.id, { onDelete: 'set null' }),
-	type: notificationTypeEnum('type').notNull(),
-	title: text('title').notNull(),
-	message: text('message').notNull(),
-	isRead: boolean('is_read').notNull().default(false),
-	createdAt: timestamp('created_at').defaultNow().notNull(),
+	suggestionId: uuid().references(() => suggestions.id, { onDelete: 'set null' }),
+	roadmapItemId: uuid().references(() => roadmapItems.id, { onDelete: 'set null' }),
+	type: notificationTypeEnum().notNull(),
+	message: text().notNull(),
+	isRead: boolean().notNull().default(false),
+	...timestamps,
 });
