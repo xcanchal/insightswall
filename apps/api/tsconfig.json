@@ -13,6 +13,6 @@
 		"noUnusedParameters": true,
 		"noFallthroughCasesInSwitch": true
 	},
-	"include": ["src"],
+	"include": ["src", "auth-schema.ts"],
 	"exclude": ["node_modules", "dist"]
 }

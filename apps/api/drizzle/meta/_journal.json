@@ -8,6 +8,20 @@
       "when": 1775082691692,
       "tag": "0000_plain_ultimo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775136053693,
+      "tag": "0001_bright_vindicator",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775136578572,
+      "tag": "0002_bizarre_valkyrie",
+      "breakpoints": true
     }
   ]
 }

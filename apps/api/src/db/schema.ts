@@ -1,4 +1,5 @@
 import { boolean, integer, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { users } from './auth-schema.js';
 
 export const memberRoleEnum = pgEnum('member_role', ['USER', 'ADMIN']);
 export const suggestionStatusEnum = pgEnum('suggestion_status', ['CREATED', 'REJECTED']);
@@ -16,12 +17,6 @@ export const timestamps = {
 	updatedAt: timestamp(),
 	/* deletedAt: timestamp(), */
 };
-
-export const users = pgTable('users', {
-	id: uuid().primaryKey().defaultRandom(),
-	email: text().notNull().unique(),
-	...timestamps,
-});
 
 export const projects = pgTable('projects', {
 	id: uuid().primaryKey().defaultRandom(),
