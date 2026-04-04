@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db as dbInstance } from '../../../db/index.js';
+import { db as dbInstance } from '../../../lib/db/index.js';
 import type { IUserRepository } from '../domain/user.repository.js';
-import { users } from '../../../db/auth-schema.js';
+import { users } from '../../../lib/db/auth-schema.js';
 import { toUser } from './user.mapper.js';
 import { UserEntity } from '../domain/user.entity.js';
 

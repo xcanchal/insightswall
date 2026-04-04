@@ -1,27 +1,58 @@
-import { Hono } from 'hono';
-import { authMiddleware } from '../../../../middlewares/auth.middleware.js';
+import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
+import { authMiddleware } from '../../../../lib/middlewares/auth.middleware.js';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case.js';
 
+const paramsSchema = z.object({
+	id: z.uuid().openapi({ example: '123e4567-e89b-12d3-a456-426614174000' }),
+});
+
+const userResponseSchema = z.object({
+	id: z.uuid(),
+	email: z.email(),
+	name: z.string(),
+	emailVerified: z.boolean(),
+	image: z.string().nullable(),
+	createdAt: z.iso.datetime(),
+	updatedAt: z.iso.datetime(),
+});
+
+const getUserRouteDefinition = createRoute({
+	method: 'get',
+	path: '/api/users/{id}',
+	request: { params: paramsSchema },
+	responses: {
+		200: { content: { 'application/json': { schema: userResponseSchema } }, description: 'User found' },
+		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'User not found' },
+		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
+	},
+});
+
 export class GetUserRoute {
-	private app: Hono;
+	private app: OpenAPIHono;
 	private getUserUseCase: GetUserUseCase;
 	readonly routePath: string = '/api/users/:id';
 
-	constructor(app: Hono, getUserUseCase: GetUserUseCase) {
+	constructor(app: OpenAPIHono, getUserUseCase: GetUserUseCase) {
 		this.app = app;
 		this.getUserUseCase = getUserUseCase;
 	}
 
 	route() {
-		this.app.get(this.routePath, authMiddleware, async (c) => {
+		this.app.use(this.routePath, authMiddleware);
+		this.app.openapi(getUserRouteDefinition, async (c) => {
 			try {
-				// TODO: How to validate params? Does Hono include anything or should we use Zod or something?
-				const userId = c.req.param('id');
-				if (!userId) return c.json({ error: 'User ID is required' }, 400);
-				const user = await this.getUserUseCase.execute(userId);
-				return c.json(user);
+				const { id } = c.req.valid('param');
+				const user = await this.getUserUseCase.execute(id);
+				if (!user) return c.json({ error: 'User not found' }, 404);
+				return c.json(
+					{
+						...user,
+						createdAt: user.createdAt.toISOString(),
+						updatedAt: user.updatedAt.toISOString(),
+					},
+					200
+				);
 			} catch (error) {
-				// TODO: How to handle errors thrown by the use case? It's not always an internal server error. TODO: Use a custom error handler.
 				return c.json({ error: 'Internal server error' }, 500);
 			}
 		});

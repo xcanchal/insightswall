@@ -1,10 +1,11 @@
-import { Hono } from 'hono';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { swaggerUI } from '@hono/swagger-ui';
 import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
-import { auth } from './auth.js';
+import { auth } from './lib/auth.js';
 import { cors } from 'hono/cors';
 import { UserRepository } from './modules/users/infrastructure/user.repository.impl.js';
-import { db } from './db/index.js';
+import { db } from './lib/db/index.js';
 import { GetUserRoute } from './modules/users/presentation/routes/get-user.route.js';
 import { GetUserUseCase } from './modules/users/application/use-cases/get-user.use-case.js';
 
@@ -18,15 +19,16 @@ export type ServerConfig = {
 
 export class Server {
 	config: ServerConfig;
-	private app: Hono;
+	private app: OpenAPIHono;
 	private userRepository: UserRepository | null = null;
 
 	constructor(config: ServerConfig) {
 		this.config = config;
-		this.app = new Hono();
+		this.app = new OpenAPIHono();
 		this.configureMiddlewares();
 		this.configureRepositories();
 		this.configureRoutes();
+		this.configureApiDocs();
 	}
 
 	configureMiddlewares() {
@@ -72,11 +74,20 @@ export class Server {
 		this.app.get('/health', (c) => c.json({ status: 'ok' }));
 	}
 
+	configureApiDocs() {
+		// OpenAPI spec + Swagger UI
+		this.app.doc('/openapi.json', {
+			openapi: '3.0.0',
+			info: { title: 'InsightsWall API', version: '1.0.0' },
+		});
+		this.app.get('/docs', swaggerUI({ url: '/openapi.json' }));
+	}
+
 	configureUserRoutes() {
 		if (!this.userRepository) throw new Error('User repository not configured');
 
 		const getUserRoute = new GetUserRoute(this.app, new GetUserUseCase(this.userRepository));
-		this.app.route(getUserRoute.routePath, getUserRoute.route());
+		getUserRoute.route();
 
 		// TODO: Other routes
 	}

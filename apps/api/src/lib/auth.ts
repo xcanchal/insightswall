@@ -10,5 +10,10 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
-	// TODO: trustedOrigins: [process.env.FRONTEND_URL ?? 'http://localhost:5173'],
+	trustedOrigins: [process.env.FRONTEND_URL!],
 });
+
+export type AuthVariables = {
+	user: typeof auth.$Infer.Session.user | null;
+	session: typeof auth.$Infer.Session.session | null;
+};

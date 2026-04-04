@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "tsx watch --env-file=.env src/index.ts",
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"typecheck": "tsc --noEmit",
@@ -17,11 +17,13 @@
 	"dependencies": {
 		"@app/types": "*",
 		"@hono/node-server": "^1.19.12",
+		"@hono/swagger-ui": "^0.6.1",
+		"@hono/zod-openapi": "^1.2.4",
 		"better-auth": "^1.5.6",
-		"dotenv": "^17.4.0",
 		"drizzle-orm": "^0.45.2",
 		"hono": "^4.12.9",
-		"pg": "^8.20.0"
+		"pg": "^8.20.0",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@types/node": "^20.11.17",

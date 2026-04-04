@@ -1,5 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm';
-import { users } from '../../../db/auth-schema.js';
+import { users } from '../../../lib/db/auth-schema.js';
 import type { UserEntity } from '../domain/user.entity.js';
 
 type UserRow = InferSelectModel<typeof users>;

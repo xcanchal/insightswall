@@ -7,10 +7,12 @@ console.log('DATABASE_URL', process.env.DATABASE_URL);
 
 if (!process.env.DATABASE_URL_DIRECT) {
 	console.log('Using pooled database URL');
+} else {
+	console.log('Using direct database URL');
 }
 
 if (!process.env.DATABASE_URL) {
-	throw new Error('DATABASE_URL is not set');
+	throw new Error('Neither DATABASE_URL_DIRECT nor DATABASE_URL is set');
 }
 
 const dbUrl = process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL!;
