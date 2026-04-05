@@ -1,4 +1,4 @@
-import { ArrowRight, BulbIcon } from '@hugeicons/core-free-icons';
+import { BulbIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,27 @@ const navLinks = [
 	{ to: '/roadmap', label: 'Roadmap' },
 ];
 
+const authLinks = {
+	signedIn: {
+		label: 'Logout',
+		to: '/auth/logout',
+	},
+	signedOut: [
+		{
+			label: 'Log in',
+			to: '/auth/login',
+		},
+		{
+			label: 'Get started',
+			to: '/auth/signup',
+		},
+	],
+};
+
 const activeProps = { className: 'text-primary' };
 
 export const ProjectHeader = () => (
-	<header className="sticky top-0 bg-white shadow-sm z-10">
+	<header className="sticky top-0 bg-white z-10">
 		<div className="container mx-auto flex items-center py-4 justify-between">
 			<div className="flex items-center gap-12">
 				<Link to="/" className="font-bold flex items-center gap-1 font-heading text-lg">
@@ -27,12 +44,10 @@ export const ProjectHeader = () => (
 			</div>
 			<div className="flex items-center gap-4">
 				<Link to="/auth/login" className="text-sm font-semibold hover:text-primary">
-					Sign in
+					Log in
 				</Link>
 				<Link to="/auth/signup">
-					<Button size="sm">
-						Create account <HugeiconsIcon icon={ArrowRight} />
-					</Button>
+					<Button>Sign up</Button>
 				</Link>
 			</div>
 		</div>

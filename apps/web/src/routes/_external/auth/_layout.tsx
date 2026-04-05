@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, Link } from '@tanstack/react-router';
 import { BulbIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
-export const Route = createFileRoute('/auth/_layout')({
+export const Route = createFileRoute('/_external/auth/_layout')({
 	component: AuthLayout,
 });
 
@@ -18,5 +18,5 @@ function AuthLayout() {
 				<Outlet />
 			</main>
 		</div>
-	);
+	)
 }

@@ -10,41 +10,38 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProjectRouteImport } from './routes/_project'
-import { Route as MarketingRouteImport } from './routes/_marketing'
-import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
-import { Route as AuthSignupRouteImport } from './routes/auth/signup'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthLayoutRouteImport } from './routes/auth/_layout'
+import { Route as InternalRouteImport } from './routes/_internal'
+import { Route as ExternalRouteImport } from './routes/_external'
+import { Route as ExternalIndexRouteImport } from './routes/_external/index'
+import { Route as InternalDashboardRouteImport } from './routes/_internal/dashboard'
 import { Route as ProjectSuggestionsIndexRouteImport } from './routes/_project/suggestions/index'
 import { Route as ProjectRoadmapIndexRouteImport } from './routes/_project/roadmap/index'
+import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
+import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
+import { Route as ExternalAuthLoginRouteImport } from './routes/_external/auth/login'
+import { Route as ExternalAuthLayoutRouteImport } from './routes/_external/auth/_layout'
 
 const ProjectRoute = ProjectRouteImport.update({
   id: '/_project',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MarketingRoute = MarketingRouteImport.update({
-  id: '/_marketing',
+const InternalRoute = InternalRouteImport.update({
+  id: '/_internal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MarketingIndexRoute = MarketingIndexRouteImport.update({
+const ExternalRoute = ExternalRouteImport.update({
+  id: '/_external',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExternalIndexRoute = ExternalIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => MarketingRoute,
+  getParentRoute: () => ExternalRoute,
 } as any)
-const AuthSignupRoute = AuthSignupRouteImport.update({
-  id: '/auth/signup',
-  path: '/auth/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthLayoutRoute = AuthLayoutRouteImport.update({
-  id: '/auth/_layout',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
+const InternalDashboardRoute = InternalDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => InternalRoute,
 } as any)
 const ProjectSuggestionsIndexRoute = ProjectSuggestionsIndexRouteImport.update({
   id: '/suggestions/',
@@ -56,31 +53,58 @@ const ProjectRoadmapIndexRoute = ProjectRoadmapIndexRouteImport.update({
   path: '/roadmap/',
   getParentRoute: () => ProjectRoute,
 } as any)
+const ExternalAuthVerifyEmailRoute = ExternalAuthVerifyEmailRouteImport.update({
+  id: '/auth/verify-email',
+  path: '/auth/verify-email',
+  getParentRoute: () => ExternalRoute,
+} as any)
+const ExternalAuthSignupRoute = ExternalAuthSignupRouteImport.update({
+  id: '/auth/signup',
+  path: '/auth/signup',
+  getParentRoute: () => ExternalRoute,
+} as any)
+const ExternalAuthLoginRoute = ExternalAuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => ExternalRoute,
+} as any)
+const ExternalAuthLayoutRoute = ExternalAuthLayoutRouteImport.update({
+  id: '/auth/_layout',
+  path: '/auth',
+  getParentRoute: () => ExternalRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof MarketingIndexRoute
-  '/auth': typeof AuthLayoutRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
+  '/': typeof ExternalIndexRoute
+  '/dashboard': typeof InternalDashboardRoute
+  '/auth': typeof ExternalAuthLayoutRoute
+  '/auth/login': typeof ExternalAuthLoginRoute
+  '/auth/signup': typeof ExternalAuthSignupRoute
+  '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/roadmap/': typeof ProjectRoadmapIndexRoute
   '/suggestions/': typeof ProjectSuggestionsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof MarketingIndexRoute
-  '/auth': typeof AuthLayoutRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
+  '/': typeof ExternalIndexRoute
+  '/dashboard': typeof InternalDashboardRoute
+  '/auth': typeof ExternalAuthLayoutRoute
+  '/auth/login': typeof ExternalAuthLoginRoute
+  '/auth/signup': typeof ExternalAuthSignupRoute
+  '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/roadmap': typeof ProjectRoadmapIndexRoute
   '/suggestions': typeof ProjectSuggestionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_marketing': typeof MarketingRouteWithChildren
+  '/_external': typeof ExternalRouteWithChildren
+  '/_internal': typeof InternalRouteWithChildren
   '/_project': typeof ProjectRouteWithChildren
-  '/auth/_layout': typeof AuthLayoutRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/signup': typeof AuthSignupRoute
-  '/_marketing/': typeof MarketingIndexRoute
+  '/_internal/dashboard': typeof InternalDashboardRoute
+  '/_external/': typeof ExternalIndexRoute
+  '/_external/auth/_layout': typeof ExternalAuthLayoutRoute
+  '/_external/auth/login': typeof ExternalAuthLoginRoute
+  '/_external/auth/signup': typeof ExternalAuthSignupRoute
+  '/_external/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/_project/roadmap/': typeof ProjectRoadmapIndexRoute
   '/_project/suggestions/': typeof ProjectSuggestionsIndexRoute
 }
@@ -88,37 +112,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/auth'
     | '/auth/login'
     | '/auth/signup'
+    | '/auth/verify-email'
     | '/roadmap/'
     | '/suggestions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/auth'
     | '/auth/login'
     | '/auth/signup'
+    | '/auth/verify-email'
     | '/roadmap'
     | '/suggestions'
   id:
     | '__root__'
-    | '/_marketing'
+    | '/_external'
+    | '/_internal'
     | '/_project'
-    | '/auth/_layout'
-    | '/auth/login'
-    | '/auth/signup'
-    | '/_marketing/'
+    | '/_internal/dashboard'
+    | '/_external/'
+    | '/_external/auth/_layout'
+    | '/_external/auth/login'
+    | '/_external/auth/signup'
+    | '/_external/auth/verify-email'
     | '/_project/roadmap/'
     | '/_project/suggestions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  MarketingRoute: typeof MarketingRouteWithChildren
+  ExternalRoute: typeof ExternalRouteWithChildren
+  InternalRoute: typeof InternalRouteWithChildren
   ProjectRoute: typeof ProjectRouteWithChildren
-  AuthLayoutRoute: typeof AuthLayoutRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthSignupRoute: typeof AuthSignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,40 +159,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_marketing': {
-      id: '/_marketing'
+    '/_internal': {
+      id: '/_internal'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof MarketingRouteImport
+      preLoaderRoute: typeof InternalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_marketing/': {
-      id: '/_marketing/'
+    '/_external': {
+      id: '/_external'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ExternalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_external/': {
+      id: '/_external/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof MarketingIndexRouteImport
-      parentRoute: typeof MarketingRoute
+      preLoaderRoute: typeof ExternalIndexRouteImport
+      parentRoute: typeof ExternalRoute
     }
-    '/auth/signup': {
-      id: '/auth/signup'
-      path: '/auth/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/_layout': {
-      id: '/auth/_layout'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthLayoutRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_internal/dashboard': {
+      id: '/_internal/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof InternalDashboardRouteImport
+      parentRoute: typeof InternalRoute
     }
     '/_project/suggestions/': {
       id: '/_project/suggestions/'
@@ -179,19 +201,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectRoadmapIndexRouteImport
       parentRoute: typeof ProjectRoute
     }
+    '/_external/auth/verify-email': {
+      id: '/_external/auth/verify-email'
+      path: '/auth/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof ExternalAuthVerifyEmailRouteImport
+      parentRoute: typeof ExternalRoute
+    }
+    '/_external/auth/signup': {
+      id: '/_external/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof ExternalAuthSignupRouteImport
+      parentRoute: typeof ExternalRoute
+    }
+    '/_external/auth/login': {
+      id: '/_external/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof ExternalAuthLoginRouteImport
+      parentRoute: typeof ExternalRoute
+    }
+    '/_external/auth/_layout': {
+      id: '/_external/auth/_layout'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof ExternalAuthLayoutRouteImport
+      parentRoute: typeof ExternalRoute
+    }
   }
 }
 
-interface MarketingRouteChildren {
-  MarketingIndexRoute: typeof MarketingIndexRoute
+interface ExternalRouteChildren {
+  ExternalIndexRoute: typeof ExternalIndexRoute
+  ExternalAuthLayoutRoute: typeof ExternalAuthLayoutRoute
+  ExternalAuthLoginRoute: typeof ExternalAuthLoginRoute
+  ExternalAuthSignupRoute: typeof ExternalAuthSignupRoute
+  ExternalAuthVerifyEmailRoute: typeof ExternalAuthVerifyEmailRoute
 }
 
-const MarketingRouteChildren: MarketingRouteChildren = {
-  MarketingIndexRoute: MarketingIndexRoute,
+const ExternalRouteChildren: ExternalRouteChildren = {
+  ExternalIndexRoute: ExternalIndexRoute,
+  ExternalAuthLayoutRoute: ExternalAuthLayoutRoute,
+  ExternalAuthLoginRoute: ExternalAuthLoginRoute,
+  ExternalAuthSignupRoute: ExternalAuthSignupRoute,
+  ExternalAuthVerifyEmailRoute: ExternalAuthVerifyEmailRoute,
 }
 
-const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
-  MarketingRouteChildren,
+const ExternalRouteWithChildren = ExternalRoute._addFileChildren(
+  ExternalRouteChildren,
+)
+
+interface InternalRouteChildren {
+  InternalDashboardRoute: typeof InternalDashboardRoute
+}
+
+const InternalRouteChildren: InternalRouteChildren = {
+  InternalDashboardRoute: InternalDashboardRoute,
+}
+
+const InternalRouteWithChildren = InternalRoute._addFileChildren(
+  InternalRouteChildren,
 )
 
 interface ProjectRouteChildren {
@@ -208,11 +278,9 @@ const ProjectRouteWithChildren =
   ProjectRoute._addFileChildren(ProjectRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  MarketingRoute: MarketingRouteWithChildren,
+  ExternalRoute: ExternalRouteWithChildren,
+  InternalRoute: InternalRouteWithChildren,
   ProjectRoute: ProjectRouteWithChildren,
-  AuthLayoutRoute: AuthLayoutRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthSignupRoute: AuthSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

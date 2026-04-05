@@ -22,7 +22,7 @@ const Features = [
 	},
 ];
 
-export const Route = createFileRoute('/_marketing/')({
+export const Route = createFileRoute('/_external/')({
 	component: Index,
 });
 
@@ -33,11 +33,13 @@ function Index() {
 				<h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-center leading-10 md:leading-16 lg:leading-20">
 					Listen to your users. <br /> Make the correct decisions
 				</h1>
-				<Button className="h-12 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-lg md:rounded-xl">
-					Get started <HugeiconsIcon icon={ArrowRight} className="size-8" />
-				</Button>
+				<Link to="/auth/signup">
+					<Button className="h-12 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-lg md:rounded-xl">
+						Get started <HugeiconsIcon icon={ArrowRight} className="size-8" />
+					</Button>
+				</Link>
 				<p>
-					Already have an account? <Link to="/auth/login">Login</Link>
+					Already have an account? <Link to="/auth/login">Log in</Link>
 				</p>
 			</div>
 			<div id="features">
@@ -52,5 +54,5 @@ function Index() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
