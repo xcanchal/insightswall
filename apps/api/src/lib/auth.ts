@@ -25,8 +25,8 @@ export const auth = betterAuth({
 	advanced: {
 		crossSubDomainCookies: { enabled: process.env.NODE_ENV !== 'production' },
 		defaultCookieAttributes: {
-			sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-			secure: process.env.NODE_ENV === 'production',
+			sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
+			secure: false, // localhost doesn't require Secure for SameSite=None
 		},
 	},
 });
