@@ -29,6 +29,13 @@
       "when": 1775509336851,
       "tag": "0003_chief_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1775513126029,
+      "tag": "0004_dazzling_naoko",
+      "breakpoints": true
     }
   ]
 }

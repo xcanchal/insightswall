@@ -22,6 +22,7 @@ export const timestamps = {
 export const projects = pgTable('projects', {
 	id: uuid().primaryKey().defaultRandom(),
 	name: text().notNull().unique(),
+	slug: text().notNull().unique(),
 	...timestamps,
 });
 
