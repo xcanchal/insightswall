@@ -1,8 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { Footer } from '@/components/footer';
 import { InternalHeader } from '@/components/headers/internal-header';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { InternalSidebar } from '@/components/internal-sidebar';
 
 export const Route = createFileRoute('/_internal')({
 	beforeLoad: ({ context }) => {
@@ -15,15 +13,12 @@ export const Route = createFileRoute('/_internal')({
 
 function InternalLayout() {
 	return (
-		<div className="flex min-h-screen">
-			<SidebarProvider>
-				<InternalSidebar />
-				{/* <InternalHeader /> */}
-				<main className="flex-1">
-					<Outlet />
-				</main>
-			</SidebarProvider>
-			{/* <Footer /> */}
+		<div className="flex flex-col min-h-screen">
+			<InternalHeader />
+			<main className="flex-1">
+				<Outlet />
+			</main>
+			<Footer />
 		</div>
 	);
 }

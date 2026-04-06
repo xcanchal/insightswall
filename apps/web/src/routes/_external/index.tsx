@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, DashboardSquare03Icon, GridViewIcon, SortByUp01Icon, TeachingIcon } from '@hugeicons/core-free-icons';
+import { ArrowRight, GridViewIcon, SortByUp01Icon, TeachingIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 
@@ -39,7 +39,10 @@ function Index() {
 					</Button>
 				</Link>
 				<p>
-					Already have an account? <Link to="/auth/login">Log in</Link>
+					Already have an account?{' '}
+					<Link to="/auth/login" className="font-semibold">
+						Log in
+					</Link>
 				</p>
 			</div>
 			<div id="features">

@@ -24,7 +24,7 @@ export const ExternalHeader = () => (
 				</nav> */}
 			</div>
 			<div className="hidden md:flex items-center gap-4">
-				<Link to="/auth/login" className="text-sm font-semibold hover:text-primary">
+				<Link to="/auth/login" className="text-sm font-semibold">
 					Log in
 				</Link>
 				<Link to="/auth/signup">

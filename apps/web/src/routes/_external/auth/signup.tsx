@@ -27,7 +27,7 @@ const SignUpFormSchema = z
 export const Route = createFileRoute('/_external/auth/signup')({
 	beforeLoad: ({ context }) => {
 		if (!context.isPending && context.session) {
-			throw redirect({ to: '/dashboard' });
+			throw redirect({ to: '/projects' });
 		}
 	},
 	component: RouteComponent,
@@ -55,7 +55,7 @@ function RouteComponent() {
 					name: value.name,
 					email: value.email,
 					password: value.password,
-					callbackURL: `${window.location.origin}/dashboard`,
+					callbackURL: `${window.location.origin}/projects`,
 				},
 				{
 					onSuccess: () => {

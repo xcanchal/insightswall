@@ -13,10 +13,9 @@ import { Route as ProjectRouteImport } from './routes/_project'
 import { Route as InternalRouteImport } from './routes/_internal'
 import { Route as ExternalRouteImport } from './routes/_external'
 import { Route as ExternalIndexRouteImport } from './routes/_external/index'
-import { Route as InternalDashboardRouteImport } from './routes/_internal/dashboard'
+import { Route as InternalAccountRouteImport } from './routes/_internal/account'
 import { Route as ProjectSuggestionsIndexRouteImport } from './routes/_project/suggestions/index'
 import { Route as ProjectRoadmapIndexRouteImport } from './routes/_project/roadmap/index'
-import { Route as InternalSettingsIndexRouteImport } from './routes/_internal/settings/index'
 import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
 import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
 import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
@@ -39,9 +38,9 @@ const ExternalIndexRoute = ExternalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ExternalRoute,
 } as any)
-const InternalDashboardRoute = InternalDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const InternalAccountRoute = InternalAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => InternalRoute,
 } as any)
 const ProjectSuggestionsIndexRoute = ProjectSuggestionsIndexRouteImport.update({
@@ -53,11 +52,6 @@ const ProjectRoadmapIndexRoute = ProjectRoadmapIndexRouteImport.update({
   id: '/roadmap/',
   path: '/roadmap/',
   getParentRoute: () => ProjectRoute,
-} as any)
-const InternalSettingsIndexRoute = InternalSettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => InternalRoute,
 } as any)
 const InternalProjectsIndexRoute = InternalProjectsIndexRouteImport.update({
   id: '/projects/',
@@ -82,23 +76,21 @@ const ExternalAuthLoginRoute = ExternalAuthLoginRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof ExternalIndexRoute
-  '/dashboard': typeof InternalDashboardRoute
+  '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/projects/': typeof InternalProjectsIndexRoute
-  '/settings/': typeof InternalSettingsIndexRoute
   '/roadmap/': typeof ProjectRoadmapIndexRoute
   '/suggestions/': typeof ProjectSuggestionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ExternalIndexRoute
-  '/dashboard': typeof InternalDashboardRoute
+  '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/projects': typeof InternalProjectsIndexRoute
-  '/settings': typeof InternalSettingsIndexRoute
   '/roadmap': typeof ProjectRoadmapIndexRoute
   '/suggestions': typeof ProjectSuggestionsIndexRoute
 }
@@ -107,13 +99,12 @@ export interface FileRoutesById {
   '/_external': typeof ExternalRouteWithChildren
   '/_internal': typeof InternalRouteWithChildren
   '/_project': typeof ProjectRouteWithChildren
-  '/_internal/dashboard': typeof InternalDashboardRoute
+  '/_internal/account': typeof InternalAccountRoute
   '/_external/': typeof ExternalIndexRoute
   '/_external/auth/login': typeof ExternalAuthLoginRoute
   '/_external/auth/signup': typeof ExternalAuthSignupRoute
   '/_external/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/_internal/projects/': typeof InternalProjectsIndexRoute
-  '/_internal/settings/': typeof InternalSettingsIndexRoute
   '/_project/roadmap/': typeof ProjectRoadmapIndexRoute
   '/_project/suggestions/': typeof ProjectSuggestionsIndexRoute
 }
@@ -121,23 +112,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
+    | '/account'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
     | '/projects/'
-    | '/settings/'
     | '/roadmap/'
     | '/suggestions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
+    | '/account'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
     | '/projects'
-    | '/settings'
     | '/roadmap'
     | '/suggestions'
   id:
@@ -145,13 +134,12 @@ export interface FileRouteTypes {
     | '/_external'
     | '/_internal'
     | '/_project'
-    | '/_internal/dashboard'
+    | '/_internal/account'
     | '/_external/'
     | '/_external/auth/login'
     | '/_external/auth/signup'
     | '/_external/auth/verify-email'
     | '/_internal/projects/'
-    | '/_internal/settings/'
     | '/_project/roadmap/'
     | '/_project/suggestions/'
   fileRoutesById: FileRoutesById
@@ -192,11 +180,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExternalIndexRouteImport
       parentRoute: typeof ExternalRoute
     }
-    '/_internal/dashboard': {
-      id: '/_internal/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof InternalDashboardRouteImport
+    '/_internal/account': {
+      id: '/_internal/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof InternalAccountRouteImport
       parentRoute: typeof InternalRoute
     }
     '/_project/suggestions/': {
@@ -212,13 +200,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/roadmap/'
       preLoaderRoute: typeof ProjectRoadmapIndexRouteImport
       parentRoute: typeof ProjectRoute
-    }
-    '/_internal/settings/': {
-      id: '/_internal/settings/'
-      path: '/settings'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof InternalSettingsIndexRouteImport
-      parentRoute: typeof InternalRoute
     }
     '/_internal/projects/': {
       id: '/_internal/projects/'
@@ -270,15 +251,13 @@ const ExternalRouteWithChildren = ExternalRoute._addFileChildren(
 )
 
 interface InternalRouteChildren {
-  InternalDashboardRoute: typeof InternalDashboardRoute
+  InternalAccountRoute: typeof InternalAccountRoute
   InternalProjectsIndexRoute: typeof InternalProjectsIndexRoute
-  InternalSettingsIndexRoute: typeof InternalSettingsIndexRoute
 }
 
 const InternalRouteChildren: InternalRouteChildren = {
-  InternalDashboardRoute: InternalDashboardRoute,
+  InternalAccountRoute: InternalAccountRoute,
   InternalProjectsIndexRoute: InternalProjectsIndexRoute,
-  InternalSettingsIndexRoute: InternalSettingsIndexRoute,
 }
 
 const InternalRouteWithChildren = InternalRoute._addFileChildren(

@@ -19,7 +19,7 @@ const LoginFormSchema = z.object({
 export const Route = createFileRoute('/_external/auth/login')({
 	beforeLoad: ({ context }) => {
 		if (!context.isPending && context.session) {
-			throw redirect({ to: '/dashboard' });
+			throw redirect({ to: '/projects' });
 		}
 	},
 	component: RouteComponent,
@@ -44,11 +44,10 @@ function RouteComponent() {
 				{
 					email: value.email,
 					password: value.password,
-					/* callbackURL: '/dashboard', */
 				},
 				{
 					onSuccess: () => {
-						navigate({ to: '/dashboard' });
+						navigate({ to: '/projects' });
 					},
 					onError: (ctx) => {
 						if (ctx.error.status === 403) {
