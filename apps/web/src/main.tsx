@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from '@tanstack/react-router';
@@ -13,6 +13,10 @@ const router = createAppRouter(queryClient);
 
 function App() {
 	const { data: session, isPending } = useSession();
+
+	useEffect(() => {
+		router.invalidate();
+	}, [session, isPending]);
 
 	return <RouterProvider router={router} context={{ queryClient, session, isPending }} />;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { signOut, useSession } from '@/lib/auth-client';
+import { useSession, signOut } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/_internal/account')({
@@ -8,6 +8,7 @@ export const Route = createFileRoute('/_internal/account')({
 
 function UserSettings() {
 	const { data: session } = useSession();
+
 	return (
 		<div className="container max-w-2xl mx-auto sm:py-12">
 			<div className="p-8 sm:border rounded-lg gap-10 flex flex-col">
@@ -32,7 +33,7 @@ function UserSettings() {
 							<b>Delete your account</b>
 						</p>
 						<p>This action is irreversible and will permanently delete your account and all your data.</p>
-						<Button onClick={() => signOut()} className="sm:w-fit mt-2">
+						<Button onClick={() => {} /* deleteAccount */} className="sm:w-fit mt-2">
 							Delete account
 						</Button>
 					</div>
