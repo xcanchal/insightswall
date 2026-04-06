@@ -5,10 +5,17 @@ import { RouterProvider } from '@tanstack/react-router';
 
 import './index.css';
 import { createAppRouter } from './lib/router';
+import { useSession } from './lib/auth-client';
 
 const queryClient = new QueryClient();
 
 const router = createAppRouter(queryClient);
+
+function App() {
+	const { data: session, isPending } = useSession();
+
+	return <RouterProvider router={router} context={{ queryClient, session, isPending }} />;
+}
 
 declare module '@tanstack/react-router' {
 	interface Register {
@@ -19,7 +26,7 @@ declare module '@tanstack/react-router' {
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} />
+			<App />
 		</QueryClientProvider>
 	</StrictMode>
 );

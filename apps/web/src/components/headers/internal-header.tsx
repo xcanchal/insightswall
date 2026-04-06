@@ -16,12 +16,13 @@ export const InternalHeader = () => {
 				<div className="flex items-center gap-4">
 					{/* TODO: notifications bell */}
 					{/* TODO: avatar menu */}
-					<div>
-						<HugeiconsIcon icon={User02Icon} className="size-4" /> {session?.user?.name}
-						<Button onClick={() => signOut()}>
-							<HugeiconsIcon icon={LogoutIcon} /> Logout
-						</Button>
+					<div className="flex items-center gap-2 bg-muted rounded-full px-2 py-1">
+						<HugeiconsIcon icon={User02Icon} className="size-4" /> <span className="text-sm">{session?.user?.name}</span>
+						<span className="text-xs text-muted-foreground">({session?.user?.email})</span>
 					</div>
+					{/* <Button onClick={() => signOut()}>
+						<HugeiconsIcon icon={LogoutIcon} /> Logout
+					</Button> */}
 				</div>
 			</div>
 		</header>

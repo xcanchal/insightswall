@@ -22,6 +22,13 @@
       "when": 1775136578572,
       "tag": "0002_bizarre_valkyrie",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1775509336851,
+      "tag": "0003_chief_jubilee",
+      "breakpoints": true
     }
   ]
 }

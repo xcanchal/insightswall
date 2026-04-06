@@ -3,6 +3,7 @@ import { users } from './auth-schema.js';
 
 export const memberRoleEnum = pgEnum('member_role', ['USER', 'ADMIN']);
 export const suggestionStatusEnum = pgEnum('suggestion_status', ['CREATED', 'REJECTED']);
+export const suggestionCategoryEnum = pgEnum('suggestion_category', ['FEATURE', 'BUG']);
 export const roadmapStatusEnum = pgEnum('roadmap_status', ['PLANNED', 'IN_PROGRESS', 'DONE', 'DISCONTINUED']);
 export const notificationTypeEnum = pgEnum('notification_type', [
 	'SUGGESTION_CREATED',
@@ -48,6 +49,7 @@ export const suggestions = pgTable('suggestions', {
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	description: text().notNull(),
+	category: suggestionCategoryEnum().notNull(),
 	status: suggestionStatusEnum().notNull().default('CREATED'),
 	...timestamps,
 });

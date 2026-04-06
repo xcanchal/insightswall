@@ -168,7 +168,11 @@
 	h6 {
 		@apply text-sm font-semibold;
 	}
-	a:hover {
-		@apply text-primary;
+	a {
+		@apply text-foreground;
+
+		&:hover {
+			@apply text-primary;
+		}
 	}
 }

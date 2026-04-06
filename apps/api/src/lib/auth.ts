@@ -11,6 +11,7 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 		requireEmailVerification: true,
+		autoSignIn: true,
 	},
 	emailVerification: {
 		sendVerificationEmail: async ({ user, url /* , token */ } /* , request */) => {
@@ -22,13 +23,6 @@ export const auth = betterAuth({
 		},
 	},
 	trustedOrigins: [process.env.FRONTEND_URL!],
-	advanced: {
-		crossSubDomainCookies: { enabled: process.env.NODE_ENV !== 'production' },
-		defaultCookieAttributes: {
-			sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
-			secure: false, // localhost doesn't require Secure for SameSite=None
-		},
-	},
 });
 
 export type AuthVariables = {

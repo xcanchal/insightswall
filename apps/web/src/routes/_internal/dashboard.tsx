@@ -7,6 +7,5 @@ export const Route = createFileRoute('/_internal/dashboard')({
 
 function RouteComponent() {
 	const { data: session } = useSession();
-	console.log(session);
 	return <div>Hello {session?.user?.name}!</div>;
 }

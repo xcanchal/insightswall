@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, DashboardSquare03Icon, SortByUp01Icon, TeachingIcon } from '@hugeicons/core-free-icons';
+import { ArrowRight, DashboardSquare03Icon, GridViewIcon, SortByUp01Icon, TeachingIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 
@@ -12,13 +12,13 @@ const Features = [
 	},
 	{
 		title: 'Prioritize feedback',
-		description: 'Allow users to vote on suggestions and prioritize them',
+		description: 'Prioritize suggestions based on interest and impact',
 		icon: <HugeiconsIcon icon={SortByUp01Icon} className="size-20 md:size-24 text-primary" />,
 	},
 	{
-		title: 'Share your roadmap',
-		description: 'Share your roadmap with your users and communicate progress',
-		icon: <HugeiconsIcon icon={DashboardSquare03Icon} className="size-20 md:size-24 text-primary" />,
+		title: 'Build your roadmap',
+		description: 'Collaborate on your roadmap with your users and communicate progress',
+		icon: <HugeiconsIcon icon={GridViewIcon} className="size-20 md:size-24 text-primary" />,
 	},
 ];
 
@@ -54,5 +54,5 @@ function Index() {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
@@ -25,6 +25,11 @@ const SignUpFormSchema = z
 	});
 
 export const Route = createFileRoute('/_external/auth/signup')({
+	beforeLoad: ({ context }) => {
+		if (!context.isPending && context.session) {
+			throw redirect({ to: '/dashboard' });
+		}
+	},
 	component: RouteComponent,
 });
 
@@ -178,12 +183,16 @@ function RouteComponent() {
 							</FieldGroup>
 						</form>
 					</CardContent>
-					<CardFooter>
-						<Field orientation="horizontal" className="flex justify-end">
-							<Button type="submit" form="signup-form" className="w-full" size="lg" disabled={form.state.isSubmitting}>
-								{form.state.isSubmitting ? <HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" /> : 'Create account'}
-							</Button>
-						</Field>
+					<CardFooter className="flex flex-col gap-4">
+						<Button type="submit" form="signup-form" className="w-full" size="lg" disabled={form.state.isSubmitting}>
+							{form.state.isSubmitting ? <HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" /> : 'Create account'}
+						</Button>
+						<p className="text-sm text-muted-foreground text-center">
+							Already have an account?{' '}
+							<Link to="/auth/login" className="font-semibold">
+								Log in
+							</Link>
+						</p>
 					</CardFooter>
 				</Card>
 			</div>
