@@ -10,8 +10,8 @@ function UserSettings() {
 	const { data: session } = useSession();
 
 	return (
-		<div className="container max-w-2xl mx-auto sm:py-12">
-			<div className="p-8 sm:border rounded-lg gap-10 flex flex-col">
+		<div className="container sm:max-w-2xl mx-auto px-4 sm:px-0 py-8">
+			<div className="sm:border sm:p-8 rounded-lg gap-10 flex flex-col">
 				<div className="flex flex-col gap-4">
 					<h3>Account details</h3>
 					<div className="flex flex-col gap-2">

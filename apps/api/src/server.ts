@@ -4,11 +4,8 @@ import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
 import { auth, type AuthVariables } from './lib/auth.js';
 import { cors } from 'hono/cors';
-import { UserRepository } from './modules/users/infrastructure/user.repository.impl.js';
 import { ProjectRepository } from './modules/projects/infrastructure/project.repository.impl.js';
 import { db } from './lib/db/index.js';
-import { GetUserRoute } from './modules/users/presentation/routes/get-user.route.js';
-import { GetUserUseCase } from './modules/users/application/use-cases/get-user.use-case.js';
 import { CreateProjectRoute } from './modules/projects/presentation/routes/create-project.route.js';
 import { CreateProjectUseCase } from './modules/projects/application/use-cases/create-project.use-case.js';
 import { GetProjectsRoute } from './modules/projects/presentation/routes/get-projects.route.js';
@@ -25,7 +22,6 @@ export type ServerConfig = {
 export class Server {
 	config: ServerConfig;
 	private app: OpenAPIHono<{ Variables: AuthVariables }>;
-	private userRepository: UserRepository | null = null;
 	private projectRepository: ProjectRepository | null = null;
 
 	constructor(config: ServerConfig) {
@@ -53,15 +49,10 @@ export class Server {
 		/* Aggregate Root — the only entry point to a cluster of entities. Never bypass it to modify children directly.
         // WRONG: update vote table directly
         // RIGHT: suggestionRepo.addVote(suggestionId, userId)
-
           Repository — abstracts persistence. Only aggregate roots get one. Returns domain objects, not DB rows. */
 
-		this.userRepository = new UserRepository(db); // User, Session...
 		this.projectRepository = new ProjectRepository(db);
-		/* const projectRepository = new ProjectRepository(db); // Project, ProjectMember
-		const suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
-    
-
+		/* const suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
 		const roadmapRepository = new RoadmapRepository(db); // Roadmap, RoadmapItem
 		const notificationRepository = new NotificationRepository(db); // Notification */
 	}
@@ -71,9 +62,7 @@ export class Server {
 		this.app.on(['GET', 'POST'], '/api/auth/**', (c) => auth.handler(c.req.raw));
 
 		// Module routers
-		this.configureUserRoutes();
 		this.configureProjectRoutes();
-		/* this.app.route('/api/users', userRouter); */
 		/* this.app.route('/api/suggestions', suggestionRouter); */
 		/* this.app.route('/api/roadmap', roadmapRouter); */
 		/* this.app.route('/api/notifications', notificationRouter); */
@@ -89,15 +78,6 @@ export class Server {
 			info: { title: 'InsightsWall API', version: '1.0.0' },
 		});
 		this.app.get('/docs', swaggerUI({ url: '/openapi.json' }));
-	}
-
-	configureUserRoutes() {
-		if (!this.userRepository) throw new Error('User repository not configured');
-
-		const getUserRoute = new GetUserRoute(this.app, new GetUserUseCase(this.userRepository));
-		getUserRoute.route();
-
-		// TODO: Other routes
 	}
 
 	configureProjectRoutes() {

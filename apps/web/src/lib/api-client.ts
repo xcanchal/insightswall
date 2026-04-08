@@ -1,9 +1,11 @@
 import type { ApiError } from '@app/types';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+if (!import.meta.env.VITE_API_URL) {
+	throw new Error('No valid API URL environment variable found');
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-	const res = await fetch(`${BASE_URL}${path}`, {
+	const res = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
 		headers: { 'Content-Type': 'application/json', ...init?.headers },
 		credentials: 'include',
 		...init,

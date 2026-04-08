@@ -8,7 +8,7 @@ if (!process.env.DATABASE_URL_DIRECT) {
 	console.log('Using direct database URL');
 }
 
-if (!process.env.DATABASE_URL) {
+if (!process.env.DATABASE_URL && !process.env.DATABASE_URL_DIRECT) {
 	throw new Error('Neither DATABASE_URL_DIRECT nor DATABASE_URL is set');
 }
 
