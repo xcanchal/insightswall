@@ -9,20 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProjectRouteImport } from './routes/_project'
+import { Route as ProjectRouteImport } from './routes/project'
 import { Route as InternalRouteImport } from './routes/_internal'
 import { Route as ExternalRouteImport } from './routes/_external'
 import { Route as ExternalIndexRouteImport } from './routes/_external/index'
 import { Route as InternalAccountRouteImport } from './routes/_internal/account'
-import { Route as ProjectSuggestionsIndexRouteImport } from './routes/_project/suggestions/index'
-import { Route as ProjectRoadmapIndexRouteImport } from './routes/_project/roadmap/index'
 import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
 import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
 import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
 import { Route as ExternalAuthLoginRouteImport } from './routes/_external/auth/login'
+import { Route as ProjectProjectSlugSuggestionsIndexRouteImport } from './routes/project/$projectSlug/suggestions/index'
+import { Route as ProjectProjectSlugRoadmapIndexRouteImport } from './routes/project/$projectSlug/roadmap/index'
 
 const ProjectRoute = ProjectRouteImport.update({
-  id: '/_project',
+  id: '/project',
+  path: '/project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InternalRoute = InternalRouteImport.update({
@@ -42,16 +43,6 @@ const InternalAccountRoute = InternalAccountRouteImport.update({
   id: '/account',
   path: '/account',
   getParentRoute: () => InternalRoute,
-} as any)
-const ProjectSuggestionsIndexRoute = ProjectSuggestionsIndexRouteImport.update({
-  id: '/suggestions/',
-  path: '/suggestions/',
-  getParentRoute: () => ProjectRoute,
-} as any)
-const ProjectRoadmapIndexRoute = ProjectRoadmapIndexRouteImport.update({
-  id: '/roadmap/',
-  path: '/roadmap/',
-  getParentRoute: () => ProjectRoute,
 } as any)
 const InternalProjectsIndexRoute = InternalProjectsIndexRouteImport.update({
   id: '/projects/',
@@ -73,75 +64,91 @@ const ExternalAuthLoginRoute = ExternalAuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => ExternalRoute,
 } as any)
+const ProjectProjectSlugSuggestionsIndexRoute =
+  ProjectProjectSlugSuggestionsIndexRouteImport.update({
+    id: '/$projectSlug/suggestions/',
+    path: '/$projectSlug/suggestions/',
+    getParentRoute: () => ProjectRoute,
+  } as any)
+const ProjectProjectSlugRoadmapIndexRoute =
+  ProjectProjectSlugRoadmapIndexRouteImport.update({
+    id: '/$projectSlug/roadmap/',
+    path: '/$projectSlug/roadmap/',
+    getParentRoute: () => ProjectRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof ExternalIndexRoute
+  '/project': typeof ProjectRouteWithChildren
   '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/projects/': typeof InternalProjectsIndexRoute
-  '/roadmap/': typeof ProjectRoadmapIndexRoute
-  '/suggestions/': typeof ProjectSuggestionsIndexRoute
+  '/project/$projectSlug/roadmap/': typeof ProjectProjectSlugRoadmapIndexRoute
+  '/project/$projectSlug/suggestions/': typeof ProjectProjectSlugSuggestionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof ExternalIndexRoute
+  '/project': typeof ProjectRouteWithChildren
   '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/projects': typeof InternalProjectsIndexRoute
-  '/roadmap': typeof ProjectRoadmapIndexRoute
-  '/suggestions': typeof ProjectSuggestionsIndexRoute
+  '/project/$projectSlug/roadmap': typeof ProjectProjectSlugRoadmapIndexRoute
+  '/project/$projectSlug/suggestions': typeof ProjectProjectSlugSuggestionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_external': typeof ExternalRouteWithChildren
   '/_internal': typeof InternalRouteWithChildren
-  '/_project': typeof ProjectRouteWithChildren
+  '/project': typeof ProjectRouteWithChildren
   '/_internal/account': typeof InternalAccountRoute
   '/_external/': typeof ExternalIndexRoute
   '/_external/auth/login': typeof ExternalAuthLoginRoute
   '/_external/auth/signup': typeof ExternalAuthSignupRoute
   '/_external/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
   '/_internal/projects/': typeof InternalProjectsIndexRoute
-  '/_project/roadmap/': typeof ProjectRoadmapIndexRoute
-  '/_project/suggestions/': typeof ProjectSuggestionsIndexRoute
+  '/project/$projectSlug/roadmap/': typeof ProjectProjectSlugRoadmapIndexRoute
+  '/project/$projectSlug/suggestions/': typeof ProjectProjectSlugSuggestionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/project'
     | '/account'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
     | '/projects/'
-    | '/roadmap/'
-    | '/suggestions/'
+    | '/project/$projectSlug/roadmap/'
+    | '/project/$projectSlug/suggestions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/project'
     | '/account'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
     | '/projects'
-    | '/roadmap'
-    | '/suggestions'
+    | '/project/$projectSlug/roadmap'
+    | '/project/$projectSlug/suggestions'
   id:
     | '__root__'
     | '/_external'
     | '/_internal'
-    | '/_project'
+    | '/project'
     | '/_internal/account'
     | '/_external/'
     | '/_external/auth/login'
     | '/_external/auth/signup'
     | '/_external/auth/verify-email'
     | '/_internal/projects/'
-    | '/_project/roadmap/'
-    | '/_project/suggestions/'
+    | '/project/$projectSlug/roadmap/'
+    | '/project/$projectSlug/suggestions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,10 +159,10 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_project': {
-      id: '/_project'
-      path: ''
-      fullPath: '/'
+    '/project': {
+      id: '/project'
+      path: '/project'
+      fullPath: '/project'
       preLoaderRoute: typeof ProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -187,20 +194,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalAccountRouteImport
       parentRoute: typeof InternalRoute
     }
-    '/_project/suggestions/': {
-      id: '/_project/suggestions/'
-      path: '/suggestions'
-      fullPath: '/suggestions/'
-      preLoaderRoute: typeof ProjectSuggestionsIndexRouteImport
-      parentRoute: typeof ProjectRoute
-    }
-    '/_project/roadmap/': {
-      id: '/_project/roadmap/'
-      path: '/roadmap'
-      fullPath: '/roadmap/'
-      preLoaderRoute: typeof ProjectRoadmapIndexRouteImport
-      parentRoute: typeof ProjectRoute
-    }
     '/_internal/projects/': {
       id: '/_internal/projects/'
       path: '/projects'
@@ -228,6 +221,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/login'
       preLoaderRoute: typeof ExternalAuthLoginRouteImport
       parentRoute: typeof ExternalRoute
+    }
+    '/project/$projectSlug/suggestions/': {
+      id: '/project/$projectSlug/suggestions/'
+      path: '/$projectSlug/suggestions'
+      fullPath: '/project/$projectSlug/suggestions/'
+      preLoaderRoute: typeof ProjectProjectSlugSuggestionsIndexRouteImport
+      parentRoute: typeof ProjectRoute
+    }
+    '/project/$projectSlug/roadmap/': {
+      id: '/project/$projectSlug/roadmap/'
+      path: '/$projectSlug/roadmap'
+      fullPath: '/project/$projectSlug/roadmap/'
+      preLoaderRoute: typeof ProjectProjectSlugRoadmapIndexRouteImport
+      parentRoute: typeof ProjectRoute
     }
   }
 }
@@ -265,13 +272,14 @@ const InternalRouteWithChildren = InternalRoute._addFileChildren(
 )
 
 interface ProjectRouteChildren {
-  ProjectRoadmapIndexRoute: typeof ProjectRoadmapIndexRoute
-  ProjectSuggestionsIndexRoute: typeof ProjectSuggestionsIndexRoute
+  ProjectProjectSlugRoadmapIndexRoute: typeof ProjectProjectSlugRoadmapIndexRoute
+  ProjectProjectSlugSuggestionsIndexRoute: typeof ProjectProjectSlugSuggestionsIndexRoute
 }
 
 const ProjectRouteChildren: ProjectRouteChildren = {
-  ProjectRoadmapIndexRoute: ProjectRoadmapIndexRoute,
-  ProjectSuggestionsIndexRoute: ProjectSuggestionsIndexRoute,
+  ProjectProjectSlugRoadmapIndexRoute: ProjectProjectSlugRoadmapIndexRoute,
+  ProjectProjectSlugSuggestionsIndexRoute:
+    ProjectProjectSlugSuggestionsIndexRoute,
 }
 
 const ProjectRouteWithChildren =

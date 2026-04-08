@@ -1,41 +1,13 @@
 {
-  "version": "7",
-  "dialect": "postgresql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "7",
-      "when": 1775082691692,
-      "tag": "0000_plain_ultimo",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1775136053693,
-      "tag": "0001_bright_vindicator",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1775136578572,
-      "tag": "0002_bizarre_valkyrie",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1775509336851,
-      "tag": "0003_chief_jubilee",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1775513126029,
-      "tag": "0004_dazzling_naoko",
-      "breakpoints": true
-    }
-  ]
+	"version": "7",
+	"dialect": "postgresql",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "7",
+			"when": 1775573025853,
+			"tag": "0000_mysterious_mantis",
+			"breakpoints": true
+		}
+	]
 }

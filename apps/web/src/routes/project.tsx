@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { ProjectHeader } from '@/components/headers/project-header';
 import { Footer } from '@/components/footer';
 
-export const Route = createFileRoute('/_project')({
+export const Route = createFileRoute('/project')({
 	component: ProjectLayout,
 });
 

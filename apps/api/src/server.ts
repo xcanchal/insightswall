@@ -2,12 +2,17 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import { swaggerUI } from '@hono/swagger-ui';
 import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
-import { auth } from './lib/auth.js';
+import { auth, type AuthVariables } from './lib/auth.js';
 import { cors } from 'hono/cors';
 import { UserRepository } from './modules/users/infrastructure/user.repository.impl.js';
+import { ProjectRepository } from './modules/projects/infrastructure/project.repository.impl.js';
 import { db } from './lib/db/index.js';
 import { GetUserRoute } from './modules/users/presentation/routes/get-user.route.js';
 import { GetUserUseCase } from './modules/users/application/use-cases/get-user.use-case.js';
+import { CreateProjectRoute } from './modules/projects/presentation/routes/create-project.route.js';
+import { CreateProjectUseCase } from './modules/projects/application/use-cases/create-project.use-case.js';
+import { GetProjectsRoute } from './modules/projects/presentation/routes/get-projects.route.js';
+import { GetProjectsUseCase } from './modules/projects/application/use-cases/get-projects.use-case.js';
 
 export type ServerConfig = {
 	port: number;
@@ -19,12 +24,13 @@ export type ServerConfig = {
 
 export class Server {
 	config: ServerConfig;
-	private app: OpenAPIHono;
+	private app: OpenAPIHono<{ Variables: AuthVariables }>;
 	private userRepository: UserRepository | null = null;
+	private projectRepository: ProjectRepository | null = null;
 
 	constructor(config: ServerConfig) {
 		this.config = config;
-		this.app = new OpenAPIHono();
+		this.app = new OpenAPIHono<{ Variables: AuthVariables }>();
 		this.configureMiddlewares();
 		this.configureRepositories();
 		this.configureRoutes();
@@ -51,6 +57,7 @@ export class Server {
           Repository — abstracts persistence. Only aggregate roots get one. Returns domain objects, not DB rows. */
 
 		this.userRepository = new UserRepository(db); // User, Session...
+		this.projectRepository = new ProjectRepository(db);
 		/* const projectRepository = new ProjectRepository(db); // Project, ProjectMember
 		const suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
     
@@ -65,6 +72,7 @@ export class Server {
 
 		// Module routers
 		this.configureUserRoutes();
+		this.configureProjectRoutes();
 		/* this.app.route('/api/users', userRouter); */
 		/* this.app.route('/api/suggestions', suggestionRouter); */
 		/* this.app.route('/api/roadmap', roadmapRouter); */
@@ -90,6 +98,12 @@ export class Server {
 		getUserRoute.route();
 
 		// TODO: Other routes
+	}
+
+	configureProjectRoutes() {
+		if (!this.projectRepository) throw new Error('Project repository not configured');
+		new GetProjectsRoute(this.app, new GetProjectsUseCase(this.projectRepository)).route();
+		new CreateProjectRoute(this.app, new CreateProjectUseCase(this.projectRepository)).route();
 	}
 
 	/*  configureSuggestionEndpoints() {

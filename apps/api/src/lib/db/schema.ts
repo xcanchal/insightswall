@@ -21,7 +21,7 @@ export const timestamps = {
 
 export const projects = pgTable('projects', {
 	id: uuid().primaryKey().defaultRandom(),
-	name: text().notNull().unique(),
+	name: text().notNull(),
 	slug: text().notNull().unique(),
 	...timestamps,
 });
@@ -32,7 +32,7 @@ export const projectMembers = pgTable(
 		projectId: uuid()
 			.notNull()
 			.references(() => projects.id, { onDelete: 'cascade' }),
-		userId: uuid()
+		userId: text()
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		role: memberRoleEnum().notNull().default('USER'),
@@ -46,7 +46,7 @@ export const suggestions = pgTable('suggestions', {
 	projectId: uuid()
 		.notNull()
 		.references(() => projects.id, { onDelete: 'cascade' }),
-	userId: uuid()
+	userId: text()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	description: text().notNull(),
@@ -58,7 +58,7 @@ export const suggestions = pgTable('suggestions', {
 export const votes = pgTable(
 	'votes',
 	{
-		userId: uuid()
+		userId: text()
 			.notNull()
 			.references(() => users.id, { onDelete: 'cascade' }),
 		suggestionId: uuid()
@@ -71,7 +71,7 @@ export const votes = pgTable(
 
 export const comments = pgTable('comments', {
 	id: uuid().primaryKey().defaultRandom(),
-	userId: uuid()
+	userId: text()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	suggestionId: uuid()
@@ -101,7 +101,7 @@ export const roadmapItems = pgTable(
 
 export const notifications = pgTable('notifications', {
 	id: uuid().primaryKey().defaultRandom(),
-	userId: uuid()
+	userId: text()
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	projectId: uuid()

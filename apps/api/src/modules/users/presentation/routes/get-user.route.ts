@@ -1,5 +1,6 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import { authMiddleware } from '../../../../lib/middlewares/auth.middleware.js';
+import { type AuthVariables } from '../../../../lib/auth.js';
 import { GetUserUseCase } from '../../application/use-cases/get-user.use-case.js';
 
 const paramsSchema = z.object({
@@ -28,11 +29,11 @@ const getUserRouteDefinition = createRoute({
 });
 
 export class GetUserRoute {
-	private app: OpenAPIHono;
+	private app: OpenAPIHono<{ Variables: AuthVariables }>;
 	private getUserUseCase: GetUserUseCase;
 	readonly routePath: string = '/api/users/:id';
 
-	constructor(app: OpenAPIHono, getUserUseCase: GetUserUseCase) {
+	constructor(app: OpenAPIHono<{ Variables: AuthVariables }>, getUserUseCase: GetUserUseCase) {
 		this.app = app;
 		this.getUserUseCase = getUserUseCase;
 	}

@@ -5,6 +5,7 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
 	const res = await fetch(`${BASE_URL}${path}`, {
 		headers: { 'Content-Type': 'application/json', ...init?.headers },
+		credentials: 'include',
 		...init,
 	});
 
@@ -14,7 +15,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 			message: res.statusText,
 			statusCode: res.status,
 		}));
-		throw new Error(error.message);
+		throw new Error(error.message ?? error.error);
 	}
 
 	return res.json() as Promise<T>;
