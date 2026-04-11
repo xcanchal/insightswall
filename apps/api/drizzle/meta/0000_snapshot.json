@@ -1,5 +1,5 @@
 {
-	"id": "ce76b7a8-63fd-4f67-95b4-d744c4830308",
+	"id": "adfd7893-4ac5-41a1-b613-4c01ab59ab4d",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -103,12 +103,6 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"roadmap_item_id": {
-					"name": "roadmap_item_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": false
-				},
 				"type": {
 					"name": "type",
 					"type": "notification_type",
@@ -168,15 +162,6 @@
 					"tableFrom": "notifications",
 					"tableTo": "suggestions",
 					"columnsFrom": ["suggestion_id"],
-					"columnsTo": ["id"],
-					"onDelete": "set null",
-					"onUpdate": "no action"
-				},
-				"notifications_roadmap_item_id_roadmap_items_id_fk": {
-					"name": "notifications_roadmap_item_id_roadmap_items_id_fk",
-					"tableFrom": "notifications",
-					"tableTo": "roadmap_items",
-					"columnsFrom": ["roadmap_item_id"],
 					"columnsTo": ["id"],
 					"onDelete": "set null",
 					"onUpdate": "no action"
@@ -275,11 +260,11 @@
 					"primaryKey": false,
 					"notNull": true
 				},
-				"slug": {
-					"name": "slug",
+				"url": {
+					"name": "url",
 					"type": "text",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": false
 				},
 				"created_at": {
 					"name": "created_at",
@@ -298,125 +283,7 @@
 			"indexes": {},
 			"foreignKeys": {},
 			"compositePrimaryKeys": {},
-			"uniqueConstraints": {
-				"projects_slug_unique": {
-					"name": "projects_slug_unique",
-					"nullsNotDistinct": false,
-					"columns": ["slug"]
-				}
-			},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"public.roadmap_items": {
-			"name": "roadmap_items",
-			"schema": "",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"project_id": {
-					"name": "project_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"suggestion_id": {
-					"name": "suggestion_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"status": {
-					"name": "status",
-					"type": "roadmap_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'PLANNED'"
-				},
-				"position": {
-					"name": "position",
-					"type": "integer",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				}
-			},
-			"indexes": {
-				"roadmap_items_project_status_position_idx": {
-					"name": "roadmap_items_project_status_position_idx",
-					"columns": [
-						{
-							"expression": "project_id",
-							"isExpression": false,
-							"asc": true,
-							"nulls": "last"
-						},
-						{
-							"expression": "status",
-							"isExpression": false,
-							"asc": true,
-							"nulls": "last"
-						},
-						{
-							"expression": "position",
-							"isExpression": false,
-							"asc": true,
-							"nulls": "last"
-						}
-					],
-					"isUnique": true,
-					"concurrently": false,
-					"method": "btree",
-					"with": {}
-				}
-			},
-			"foreignKeys": {
-				"roadmap_items_project_id_projects_id_fk": {
-					"name": "roadmap_items_project_id_projects_id_fk",
-					"tableFrom": "roadmap_items",
-					"tableTo": "projects",
-					"columnsFrom": ["project_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"roadmap_items_suggestion_id_suggestions_id_fk": {
-					"name": "roadmap_items_suggestion_id_suggestions_id_fk",
-					"tableFrom": "roadmap_items",
-					"tableTo": "suggestions",
-					"columnsFrom": ["suggestion_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {
-				"roadmap_items_suggestionId_unique": {
-					"name": "roadmap_items_suggestionId_unique",
-					"nullsNotDistinct": false,
-					"columns": ["suggestion_id"]
-				}
-			},
+			"uniqueConstraints": {},
 			"policies": {},
 			"checkConstraints": {},
 			"isRLSEnabled": false
@@ -463,7 +330,7 @@
 					"typeSchema": "public",
 					"primaryKey": false,
 					"notNull": true,
-					"default": "'CREATED'"
+					"default": "'OPEN'"
 				},
 				"created_at": {
 					"name": "created_at",
@@ -921,12 +788,7 @@
 		"public.notification_type": {
 			"name": "notification_type",
 			"schema": "public",
-			"values": ["SUGGESTION_CREATED", "SUGGESTION_REJECTED", "SUGGESTION_COMMENT", "ADDED_TO_ROADMAP", "ROADMAP_STATUS_CHANGED"]
-		},
-		"public.roadmap_status": {
-			"name": "roadmap_status",
-			"schema": "public",
-			"values": ["PLANNED", "IN_PROGRESS", "DONE", "DISCONTINUED"]
+			"values": ["SUGGESTION_CREATED", "SUGGESTION_REJECTED", "SUGGESTION_COMMENT", "SUGGESTION_PLANNED", "SUGGESTION_STATUS_CHANGED"]
 		},
 		"public.suggestion_category": {
 			"name": "suggestion_category",
@@ -936,7 +798,7 @@
 		"public.suggestion_status": {
 			"name": "suggestion_status",
 			"schema": "public",
-			"values": ["CREATED", "REJECTED"]
+			"values": ["OPEN", "PLANNED", "IN_PROGRESS", "DONE", "REJECTED"]
 		}
 	},
 	"schemas": {},

@@ -1,5 +1,3 @@
-import type { ApiError } from '@app/types';
-
 if (!import.meta.env.VITE_API_URL) {
 	throw new Error('No valid API URL environment variable found');
 }
@@ -12,12 +10,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 	});
 
 	if (!res.ok) {
-		const error: ApiError = await res.json().catch(() => ({
+		const error: Error = await res.json().catch(() => ({
 			error: 'UnknownError',
 			message: res.statusText,
 			statusCode: res.status,
 		}));
-		throw new Error(error.message ?? error.error);
+		throw new Error(error.message ?? 'Unknown error');
 	}
 
 	return res.json() as Promise<T>;

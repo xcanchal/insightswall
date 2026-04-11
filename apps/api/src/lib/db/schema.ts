@@ -1,28 +1,21 @@
-import { boolean, integer, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { boolean, pgEnum, pgTable, primaryKey, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { users } from './auth-schema.js';
+import { MEMBER_ROLES, NOTIFICATION_TYPES, SUGGESTION_CATEGORIES, SUGGESTION_STATUSES } from '@app/types';
 
-export const memberRoleEnum = pgEnum('member_role', ['USER', 'ADMIN']);
-export const suggestionStatusEnum = pgEnum('suggestion_status', ['CREATED', 'REJECTED']);
-export const suggestionCategoryEnum = pgEnum('suggestion_category', ['FEATURE', 'BUG']);
-export const roadmapStatusEnum = pgEnum('roadmap_status', ['PLANNED', 'IN_PROGRESS', 'DONE', 'DISCONTINUED']);
-export const notificationTypeEnum = pgEnum('notification_type', [
-	'SUGGESTION_CREATED',
-	'SUGGESTION_REJECTED',
-	'SUGGESTION_COMMENT',
-	'ADDED_TO_ROADMAP',
-	'ROADMAP_STATUS_CHANGED',
-]);
+export const memberRoleEnum = pgEnum('member_role', MEMBER_ROLES);
+export const suggestionStatusEnum = pgEnum('suggestion_status', SUGGESTION_STATUSES);
+export const suggestionCategoryEnum = pgEnum('suggestion_category', SUGGESTION_CATEGORIES);
+export const notificationTypeEnum = pgEnum('notification_type', NOTIFICATION_TYPES);
 
 export const timestamps = {
 	createdAt: timestamp().defaultNow().notNull(),
 	updatedAt: timestamp(),
-	/* deletedAt: timestamp(), */
 };
 
 export const projects = pgTable('projects', {
 	id: uuid().primaryKey().defaultRandom(),
 	name: text().notNull(),
-	slug: text().notNull().unique(),
+	url: text(),
 	...timestamps,
 });
 
@@ -51,7 +44,7 @@ export const suggestions = pgTable('suggestions', {
 		.references(() => users.id, { onDelete: 'cascade' }),
 	description: text().notNull(),
 	category: suggestionCategoryEnum().notNull(),
-	status: suggestionStatusEnum().notNull().default('CREATED'),
+	status: suggestionStatusEnum().notNull().default('OPEN'),
 	...timestamps,
 });
 
@@ -81,24 +74,6 @@ export const comments = pgTable('comments', {
 	...timestamps,
 });
 
-export const roadmapItems = pgTable(
-	'roadmap_items',
-	{
-		id: uuid().primaryKey().defaultRandom(),
-		projectId: uuid()
-			.notNull()
-			.references(() => projects.id, { onDelete: 'cascade' }),
-		suggestionId: uuid()
-			.notNull()
-			.unique()
-			.references(() => suggestions.id, { onDelete: 'cascade' }),
-		status: roadmapStatusEnum().notNull().default('PLANNED'),
-		position: integer('position').notNull(),
-		...timestamps,
-	},
-	(t) => [uniqueIndex('roadmap_items_project_status_position_idx').on(t.projectId, t.status, t.position)]
-);
-
 export const notifications = pgTable('notifications', {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: text()
@@ -108,7 +83,6 @@ export const notifications = pgTable('notifications', {
 		.notNull()
 		.references(() => projects.id, { onDelete: 'cascade' }),
 	suggestionId: uuid().references(() => suggestions.id, { onDelete: 'set null' }),
-	roadmapItemId: uuid().references(() => roadmapItems.id, { onDelete: 'set null' }),
 	type: notificationTypeEnum().notNull(),
 	message: text().notNull(),
 	isRead: boolean().notNull().default(false),

@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
-import { Field, FieldError, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loading03Icon } from '@hugeicons/core-free-icons';
@@ -8,29 +8,17 @@ import { HugeiconsIcon } from '@hugeicons/react';
 
 const CreateProjectSchema = z.object({
 	name: z.string().min(1, 'Name is required').max(50, 'Name must be at most 50 characters'),
-	slug: z
-		.string()
-		.min(1, 'Slug is required')
-		.max(50, 'Slug must be at most 50 characters')
-		.regex(/^[a-z0-9-]+$/, 'Only lowercase letters, numbers and hyphens'),
+	url: z.string().url('Must be a valid URL').nullable(),
 });
 
-function toSlug(value: string) {
-	return value
-		.toLowerCase()
-		.trim()
-		.replace(/[^a-z0-9\s-]/g, '')
-		.replace(/\s+/g, '-');
-}
-
 export interface CreateProjectFormProps {
-	onSubmit: (values: { name: string; slug: string }) => Promise<void>;
+	onSubmit: (values: { name: string; url?: string | null }) => Promise<void>;
 	onCancel?: () => void;
 }
 
 export const CreateProjectForm = ({ onSubmit, onCancel }: CreateProjectFormProps) => {
 	const form = useForm({
-		defaultValues: { name: '', slug: '' },
+		defaultValues: { name: '', url: null as string | null },
 		validators: {
 			onChange: CreateProjectSchema,
 			onSubmit: CreateProjectSchema,
@@ -62,10 +50,7 @@ export const CreateProjectForm = ({ onSubmit, onCancel }: CreateProjectFormProps
 									name={field.name}
 									value={field.state.value}
 									onBlur={field.handleBlur}
-									onChange={(e) => {
-										field.handleChange(e.target.value);
-										form.setFieldValue('slug', toSlug(e.target.value));
-									}}
+									onChange={(e) => field.handleChange(e.target.value)}
 									aria-invalid={isInvalid}
 									placeholder="My product"
 									autoComplete="off"
@@ -76,23 +61,24 @@ export const CreateProjectForm = ({ onSubmit, onCancel }: CreateProjectFormProps
 					}}
 				/>
 				<form.Field
-					name="slug"
+					name="url"
 					children={(field) => {
 						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 						return (
 							<Field data-invalid={isInvalid}>
-								<FieldLabel htmlFor={field.name}>URL slug</FieldLabel>
+								<FieldLabel htmlFor={field.name}>
+									Website URL <span className="text-muted-foreground text-xs font-normal">(optional)</span>
+								</FieldLabel>
 								<Input
 									id={field.name}
 									name={field.name}
-									value={field.state.value}
+									value={field.state.value ?? ''}
 									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
+									onChange={(e) => field.handleChange(e.target.value || null)}
 									aria-invalid={isInvalid}
-									placeholder="my-product"
+									placeholder="https://myproduct.com"
 									autoComplete="off"
 								/>
-								<FieldDescription>insightswall.com/p/{field.state.value || 'my-product'}</FieldDescription>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
 							</Field>
 						);

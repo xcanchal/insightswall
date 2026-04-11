@@ -1,8 +1,9 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { ArrowDownIcon, Checkmark } from '@hugeicons/core-free-icons';
+import { ArrowDownIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
 	DropdownMenu,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuGroup,
 	DropdownMenuItem,
@@ -13,6 +14,7 @@ import {
 import { useProjects } from '@/hooks/use-projects';
 import type { ProjectResponse } from '@/api/projects';
 import { Button } from '@/components/ui/button';
+import { ProjectIcon } from '@/components/project-icon';
 
 interface ProjectSwitcherProps {
 	currentProject: ProjectResponse;
@@ -25,7 +27,8 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline">
+				<Button variant="outline" size="lg">
+					<ProjectIcon url={currentProject.url} sizeClassName="size-5" />
 					{currentProject.name} <HugeiconsIcon icon={ArrowDownIcon} className="size-3.5 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
@@ -33,13 +36,14 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Projects</DropdownMenuLabel>
 					{projects.map((project) => (
-						<DropdownMenuItem
-							key={project.slug}
-							onSelect={() => navigate({ to: '/project/$projectSlug/suggestions', params: { projectSlug: project.slug } })}
+						<DropdownMenuCheckboxItem
+							key={project.id}
+							checked={project.id === currentProject.id}
+							onCheckedChange={() => navigate({ to: '/project/$projectId/suggestions', params: { projectId: project.id } })}
 						>
-							{project.slug === currentProject.slug && <HugeiconsIcon icon={Checkmark} />}
+							<ProjectIcon url={project.url} sizeClassName="size-4" />
 							{project.name}
-						</DropdownMenuItem>
+						</DropdownMenuCheckboxItem>
 					))}
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />

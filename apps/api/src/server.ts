@@ -4,12 +4,22 @@ import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
 import { auth, type AuthVariables } from './lib/auth.js';
 import { cors } from 'hono/cors';
-import { ProjectRepository } from './modules/projects/infrastructure/project.repository.impl.js';
+import { ProjectRepository } from './modules/projects/infrastructure/project/project.repository.impl.js';
+import { ProjectMemberRepository } from './modules/projects/infrastructure/project-member/project-member.repository.impl.js';
+import { SuggestionRepository } from './modules/suggestions/infrastructure/suggestion.repository.impl.js';
 import { db } from './lib/db/index.js';
-import { CreateProjectRoute } from './modules/projects/presentation/routes/create-project.route.js';
-import { CreateProjectUseCase } from './modules/projects/application/use-cases/create-project.use-case.js';
-import { GetProjectsRoute } from './modules/projects/presentation/routes/get-projects.route.js';
-import { GetProjectsUseCase } from './modules/projects/application/use-cases/get-projects.use-case.js';
+import { CreateProjectRoute } from './modules/projects/presentation/routes/project/create-project.route.js';
+import { CreateProjectUseCase } from './modules/projects/application/use-cases/project/create-project.use-case.js';
+import { GetProjectsRoute } from './modules/projects/presentation/routes/project/get-projects.route.js';
+import { GetProjectsUseCase } from './modules/projects/application/use-cases/project/get-projects.use-case.js';
+import { GetProjectRoute } from './modules/projects/presentation/routes/project/get-project.route.js';
+import { GetProjectUseCase } from './modules/projects/application/use-cases/project/get-project.use-case.js';
+import { CreateSuggestionRoute } from './modules/suggestions/presentation/routes/create-suggestion.route.js';
+import { CreateSuggestionUseCase } from './modules/suggestions/application/use-cases/create-suggestion.use-case.js';
+import { GetSuggestionsRoute } from './modules/suggestions/presentation/routes/get-suggestions.route.js';
+import { GetSuggestionsUseCase } from './modules/suggestions/application/use-cases/get-suggestions.use-case.js';
+import { GetProjectMemberRoute } from './modules/projects/presentation/routes/project-member/get-project-member.route.js';
+import { GetProjectMemberUseCase } from './modules/projects/application/use-cases/project-member/get-project-member.use-case.js';
 
 export type ServerConfig = {
 	port: number;
@@ -23,6 +33,8 @@ export class Server {
 	config: ServerConfig;
 	private app: OpenAPIHono<{ Variables: AuthVariables }>;
 	private projectRepository: ProjectRepository | null = null;
+	private projectMemberRepository: ProjectMemberRepository | null = null;
+	private suggestionRepository: SuggestionRepository | null = null;
 
 	constructor(config: ServerConfig) {
 		this.config = config;
@@ -52,7 +64,9 @@ export class Server {
           Repository — abstracts persistence. Only aggregate roots get one. Returns domain objects, not DB rows. */
 
 		this.projectRepository = new ProjectRepository(db);
-		/* const suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
+		this.projectMemberRepository = new ProjectMemberRepository(db);
+		this.suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
+		/*  
 		const roadmapRepository = new RoadmapRepository(db); // Roadmap, RoadmapItem
 		const notificationRepository = new NotificationRepository(db); // Notification */
 	}
@@ -63,7 +77,8 @@ export class Server {
 
 		// Module routers
 		this.configureProjectRoutes();
-		/* this.app.route('/api/suggestions', suggestionRouter); */
+		this.configureProjectMemberRoutes();
+		this.configureSuggestionRoutes();
 		/* this.app.route('/api/roadmap', roadmapRouter); */
 		/* this.app.route('/api/notifications', notificationRouter); */
 
@@ -83,13 +98,20 @@ export class Server {
 	configureProjectRoutes() {
 		if (!this.projectRepository) throw new Error('Project repository not configured');
 		new GetProjectsRoute(this.app, new GetProjectsUseCase(this.projectRepository)).route();
+		new GetProjectRoute(this.app, new GetProjectUseCase(this.projectRepository)).route();
 		new CreateProjectRoute(this.app, new CreateProjectUseCase(this.projectRepository)).route();
 	}
 
-	/*  configureSuggestionEndpoints() {
-        const getSuggestionRoute = new GetSuggestionRoute(this.app, new GetSuggestionUseCase(this.suggestionRepository));
-        this.app.route(getSuggestionRoute.route());
-    } */
+	configureProjectMemberRoutes() {
+		if (!this.projectMemberRepository) throw new Error('Project member repository not configured');
+		new GetProjectMemberRoute(this.app, new GetProjectMemberUseCase(this.projectMemberRepository)).route();
+	}
+
+	configureSuggestionRoutes() {
+		if (!this.suggestionRepository) throw new Error('Suggestion repository not configured');
+		new CreateSuggestionRoute(this.app, new CreateSuggestionUseCase(this.suggestionRepository)).route();
+		new GetSuggestionsRoute(this.app, new GetSuggestionsUseCase(this.suggestionRepository)).route();
+	}
 
 	start() {
 		serve({ fetch: this.app.fetch, port: this.config.port }, () => {

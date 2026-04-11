@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema.js';
 import * as authSchema from './auth-schema.js';
 
-if (!process.env.DATABASE_URL_DIRECT) {
+/* if (!process.env.DATABASE_URL_DIRECT) {
 	console.log('Using pooled database URL');
 } else {
 	console.log('Using direct database URL');
@@ -11,6 +11,9 @@ if (!process.env.DATABASE_URL_DIRECT) {
 if (!process.env.DATABASE_URL && !process.env.DATABASE_URL_DIRECT) {
 	throw new Error('Neither DATABASE_URL_DIRECT nor DATABASE_URL is set');
 }
+
+console.log('DATABASE_URL_DIRECT', process.env.DATABASE_URL_DIRECT);
+console.log('DATABASE_URL', process.env.DATABASE_URL); */
 
 const dbUrl = process.env.DATABASE_URL_DIRECT ?? process.env.DATABASE_URL!;
 
