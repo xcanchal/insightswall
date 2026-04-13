@@ -1,5 +1,4 @@
-import type { SuggestionEntity } from '../../domain/suggestion.entity.js';
-import type { ISuggestionRepository } from '../../domain/suggestion.repository.js';
+import type { ISuggestionRepository, SuggestionWithVoteContext } from '../../domain/suggestion.repository.js';
 
 export class GetSuggestionsUseCase {
 	private readonly suggestionRepository: ISuggestionRepository;
@@ -8,7 +7,7 @@ export class GetSuggestionsUseCase {
 		this.suggestionRepository = suggestionRepository;
 	}
 
-	async execute(projectId: string): Promise<SuggestionEntity[]> {
-		return this.suggestionRepository.findAllByProjectId(projectId);
+	async execute(projectId: string, userId: string | null): Promise<SuggestionWithVoteContext[]> {
+		return this.suggestionRepository.findAllByProjectId(projectId, userId);
 	}
 }

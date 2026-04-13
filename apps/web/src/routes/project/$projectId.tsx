@@ -24,7 +24,7 @@ function ProjectLayout() {
 	if (!project) return <div>Project not found</div>;
 
 	return (
-		<div className="container mx-auto px-4 sm:px-0 py-6 max-w-4xl">
+		<div className="container mx-auto px-4 sm:px-0 py-6 lg:max-w-4xl">
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full items-center">
 					{/* {!isAdmin && (
@@ -32,13 +32,13 @@ function ProjectLayout() {
 							<HugeiconsIcon icon={ArrowLeftIcon} className="size-4" /> Back to projects
 						</Link>
 					)} */}
-					<div className="flex w-full gap-4 items-center">
+					<div className="flex w-full gap-4 items-center justify-between">
 						{isAdmin ? (
 							<ProjectSwitcher currentProject={project} />
 						) : (
 							<div className="flex items-center gap-2">
 								<ProjectIcon url={project.url} />
-								<h1>{project.name}</h1>
+								<h1 className="text-2xl font-semibold">{project.name}</h1>
 							</div>
 						)}
 						<div className="flex items-center gap-1 bg-muted p-1 rounded-lg">

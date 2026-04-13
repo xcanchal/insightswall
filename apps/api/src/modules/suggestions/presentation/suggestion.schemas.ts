@@ -8,6 +8,8 @@ export const suggestionSchema = z.object({
 	description: z.string(),
 	category: z.enum(SUGGESTION_CATEGORIES),
 	status: z.enum(SUGGESTION_STATUSES),
+	voteCount: z.number(),
+	userHasVoted: z.boolean(),
 	createdAt: z.iso.datetime(),
 	updatedAt: z.iso.datetime().nullable(),
 });

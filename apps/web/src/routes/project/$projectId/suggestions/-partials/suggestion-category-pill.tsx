@@ -9,7 +9,7 @@ export const SuggestionCategoryPill = ({ category }: { category: SuggestionCateg
 	const textClass = 'text-xs text-neutral-500'; /* `${category === 'FEATURE' ? 'text-blue-600' : 'text-amber-500'} text-xs` */
 
 	return (
-		<span className={`flex items-center gap-1 ${borderClass} ${textClass} rounded-lg p-1 w-fit`}>
+		<span className={`flex items-center gap-1 ${borderClass} ${textClass} rounded-l-full p-1  w-fit`}>
 			<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} className="size-4" />
 			<span className="font-semibold">{category}</span>
 		</span>

@@ -1,5 +1,5 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
-import { authMiddleware } from '../../../../../lib/middlewares/auth.middleware.js';
+import { optionalAuthMiddleware } from '../../../../../lib/middlewares/optional-auth.middleware.js';
 import { type AuthVariables } from '../../../../../lib/auth.js';
 import { GetProjectUseCase } from '../../../application/use-cases/project/get-project.use-case.js';
 import { projectSchema } from './project.schemas.js';
@@ -30,7 +30,7 @@ export class GetProjectRoute {
 	}
 
 	route() {
-		this.app.use(this.routePath, authMiddleware);
+		this.app.use(this.routePath, optionalAuthMiddleware);
 		this.app.openapi(getProjectRouteDefinition, async (c) => {
 			try {
 				const { projectId } = c.req.valid('param');

@@ -41,7 +41,7 @@ export class CreateSuggestionRoute {
 				const user = c.var.user!;
 				const suggestion = await this.createSuggestionUseCase.execute(projectId, user.id, description, category);
 				return c.json(
-					{ ...suggestion, createdAt: suggestion.createdAt.toISOString(), updatedAt: suggestion.updatedAt?.toISOString() ?? null },
+					{ ...suggestion, voteCount: 0, userHasVoted: false, createdAt: suggestion.createdAt.toISOString(), updatedAt: suggestion.updatedAt?.toISOString() ?? null },
 					201
 				);
 			} catch (error) {

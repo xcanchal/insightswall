@@ -30,12 +30,13 @@ export const CreateSuggestionForm = ({ onSubmit, onCancel }: CreateSuggestionFor
 
 	return (
 		<form
-			className="w-full"
+			className="w-full flex flex-col gap-6"
 			onSubmit={(e) => {
 				e.preventDefault();
 				form.handleSubmit();
 			}}
 		>
+			<h2>Submit a suggestion</h2>
 			<FieldGroup className="gap-4">
 				<form.Field
 					name="description"

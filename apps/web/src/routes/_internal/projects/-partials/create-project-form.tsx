@@ -30,13 +30,14 @@ export const CreateProjectForm = ({ onSubmit, onCancel }: CreateProjectFormProps
 
 	return (
 		<form
-			className="w-full"
+			className="w-full flex flex-col gap-6"
 			id="create-project-form"
 			onSubmit={(e) => {
 				e.preventDefault();
 				form.handleSubmit();
 			}}
 		>
+			<h2>Create a project</h2>
 			<FieldGroup className="gap-4">
 				<form.Field
 					name="name"

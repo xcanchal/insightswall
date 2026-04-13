@@ -14,13 +14,15 @@ export type SuggestionResponse = {
 	description: string;
 	category: SuggestionCategory;
 	status: SuggestionStatus;
+	voteCount: number;
+	userHasVoted: boolean;
 	createdAt: string;
 	updatedAt: string | null;
-	// TODO: join with votes table
-	votes: number;
 };
 
 export const suggestionsApi = {
 	getByProjectId: (projectId: string) => apiClient.get<SuggestionResponse[]>(`/api/projects/${projectId}/suggestions`),
 	create: (data: CreateSuggestionInput) => apiClient.post<SuggestionResponse>('/api/suggestions', data),
+	vote: (suggestionId: string) => apiClient.post<void>(`/api/suggestions/${suggestionId}/votes`, {}),
+	unvote: (suggestionId: string) => apiClient.delete<void>(`/api/suggestions/${suggestionId}/votes`),
 };

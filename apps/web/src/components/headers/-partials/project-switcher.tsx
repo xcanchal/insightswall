@@ -27,12 +27,12 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="lg">
+				<Button variant="outline" size="lg" className="text-lg h-11">
 					<ProjectIcon url={currentProject.url} sizeClassName="size-5" />
 					{currentProject.name} <HugeiconsIcon icon={ArrowDownIcon} className="size-3.5 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-48" align="start">
+			<DropdownMenuContent className="min-w-48 max-w-64" align="start">
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Projects</DropdownMenuLabel>
 					{projects.map((project) => (
@@ -40,6 +40,7 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 							key={project.id}
 							checked={project.id === currentProject.id}
 							onCheckedChange={() => navigate({ to: '/project/$projectId/suggestions', params: { projectId: project.id } })}
+							className="text-base"
 						>
 							<ProjectIcon url={project.url} sizeClassName="size-4" />
 							{project.name}
