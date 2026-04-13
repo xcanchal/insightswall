@@ -13,4 +13,6 @@ export const projectsApi = {
 	getAll: () => apiClient.get<ProjectResponse[]>('/api/projects'),
 	create: (data: CreateProjectInput) => apiClient.post<ProjectResponse>('/api/projects', data),
 	getById: (projectId: string) => apiClient.get<ProjectResponse>(`/api/projects/${projectId}`),
+	update: (projectId: string, name: string) => apiClient.patch<ProjectResponse>(`/api/projects/${projectId}`, { name }),
+	delete: (projectId: string) => apiClient.delete<void>(`/api/projects/${projectId}`),
 };

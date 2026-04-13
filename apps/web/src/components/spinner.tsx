@@ -7,5 +7,5 @@ export interface SpinnerProps {
 }
 
 export const Spinner = ({ className = 'size-4' }: SpinnerProps) => {
-	return <HugeiconsIcon icon={Loading03Icon} className={`${className} animate-spin`} />;
+	return <HugeiconsIcon icon={Loading03Icon} className={`${className} mx-auto animate-spin`} />;
 };

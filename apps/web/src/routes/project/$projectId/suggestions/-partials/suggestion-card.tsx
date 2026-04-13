@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { useVoteSuggestion } from '@/hooks/use-suggestions';
 import { useSession } from '@/lib/auth-client';
-import { CogIcon, Message01Icon, PencilIcon, ThumbsUpIcon } from '@hugeicons/core-free-icons';
+import { Message01Icon, MoreHorizontalCircle01Icon, PencilIcon, ThumbsUpIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useState } from 'react';
 import { SuggestionCategoryPill } from './suggestion-category-pill';
@@ -47,6 +47,9 @@ export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin }: Suggesti
 								<HugeiconsIcon icon={ThumbsUpIcon} />
 							</Button>
 						</ButtonGroup>
+						<Button variant="outline" size="icon">
+							<HugeiconsIcon icon={Message01Icon} />
+						</Button>
 						{isOwner && (
 							<Button variant="outline" size="icon">
 								<HugeiconsIcon icon={PencilIcon} />
@@ -54,12 +57,9 @@ export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin }: Suggesti
 						)}
 						{isProjectAdmin && (
 							<Button variant="outline" size="icon">
-								<HugeiconsIcon icon={CogIcon} />
+								<HugeiconsIcon icon={MoreHorizontalCircle01Icon} />
 							</Button>
 						)}
-						<Button variant="outline" size="icon">
-							<HugeiconsIcon icon={Message01Icon} />
-						</Button>
 					</div>
 				</div>
 			</div>

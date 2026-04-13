@@ -13,6 +13,7 @@ import { SuggestionCard } from './-partials/suggestion-card';
 import { useIsProjectAdmin } from '@/hooks/use-is-project-admin';
 import { ProtectedActionDialog } from '@/components/protected-action-dialog';
 import { useSession } from '@/lib/auth-client';
+import { Spinner } from '@/components/spinner';
 
 const searchSchema = z.object({
 	search: z.string().optional(),
@@ -28,7 +29,7 @@ export const Route = createFileRoute('/project/$projectId/suggestions/')({
 
 function ProjectSuggestions() {
 	const { projectId } = useParams({ strict: false });
-	const { data: suggestions } = useSuggestionsByProjectId(projectId ?? null);
+	const { data: suggestions, isLoading: loadingSuggestions } = useSuggestionsByProjectId(projectId ?? null);
 	const { mutateAsync } = useCreateSuggestion(projectId!);
 	const [createSuggestionDialogOpen, setCreateSuggestionDialogOpen] = useState(false);
 	const { data: session } = useSession();
@@ -102,10 +103,16 @@ function ProjectSuggestions() {
 						</div>
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center gap-4 py-8">
-						<EmptySuggestions />
-						<CreateButton label="Create suggestion" onClick={handleCreateSuggestion} size="lg" />
-					</div>
+					<>
+						{loadingSuggestions ? (
+							<Spinner className="size-6" />
+						) : (
+							<div className="flex flex-col items-center justify-center gap-4 py-8">
+								<EmptySuggestions />
+								<CreateButton label="Create suggestion" onClick={handleCreateSuggestion} size="lg" />
+							</div>
+						)}
+					</>
 				)}
 			</Dialog>
 			<ProtectedActionDialog

@@ -20,6 +20,10 @@ import { GetSuggestionsRoute } from './modules/suggestions/presentation/routes/g
 import { GetSuggestionsUseCase } from './modules/suggestions/application/use-cases/get-suggestions.use-case.js';
 import { GetProjectMemberRoute } from './modules/projects/presentation/routes/project-member/get-project-member.route.js';
 import { GetProjectMemberUseCase } from './modules/projects/application/use-cases/project-member/get-project-member.use-case.js';
+import { UpdateProjectRoute } from './modules/projects/presentation/routes/project/update-project.route.js';
+import { UpdateProjectUseCase } from './modules/projects/application/use-cases/project/update-project.use-case.js';
+import { DeleteProjectRoute } from './modules/projects/presentation/routes/project/delete-project.route.js';
+import { DeleteProjectUseCase } from './modules/projects/application/use-cases/project/delete-project.use-case.js';
 import { VoteSuggestionRoute } from './modules/suggestions/presentation/routes/vote-suggestion.route.js';
 import { VoteSuggestionUseCase } from './modules/suggestions/application/use-cases/vote-suggestion.use-case.js';
 import { UnvoteSuggestionRoute } from './modules/suggestions/presentation/routes/unvote-suggestion.route.js';
@@ -101,9 +105,12 @@ export class Server {
 
 	configureProjectRoutes() {
 		if (!this.projectRepository) throw new Error('Project repository not configured');
+		if (!this.projectMemberRepository) throw new Error('Project member repository not configured');
 		new GetProjectsRoute(this.app, new GetProjectsUseCase(this.projectRepository)).route();
 		new GetProjectRoute(this.app, new GetProjectUseCase(this.projectRepository)).route();
 		new CreateProjectRoute(this.app, new CreateProjectUseCase(this.projectRepository)).route();
+		new UpdateProjectRoute(this.app, new UpdateProjectUseCase(this.projectRepository), this.projectMemberRepository).route();
+		new DeleteProjectRoute(this.app, new DeleteProjectUseCase(this.projectRepository), this.projectMemberRepository).route();
 	}
 
 	configureProjectMemberRoutes() {

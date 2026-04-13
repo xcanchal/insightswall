@@ -1,4 +1,4 @@
-import { eq, inArray } from 'drizzle-orm';
+import { eq, inArray, sql } from 'drizzle-orm';
 import { db as dbInstance } from '../../../../lib/db/index.js';
 import type { IProjectRepository } from '../../domain/project/project.repository.js';
 import { projects, projectMembers } from '../../../../lib/db/schema.js';
@@ -23,6 +23,19 @@ export class ProjectRepository implements IProjectRepository {
 	async findById(id: string): Promise<ProjectEntity | null> {
 		const row = await this.db.query.projects.findFirst({ where: eq(projects.id, id) });
 		return row ? toProject(row) : null;
+	}
+
+	async update(id: string, name: string): Promise<ProjectEntity | null> {
+		const [row] = await this.db
+			.update(projects)
+			.set({ name, updatedAt: sql`now()` })
+			.where(eq(projects.id, id))
+			.returning();
+		return row ? toProject(row) : null;
+	}
+
+	async delete(id: string): Promise<void> {
+		await this.db.delete(projects).where(eq(projects.id, id));
 	}
 
 	async findAllByUserId(userId: string): Promise<ProjectEntity[]> {

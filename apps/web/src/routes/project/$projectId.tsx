@@ -19,7 +19,7 @@ function ProjectLayout() {
 	const { data: projectMember } = useProjectMemberByProjectId(projectId ?? null);
 	const isAdmin = projectMember?.role === 'ADMIN';
 
-	if (isLoading) return <Spinner className="size-6 py-8" />;
+	if (isLoading) return <Spinner className="size-6" />;
 
 	if (!project) return <div>Project not found</div>;
 
