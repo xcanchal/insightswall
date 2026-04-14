@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { SUGGESTION_CATEGORIES, SUGGESTION_STATUSES, type SuggestionCategory, type SuggestionStatus } from '@app/types';
@@ -39,6 +39,11 @@ function ProjectSuggestions() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const queryParams = { sortBy: show, categories, statuses };
 	const { data: suggestions, isLoading: loadingSuggestions } = useSuggestionsByProjectId(projectId ?? null, queryParams);
+	const filteredSuggestions = useMemo(() => {
+		if (!search) return suggestions ?? [];
+		const term = search.toLowerCase();
+		return (suggestions ?? []).filter((s) => s.description.toLowerCase().includes(term));
+	}, [suggestions, search]);
 	const { mutateAsync } = useCreateSuggestion(projectId!);
 	const [createSuggestionDialogOpen, setCreateSuggestionDialogOpen] = useState(false);
 	const { data: session } = useSession();
@@ -82,7 +87,14 @@ function ProjectSuggestions() {
 						<CreateSuggestionForm onSubmit={submit} onCancel={() => setCreateSuggestionDialogOpen(false)} />
 					</DialogContent>
 				</div>
-				{(suggestions ?? []).length > 0 ? (
+				{loadingSuggestions ? (
+					<Spinner className="size-6" />
+				) : (suggestions ?? []).length === 0 ? (
+					<div className="flex flex-col items-center justify-center gap-4 py-8">
+						<EmptySuggestions />
+						<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} size="lg" />
+					</div>
+				) : (
 					<div className="flex flex-col gap-6">
 						<div className="flex items-center justify-between gap-2">
 							<SuggestionsFilters
@@ -97,29 +109,22 @@ function ProjectSuggestions() {
 							/>
 							<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} />
 						</div>
-						<div className="flex flex-col gap-3 p-3 rounded-xl bg-neutral-50">
-							{(suggestions ?? []).map((suggestion) => (
-								<SuggestionCard
-									key={suggestion.id}
-									suggestion={suggestion}
-									isOwner={isSuggestionAuthor}
-									isProjectAdmin={isProjectAdmin}
-									queryParams={queryParams}
-								/>
-							))}
-						</div>
-					</div>
-				) : (
-					<>
-						{loadingSuggestions ? (
-							<Spinner className="size-6" />
+						{filteredSuggestions.length === 0 ? (
+							<p className="text-sm text-muted-foreground text-center py-8">No suggestions match your search.</p>
 						) : (
-							<div className="flex flex-col items-center justify-center gap-4 py-8">
-								<EmptySuggestions />
-								<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} size="lg" />
+							<div className="flex flex-col gap-3 p-3 rounded-xl bg-neutral-50">
+								{filteredSuggestions.map((suggestion) => (
+									<SuggestionCard
+										key={suggestion.id}
+										suggestion={suggestion}
+										isOwner={isSuggestionAuthor}
+										isProjectAdmin={isProjectAdmin}
+										queryParams={queryParams}
+									/>
+								))}
 							</div>
 						)}
-					</>
+					</div>
 				)}
 			</Dialog>
 			<ProtectedActionDialog
