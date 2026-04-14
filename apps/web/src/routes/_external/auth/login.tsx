@@ -135,7 +135,7 @@ function RouteComponent() {
 							{form.state.isSubmitting ? <HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" /> : 'Log in'}
 						</Button>
 						<p className="text-sm text-muted-foreground text-center">
-							Don't have an account?{' '}
+							Don&apos;t have an account?{' '}
 							<Link to="/auth/signup" className="font-semibold">
 								Sign up
 							</Link>

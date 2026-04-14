@@ -15,7 +15,12 @@ export interface SuggestionFilters {
 
 export interface ISuggestionRepository {
 	create(projectId: string, userId: string, description: string, category: SuggestionCategory): Promise<SuggestionEntity>;
-	findAllByProjectId(projectId: string, userId: string | null, sortBy: SuggestionSortBy, filters?: SuggestionFilters): Promise<SuggestionWithVoteContext[]>;
+	findAllByProjectId(
+		projectId: string,
+		userId: string | null,
+		sortBy: SuggestionSortBy,
+		filters?: SuggestionFilters
+	): Promise<SuggestionWithVoteContext[]>;
 	vote(suggestionId: string, userId: string): Promise<void>;
 	unvote(suggestionId: string, userId: string): Promise<void>;
 }

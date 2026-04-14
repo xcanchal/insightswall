@@ -20,7 +20,7 @@ const RootLayout = () => (
 const NotFound = () => (
 	<div className="flex flex-col items-center justify-center min-h-screen gap-4">
 		<h1 className="text-6xl font-bold">404</h1>
-		<p className="text-muted-foreground">This page doesn't exist.</p>
+		<p className="text-muted-foreground">This page doesn&apos;t exist.</p>
 		<Link to="/" className="text-sm font-semibold hover:underline">
 			Go to the homepage
 		</Link>

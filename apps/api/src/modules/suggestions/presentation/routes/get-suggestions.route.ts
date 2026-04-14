@@ -13,10 +13,10 @@ const getSuggestionsRouteDefinition = createRoute({
 	request: {
 		params: z.object({ projectId: z.uuid() }),
 		query: z.object({
-				sortBy: z.enum(['mostVoted', 'newest']).optional().default('mostVoted'),
-				categories: z.array(z.enum(SUGGESTION_CATEGORIES)).optional(),
-				statuses: z.array(z.enum(SUGGESTION_STATUSES)).optional(),
-			}),
+			sortBy: z.enum(['mostVoted', 'newest']).optional().default('mostVoted'),
+			categories: z.array(z.enum(SUGGESTION_CATEGORIES)).optional(),
+			statuses: z.array(z.enum(SUGGESTION_STATUSES)).optional(),
+		}),
 	},
 	responses: {
 		200: { content: { 'application/json': { schema: z.array(suggestionSchema) } }, description: 'Suggestions list' },

@@ -48,7 +48,7 @@ function UserProjects() {
 	return (
 		<div className="container mx-auto flex flex-col gap-6 flex-1 items-center justify-center px-4 sm:px-0 py-8 max-w-2xl">
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-				{!!projects?.length ? (
+				{projects?.length ? (
 					<>
 						<div className="flex items-center justify-between w-full">
 							<h1>Projects</h1>

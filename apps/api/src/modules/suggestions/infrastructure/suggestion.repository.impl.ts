@@ -3,7 +3,12 @@ import { db as dbInstance } from '../../../lib/db/index.js';
 import { suggestions, votes } from '../../../lib/db/schema.js';
 import { toSuggestion } from './suggestion.mapper.js';
 import type { SuggestionCategory, SuggestionEntity } from '../domain/suggestion.entity.js';
-import type { ISuggestionRepository, SuggestionFilters, SuggestionSortBy, SuggestionWithVoteContext } from '../domain/suggestion.repository.js';
+import type {
+	ISuggestionRepository,
+	SuggestionFilters,
+	SuggestionSortBy,
+	SuggestionWithVoteContext,
+} from '../domain/suggestion.repository.js';
 
 export class SuggestionRepository implements ISuggestionRepository {
 	private db: typeof dbInstance;
@@ -17,7 +22,12 @@ export class SuggestionRepository implements ISuggestionRepository {
 		return toSuggestion(suggestion);
 	}
 
-	async findAllByProjectId(projectId: string, userId: string | null, sortBy: SuggestionSortBy, filters?: SuggestionFilters): Promise<SuggestionWithVoteContext[]> {
+	async findAllByProjectId(
+		projectId: string,
+		userId: string | null,
+		sortBy: SuggestionSortBy,
+		filters?: SuggestionFilters
+	): Promise<SuggestionWithVoteContext[]> {
 		const voteCount = sql<number>`COUNT(${votes.userId})`;
 		const conditions = [
 			eq(suggestions.projectId, projectId),
@@ -28,9 +38,7 @@ export class SuggestionRepository implements ISuggestionRepository {
 			.select({
 				suggestion: suggestions,
 				voteCount,
-				userHasVoted: userId
-					? sql<boolean>`COALESCE(BOOL_OR(${votes.userId} = ${userId}), false)`
-					: sql<boolean>`false`,
+				userHasVoted: userId ? sql<boolean>`COALESCE(BOOL_OR(${votes.userId} = ${userId}), false)` : sql<boolean>`false`,
 			})
 			.from(suggestions)
 			.leftJoin(votes, eq(votes.suggestionId, suggestions.id))
