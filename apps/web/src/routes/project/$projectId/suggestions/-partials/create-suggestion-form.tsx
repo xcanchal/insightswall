@@ -39,6 +39,33 @@ export const CreateSuggestionForm = ({ onSubmit, onCancel }: CreateSuggestionFor
 			<h2>Submit a suggestion</h2>
 			<FieldGroup className="gap-4">
 				<form.Field
+					name="category"
+					children={(field) => (
+						<Field>
+							<FieldLabel>Category</FieldLabel>
+							<Select value={field.state.value} onValueChange={(v) => field.handleChange(v as SuggestionCategory)}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select a category" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>Category</SelectLabel>
+										{SUGGESTION_CATEGORIES.map((category) => (
+											<SelectItem key={category} value={category}>
+												<HugeiconsIcon
+													icon={category === 'FEATURE' ? SparklesIcon : BugIcon}
+													/* className={c === 'FEATURE' ? 'text-blue-600' : 'text-amber-500'} */
+												/>
+												{category}
+											</SelectItem>
+										))}
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</Field>
+					)}
+				/>
+				<form.Field
 					name="description"
 					children={(field) => {
 						const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -51,40 +78,13 @@ export const CreateSuggestionForm = ({ onSubmit, onCancel }: CreateSuggestionFor
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(e.target.value)}
 									aria-invalid={isInvalid}
-									placeholder="Describe your suggestion..."
+									placeholder="Describe your feature request or bug report..."
 									rows={4}
 								/>
 								{isInvalid && <FieldError errors={field.state.meta.errors} />}
 							</Field>
 						);
 					}}
-				/>
-				<form.Field
-					name="category"
-					children={(field) => (
-						<Field>
-							<FieldLabel>Category</FieldLabel>
-							<Select value={field.state.value} onValueChange={(v) => field.handleChange(v as SuggestionCategory)}>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Select a category" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectGroup>
-										<SelectLabel>Category</SelectLabel>
-										{SUGGESTION_CATEGORIES.map((c) => (
-											<SelectItem key={c} value={c}>
-												<HugeiconsIcon
-													icon={c === 'FEATURE' ? SparklesIcon : BugIcon}
-													className={c === 'FEATURE' ? 'text-blue-600' : 'text-amber-500'}
-												/>
-												{c.charAt(0) + c.slice(1).toLowerCase()}
-											</SelectItem>
-										))}
-									</SelectGroup>
-								</SelectContent>
-							</Select>
-						</Field>
-					)}
 				/>
 				<div className="flex gap-2 justify-end pt-2">
 					{onCancel && (

@@ -14,8 +14,6 @@ const navLinks = [
 export const ProjectHeader = () => {
 	const { data: session } = useSession();
 
-	console.log({ session });
-
 	return (
 		<HeaderContainer>
 			<div className="flex items-center gap-6">

@@ -29,18 +29,19 @@ export const Route = createFileRoute('/project/$projectId/suggestions/')({
 
 function ProjectSuggestions() {
 	const { projectId } = useParams({ strict: false });
-	const { data: suggestions, isLoading: loadingSuggestions } = useSuggestionsByProjectId(projectId ?? null);
-	const { mutateAsync } = useCreateSuggestion(projectId!);
-	const [createSuggestionDialogOpen, setCreateSuggestionDialogOpen] = useState(false);
-	const { data: session } = useSession();
-
 	const {
 		search = '',
 		statuses = [...SUGGESTION_STATUSES],
 		categories = [...SUGGESTION_CATEGORIES],
 		show = 'mostVoted',
 	} = Route.useSearch();
+
 	const navigate = useNavigate({ from: Route.fullPath });
+	const queryParams = { sortBy: show, categories, statuses };
+	const { data: suggestions, isLoading: loadingSuggestions } = useSuggestionsByProjectId(projectId ?? null, queryParams);
+	const { mutateAsync } = useCreateSuggestion(projectId!);
+	const [createSuggestionDialogOpen, setCreateSuggestionDialogOpen] = useState(false);
+	const { data: session } = useSession();
 
 	const isProjectAdmin = useIsProjectAdmin(projectId ?? '');
 	const isSuggestionAuthor = false;
@@ -74,7 +75,7 @@ function ProjectSuggestions() {
 	};
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-3">
 			<Dialog open={createSuggestionDialogOpen} onOpenChange={setCreateSuggestionDialogOpen}>
 				<div className="flex justify-end">
 					<DialogContent>
@@ -94,11 +95,17 @@ function ProjectSuggestions() {
 								onStatusChange={setStatuses}
 								onShowChange={setShow}
 							/>
-							<CreateButton label="Create suggestion" onClick={handleCreateSuggestion} />
+							<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} />
 						</div>
-						<div className="flex flex-col gap-3">
+						<div className="flex flex-col gap-3 p-3 rounded-xl bg-neutral-50">
 							{(suggestions ?? []).map((suggestion) => (
-								<SuggestionCard key={suggestion.id} suggestion={suggestion} isOwner={isSuggestionAuthor} isProjectAdmin={isProjectAdmin} />
+								<SuggestionCard
+									key={suggestion.id}
+									suggestion={suggestion}
+									isOwner={isSuggestionAuthor}
+									isProjectAdmin={isProjectAdmin}
+									queryParams={queryParams}
+								/>
 							))}
 						</div>
 					</div>
@@ -109,7 +116,7 @@ function ProjectSuggestions() {
 						) : (
 							<div className="flex flex-col items-center justify-center gap-4 py-8">
 								<EmptySuggestions />
-								<CreateButton label="Create suggestion" onClick={handleCreateSuggestion} size="lg" />
+								<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} size="lg" />
 							</div>
 						)}
 					</>

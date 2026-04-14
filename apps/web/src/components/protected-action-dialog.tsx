@@ -14,7 +14,7 @@ export const ProtectedActionDialog = ({ isOpen, message, onOpenChange }: Protect
 			<DialogContent className="max-w-sm text-center flex flex-col items-center gap-6">
 				<div className="flex flex-col gap-4">
 					<h2>Sign in required</h2>
-					<p className="text-lg text-muted-foreground">{message}</p>
+					<p className="text-muted-foreground">{message}</p>
 				</div>
 				<div className="flex gap-2 w-full">
 					<Button asChild variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>

@@ -1,9 +1,9 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { db as dbInstance } from '../../../lib/db/index.js';
 import { suggestions, votes } from '../../../lib/db/schema.js';
 import { toSuggestion } from './suggestion.mapper.js';
 import type { SuggestionCategory, SuggestionEntity } from '../domain/suggestion.entity.js';
-import type { ISuggestionRepository, SuggestionWithVoteContext } from '../domain/suggestion.repository.js';
+import type { ISuggestionRepository, SuggestionFilters, SuggestionSortBy, SuggestionWithVoteContext } from '../domain/suggestion.repository.js';
 
 export class SuggestionRepository implements ISuggestionRepository {
 	private db: typeof dbInstance;
@@ -17,19 +17,26 @@ export class SuggestionRepository implements ISuggestionRepository {
 		return toSuggestion(suggestion);
 	}
 
-	async findAllByProjectId(projectId: string, userId: string | null): Promise<SuggestionWithVoteContext[]> {
+	async findAllByProjectId(projectId: string, userId: string | null, sortBy: SuggestionSortBy, filters?: SuggestionFilters): Promise<SuggestionWithVoteContext[]> {
+		const voteCount = sql<number>`COUNT(${votes.userId})`;
+		const conditions = [
+			eq(suggestions.projectId, projectId),
+			...(filters?.categories?.length ? [inArray(suggestions.category, filters.categories)] : []),
+			...(filters?.statuses?.length ? [inArray(suggestions.status, filters.statuses)] : []),
+		];
 		const rows = await this.db
 			.select({
 				suggestion: suggestions,
-				voteCount: sql<number>`COUNT(${votes.userId})`,
+				voteCount,
 				userHasVoted: userId
 					? sql<boolean>`COALESCE(BOOL_OR(${votes.userId} = ${userId}), false)`
 					: sql<boolean>`false`,
 			})
 			.from(suggestions)
 			.leftJoin(votes, eq(votes.suggestionId, suggestions.id))
-			.where(eq(suggestions.projectId, projectId))
-			.groupBy(suggestions.id);
+			.where(and(...conditions))
+			.groupBy(suggestions.id)
+			.orderBy(sortBy === 'newest' ? desc(suggestions.createdAt) : desc(voteCount));
 
 		return rows.map(({ suggestion, voteCount, userHasVoted }) => ({
 			suggestion: toSuggestion(suggestion),

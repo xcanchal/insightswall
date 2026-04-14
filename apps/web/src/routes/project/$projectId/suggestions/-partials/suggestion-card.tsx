@@ -1,9 +1,9 @@
-import type { SuggestionResponse } from '@/api/suggestions';
+import type { SuggestionQueryParams, SuggestionResponse } from '@/api/suggestions';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { useVoteSuggestion } from '@/hooks/use-suggestions';
 import { useSession } from '@/lib/auth-client';
-import { Message01Icon, MoreHorizontalCircle01Icon, PencilIcon, ThumbsUpIcon } from '@hugeicons/core-free-icons';
+import { /* Message01Icon,  */ MoreHorizontalCircle01Icon, PencilIcon, ThumbsUpIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useState } from 'react';
 import { SuggestionCategoryPill } from './suggestion-category-pill';
@@ -14,10 +14,13 @@ interface SuggestionCardProps {
 	suggestion: SuggestionResponse;
 	isOwner: boolean;
 	isProjectAdmin: boolean;
+	queryParams: SuggestionQueryParams;
 }
 
-export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin }: SuggestionCardProps) => {
-	const { mutate: vote, isPending } = useVoteSuggestion(suggestion.projectId);
+const dateFormatter = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin, queryParams }: SuggestionCardProps) => {
+	const { mutate: vote, isPending } = useVoteSuggestion(suggestion.projectId, queryParams);
 	const { data: session } = useSession();
 	const [protectedActionDialogOpen, setProtectedActionDialogOpen] = useState(false);
 
@@ -31,13 +34,14 @@ export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin }: Suggesti
 
 	return (
 		<>
-			<div className="border rounded-xl p-4 flex flex-col gap-2">
-				<div className="flex items-center justify-between">
-					<div className="flex flex-col gap-4">
+			<div className="border rounded-xl py-4 px-6 flex flex-col gap-2 shadow-lg shadow-foreground/5 bg-background">
+				<div className="flex items-center justify-between gap-6">
+					<div className="flex flex-col gap-4 flex-1">
 						<p className="text-lg">{suggestion.description}</p>
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-1">
 							<SuggestionCategoryPill category={suggestion.category} />
 							<SuggestionStatusPill status={suggestion.status} />
+							<p className="text-xs text-muted-foreground ml-1">{dateFormatter.format(new Date(suggestion.createdAt))}</p>
 						</div>
 					</div>
 					<div className="flex items-center gap-2">
@@ -47,9 +51,9 @@ export const SuggestionCard = ({ suggestion, isOwner, isProjectAdmin }: Suggesti
 								<HugeiconsIcon icon={ThumbsUpIcon} />
 							</Button>
 						</ButtonGroup>
-						<Button variant="outline" size="icon">
+						{/* <Button variant="outline" size="icon">
 							<HugeiconsIcon icon={Message01Icon} />
-						</Button>
+						</Button> */}
 						{isOwner && (
 							<Button variant="outline" size="icon">
 								<HugeiconsIcon icon={PencilIcon} />

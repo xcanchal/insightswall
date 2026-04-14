@@ -33,7 +33,7 @@ export const SuggestionStatusPill = ({ status }: { status: SuggestionStatus }) =
 		<span
 			className={`flex items-center text-xs ${statusPillMap[status].bgClass} ${statusPillMap[status].borderClass} ${statusPillMap[status].textClass} rounded-md py-1 px-2 w-fit`}
 		>
-			<span className="font-semibold">{status}</span>
+			<span>{status}</span>
 		</span>
 	);
 };

@@ -11,7 +11,7 @@ export const SuggestionCategoryPill = ({ category }: { category: SuggestionCateg
 	return (
 		<span className={`flex items-center gap-1 ${borderClass} ${textClass} rounded-l-full p-1  w-fit`}>
 			<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} className="size-4" />
-			<span className="font-semibold">{category}</span>
+			<span>{category}</span>
 		</span>
 	);
 };

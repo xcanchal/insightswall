@@ -1,6 +1,6 @@
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowDownIcon, SearchIcon } from '@hugeicons/core-free-icons';
+import { ArrowDownIcon, BugIcon, SearchIcon, SparklesIcon } from '@hugeicons/core-free-icons';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -59,6 +59,7 @@ export const SuggestionsFilters = ({
 									onCategoryChange(checked ? [...categories, category] : categories.filter((c) => c !== category))
 								}
 							>
+								<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} />
 								{category}
 							</DropdownMenuCheckboxItem>
 						))}

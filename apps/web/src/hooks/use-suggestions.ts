@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { suggestionsApi, type CreateSuggestionInput, type SuggestionResponse } from '@/api/suggestions';
+import { suggestionsApi, type CreateSuggestionInput, type SuggestionQueryParams, type SuggestionResponse } from '@/api/suggestions';
 
 export const suggestionsKeys = {
 	all: ['suggestions'] as const,
-	byProjectId: (projectId: string) => [...suggestionsKeys.all, projectId] as const,
+	byProjectId: (projectId: string, params: SuggestionQueryParams) => [...suggestionsKeys.all, projectId, params] as const,
 };
 
-export function useSuggestionsByProjectId(projectId: string | null | undefined) {
+export function useSuggestionsByProjectId(projectId: string | null | undefined, params: SuggestionQueryParams = {}) {
 	return useQuery({
-		queryKey: suggestionsKeys.byProjectId(projectId ?? ''),
-		queryFn: () => suggestionsApi.getByProjectId(projectId!),
+		queryKey: suggestionsKeys.byProjectId(projectId ?? '', params),
+		queryFn: () => suggestionsApi.getByProjectId(projectId!, params),
 		enabled: !!projectId,
 	});
 }
@@ -19,12 +19,12 @@ export function useCreateSuggestion(projectId: string) {
 	return useMutation({
 		mutationFn: (data: CreateSuggestionInput) => suggestionsApi.create(data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: suggestionsKeys.byProjectId(projectId) });
+			queryClient.invalidateQueries({ queryKey: [...suggestionsKeys.all, projectId] });
 		},
 	});
 }
 
-export function useVoteSuggestion(projectId: string) {
+export function useVoteSuggestion(projectId: string, params: SuggestionQueryParams = {}) {
 	const queryClient = useQueryClient();
 
 	return useMutation({
@@ -32,15 +32,13 @@ export function useVoteSuggestion(projectId: string) {
 			userHasVoted ? suggestionsApi.unvote(suggestionId) : suggestionsApi.vote(suggestionId),
 
 		onMutate: async ({ suggestionId, userHasVoted }) => {
-			await queryClient.cancelQueries({ queryKey: suggestionsKeys.byProjectId(projectId) });
+			await queryClient.cancelQueries({ queryKey: suggestionsKeys.byProjectId(projectId, params) });
 
-			const previous = queryClient.getQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId));
+			const previous = queryClient.getQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId, params));
 
-			queryClient.setQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId), (old) =>
+			queryClient.setQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId, params), (old) =>
 				old?.map((s) =>
-					s.id === suggestionId
-						? { ...s, userHasVoted: !userHasVoted, voteCount: userHasVoted ? s.voteCount - 1 : s.voteCount + 1 }
-						: s
+					s.id === suggestionId ? { ...s, userHasVoted: !userHasVoted, voteCount: userHasVoted ? s.voteCount - 1 : s.voteCount + 1 } : s
 				)
 			);
 
@@ -49,7 +47,7 @@ export function useVoteSuggestion(projectId: string) {
 
 		onError: (_err, _vars, context) => {
 			if (context?.previous) {
-				queryClient.setQueryData(suggestionsKeys.byProjectId(projectId), context.previous);
+				queryClient.setQueryData(suggestionsKeys.byProjectId(projectId, params), context.previous);
 			}
 		},
 	});

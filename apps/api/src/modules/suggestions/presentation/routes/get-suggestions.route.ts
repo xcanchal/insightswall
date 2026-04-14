@@ -1,4 +1,5 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
+import { SUGGESTION_CATEGORIES, SUGGESTION_STATUSES } from '@app/types';
 import { type AuthVariables } from '../../../../lib/auth.js';
 import { optionalAuthMiddleware } from '../../../../lib/middlewares/optional-auth.middleware.js';
 import { GetSuggestionsUseCase } from '../../application/use-cases/get-suggestions.use-case.js';
@@ -9,7 +10,14 @@ const path = '/api/projects/:projectId/suggestions';
 const getSuggestionsRouteDefinition = createRoute({
 	method: 'get',
 	path,
-	request: { params: z.object({ projectId: z.uuid() }) },
+	request: {
+		params: z.object({ projectId: z.uuid() }),
+		query: z.object({
+				sortBy: z.enum(['mostVoted', 'newest']).optional().default('mostVoted'),
+				categories: z.array(z.enum(SUGGESTION_CATEGORIES)).optional(),
+				statuses: z.array(z.enum(SUGGESTION_STATUSES)).optional(),
+			}),
+	},
 	responses: {
 		200: { content: { 'application/json': { schema: z.array(suggestionSchema) } }, description: 'Suggestions list' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
@@ -31,8 +39,9 @@ export class GetSuggestionsRoute {
 		this.app.openapi(getSuggestionsRouteDefinition, async (c) => {
 			try {
 				const { projectId } = c.req.valid('param');
+				const { sortBy, categories, statuses } = c.req.valid('query');
 				const userId = c.var.user?.id ?? null;
-				const results = await this.getSuggestionsUseCase.execute(projectId, userId);
+				const results = await this.getSuggestionsUseCase.execute(projectId, userId, sortBy, { categories, statuses });
 				return c.json(
 					results.map(({ suggestion: s, voteCount, userHasVoted }) => ({
 						...s,
