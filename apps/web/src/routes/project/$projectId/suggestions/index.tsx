@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate, useParams } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { SUGGESTION_CATEGORIES, SUGGESTION_STATUSES, type SuggestionCategory, type SuggestionStatus } from '@app/types';
 import { useCreateSuggestion, useSuggestionsByProjectId } from '@/hooks/use-suggestions';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { EmptySuggestions } from './-partials/empty-suggestions';
 import { CreateSuggestionForm } from './-partials/create-suggestion-form';
@@ -37,26 +38,26 @@ function ProjectSuggestions() {
 	} = Route.useSearch();
 
 	const navigate = useNavigate({ from: Route.fullPath });
-	const queryParams = { sortBy: show, categories, statuses };
-	const { data: suggestions, isLoading: loadingSuggestions } = useSuggestionsByProjectId(projectId ?? null, queryParams);
-	const filteredSuggestions = useMemo(() => {
-		if (!search) return suggestions ?? [];
-		const term = search.toLowerCase();
-		return (suggestions ?? []).filter((s) => s.description.toLowerCase().includes(term));
-	}, [suggestions, search]);
-	const { mutateAsync } = useCreateSuggestion(projectId!);
+	const debouncedSearch = useDebouncedValue(search, 300);
+	const queryParams = { sortBy: show, categories, statuses, search: debouncedSearch || undefined };
+
 	const [createSuggestionDialogOpen, setCreateSuggestionDialogOpen] = useState(false);
+	const [protectedActionDialogOpen, setProtectedActionDialogOpen] = useState(false);
 	const { data: session } = useSession();
 
+	const { data: suggestions, isLoading: loadingSuggestions, isFetching } = useSuggestionsByProjectId(projectId ?? null, queryParams);
+	const { mutateAsync } = useCreateSuggestion(projectId!);
+
 	const isProjectAdmin = useIsProjectAdmin(projectId ?? '');
-	const isSuggestionAuthor = false;
+	const hasActiveFilters =
+		!!debouncedSearch || categories.length !== SUGGESTION_CATEGORIES.length || statuses.length !== SUGGESTION_STATUSES.length;
+
 	// TODO: const isSuggestionAuthor = useSuggestionAuthor(projectId ?? '');
 
-	const setSearch = (search: string) => navigate({ search: (prev) => ({ ...prev, search: search || undefined }) });
+	const setSearch = (search: string) => navigate({ search: (prev) => ({ ...prev, search: search || undefined }), replace: true });
 	const setStatuses = (statuses: SuggestionStatus[]) => navigate({ search: (prev) => ({ ...prev, statuses }) });
 	const setCategories = (categories: SuggestionCategory[]) => navigate({ search: (prev) => ({ ...prev, categories }) });
 	const setShow = (show: 'mostVoted' | 'newest') => navigate({ search: (prev) => ({ ...prev, show }) });
-	const [protectedActionDialogOpen, setProtectedActionDialogOpen] = useState(false);
 
 	const handleCreateSuggestion = () => {
 		if (!session?.user) {
@@ -87,9 +88,9 @@ function ProjectSuggestions() {
 						<CreateSuggestionForm onSubmit={submit} onCancel={() => setCreateSuggestionDialogOpen(false)} />
 					</DialogContent>
 				</div>
-				{loadingSuggestions ? (
+				{loadingSuggestions && !hasActiveFilters ? (
 					<Spinner className="size-6" />
-				) : (suggestions ?? []).length === 0 ? (
+				) : (suggestions ?? []).length === 0 && !hasActiveFilters && !isFetching ? (
 					<div className="flex flex-col items-center justify-center gap-4 py-8">
 						<EmptySuggestions />
 						<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} size="lg" />
@@ -109,15 +110,17 @@ function ProjectSuggestions() {
 							/>
 							<CreateButton label="Submit suggestion" onClick={handleCreateSuggestion} />
 						</div>
-						{filteredSuggestions.length === 0 ? (
+						{isFetching ? (
+							<Spinner className="size-6" />
+						) : (suggestions ?? []).length === 0 ? (
 							<p className="text-sm text-muted-foreground text-center py-8">No suggestions match your search.</p>
 						) : (
 							<div className="flex flex-col gap-3 p-3 rounded-xl bg-neutral-50">
-								{filteredSuggestions.map((suggestion) => (
+								{(suggestions ?? []).map((suggestion) => (
 									<SuggestionCard
 										key={suggestion.id}
 										suggestion={suggestion}
-										isOwner={isSuggestionAuthor}
+										/* isOwner={isSuggestionAuthor} */
 										isProjectAdmin={isProjectAdmin}
 										queryParams={queryParams}
 									/>

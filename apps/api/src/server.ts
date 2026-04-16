@@ -28,6 +28,10 @@ import { VoteSuggestionRoute } from './modules/suggestions/presentation/routes/v
 import { VoteSuggestionUseCase } from './modules/suggestions/application/use-cases/vote-suggestion.use-case.js';
 import { UnvoteSuggestionRoute } from './modules/suggestions/presentation/routes/unvote-suggestion.route.js';
 import { UnvoteSuggestionUseCase } from './modules/suggestions/application/use-cases/unvote-suggestion.use-case.js';
+import { UpdateSuggestionStatusRoute } from './modules/suggestions/presentation/routes/update-suggestion-status.route.js';
+import { UpdateSuggestionStatusUseCase } from './modules/suggestions/application/use-cases/update-suggestion-status.use-case.js';
+import { DeleteSuggestionRoute } from './modules/suggestions/presentation/routes/delete-suggestion.route.js';
+import { DeleteSuggestionUseCase } from './modules/suggestions/application/use-cases/delete-suggestion.use-case.js';
 
 export type ServerConfig = {
 	port: number;
@@ -120,10 +124,17 @@ export class Server {
 
 	configureSuggestionRoutes() {
 		if (!this.suggestionRepository) throw new Error('Suggestion repository not configured');
+		if (!this.projectMemberRepository) throw new Error('Project member repository not configured');
 		new CreateSuggestionRoute(this.app, new CreateSuggestionUseCase(this.suggestionRepository)).route();
 		new GetSuggestionsRoute(this.app, new GetSuggestionsUseCase(this.suggestionRepository)).route();
 		new VoteSuggestionRoute(this.app, new VoteSuggestionUseCase(this.suggestionRepository)).route();
 		new UnvoteSuggestionRoute(this.app, new UnvoteSuggestionUseCase(this.suggestionRepository)).route();
+		new UpdateSuggestionStatusRoute(
+			this.app,
+			new UpdateSuggestionStatusUseCase(this.suggestionRepository),
+			this.projectMemberRepository
+		).route();
+		new DeleteSuggestionRoute(this.app, new DeleteSuggestionUseCase(this.suggestionRepository), this.projectMemberRepository).route();
 	}
 
 	start() {

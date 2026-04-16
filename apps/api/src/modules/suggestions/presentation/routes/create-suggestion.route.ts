@@ -43,8 +43,7 @@ export class CreateSuggestionRoute {
 				return c.json(
 					{
 						...suggestion,
-						voteCount: 0,
-						userHasVoted: false,
+						rejectionReason: suggestion.rejectionReason ?? null,
 						createdAt: suggestion.createdAt.toISOString(),
 						updatedAt: suggestion.updatedAt?.toISOString() ?? null,
 					},

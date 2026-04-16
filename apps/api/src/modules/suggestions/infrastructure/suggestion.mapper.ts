@@ -12,6 +12,7 @@ export function toSuggestion(row: SuggestionRow): SuggestionEntity {
 		description: row.description,
 		category: row.category,
 		status: row.status,
+		rejectionReason: row.rejectionReason ?? null,
 		createdAt: row.createdAt,
 		updatedAt: row.updatedAt,
 	};

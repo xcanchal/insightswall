@@ -2,7 +2,7 @@ import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { db as dbInstance } from '../../../lib/db/index.js';
 import { suggestions, votes } from '../../../lib/db/schema.js';
 import { toSuggestion } from './suggestion.mapper.js';
-import type { SuggestionCategory, SuggestionEntity } from '../domain/suggestion.entity.js';
+import type { SuggestionCategory, SuggestionEntity, SuggestionStatus } from '../domain/suggestion.entity.js';
 import type {
 	ISuggestionRepository,
 	SuggestionFilters,
@@ -33,6 +33,7 @@ export class SuggestionRepository implements ISuggestionRepository {
 			eq(suggestions.projectId, projectId),
 			...(filters?.categories?.length ? [inArray(suggestions.category, filters.categories)] : []),
 			...(filters?.statuses?.length ? [inArray(suggestions.status, filters.statuses)] : []),
+			...(filters?.search ? [sql`${suggestions.description} ILIKE ${'%' + filters.search + '%'}`] : []),
 		];
 		const rows = await this.db
 			.select({
@@ -51,6 +52,19 @@ export class SuggestionRepository implements ISuggestionRepository {
 			voteCount: Number(voteCount),
 			userHasVoted,
 		}));
+	}
+
+	async updateStatus(suggestionId: string, status: SuggestionStatus, rejectionReason?: string): Promise<SuggestionEntity | null> {
+		const [row] = await this.db
+			.update(suggestions)
+			.set({ status, rejectionReason: rejectionReason ?? null, updatedAt: sql`now()` })
+			.where(eq(suggestions.id, suggestionId))
+			.returning();
+		return row ? toSuggestion(row) : null;
+	}
+
+	async delete(suggestionId: string): Promise<void> {
+		await this.db.delete(suggestions).where(eq(suggestions.id, suggestionId));
 	}
 
 	async vote(suggestionId: string, userId: string): Promise<void> {

@@ -7,7 +7,7 @@ export interface ProjectsListProps {
 
 export const ProjectsList = ({ projects }: ProjectsListProps) => {
 	return (
-		<div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+		<div className="flex flex-col gap-4 w-full">
 			{projects.map((project) => (
 				<ProjectCard key={project.id} project={project} />
 			))}

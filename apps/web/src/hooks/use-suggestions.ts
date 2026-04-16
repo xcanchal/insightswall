@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { suggestionsApi, type CreateSuggestionInput, type SuggestionQueryParams, type SuggestionResponse } from '@/api/suggestions';
+import {
+	suggestionsApi,
+	type CreateSuggestionInput,
+	type SuggestionQueryParams,
+	type SuggestionWithVoteContextResponse,
+} from '@/api/suggestions';
+import type { SuggestionStatus } from '@app/types';
 
 export const suggestionsKeys = {
 	all: ['suggestions'] as const,
@@ -34,9 +40,9 @@ export function useVoteSuggestion(projectId: string, params: SuggestionQueryPara
 		onMutate: async ({ suggestionId, userHasVoted }) => {
 			await queryClient.cancelQueries({ queryKey: suggestionsKeys.byProjectId(projectId, params) });
 
-			const previous = queryClient.getQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId, params));
+			const previous = queryClient.getQueryData<SuggestionWithVoteContextResponse[]>(suggestionsKeys.byProjectId(projectId, params));
 
-			queryClient.setQueryData<SuggestionResponse[]>(suggestionsKeys.byProjectId(projectId, params), (old) =>
+			queryClient.setQueryData<SuggestionWithVoteContextResponse[]>(suggestionsKeys.byProjectId(projectId, params), (old) =>
 				old?.map((s) =>
 					s.id === suggestionId ? { ...s, userHasVoted: !userHasVoted, voteCount: userHasVoted ? s.voteCount - 1 : s.voteCount + 1 } : s
 				)
@@ -49,6 +55,27 @@ export function useVoteSuggestion(projectId: string, params: SuggestionQueryPara
 			if (context?.previous) {
 				queryClient.setQueryData(suggestionsKeys.byProjectId(projectId, params), context.previous);
 			}
+		},
+	});
+}
+
+export function useUpdateSuggestionStatus(projectId: string) {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ suggestionId, status, rejectionReason }: { suggestionId: string; status: SuggestionStatus; rejectionReason?: string }) =>
+			suggestionsApi.updateStatus(projectId, suggestionId, status, rejectionReason),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [...suggestionsKeys.all, projectId] });
+		},
+	});
+}
+
+export function useDeleteSuggestion(projectId: string) {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (suggestionId: string) => suggestionsApi.deleteSuggestion(projectId, suggestionId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [...suggestionsKeys.all, projectId] });
 		},
 	});
 }

@@ -81,7 +81,7 @@ export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 							Are you sure you want to delete <span className="font-medium text-foreground">{project.name}</span>?
 						</p>
 						<p className="bg-red-100 py-2 px-3 flex gap-3 rounded-md">
-							<HugeiconsIcon icon={Warning} className="size-6 text-red-500" /> This will permanently delete the suggestions and related
+							<HugeiconsIcon icon={Warning} className="size-6 text-destructive" /> This will permanently delete the project and its related
 							data.
 						</p>
 					</div>

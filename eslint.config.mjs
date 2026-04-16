@@ -22,7 +22,7 @@ const reactConfig = {
 		},
 	},
 	files: ['apps/web/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
-	ignores: ['apps/web/@/components/ui/**', '**/public/**'],
+	ignores: ['apps/web/@/components/ui/**', '**/public/**', '**/routeTree.gen.ts'],
 	plugins: {
 		react,
 		'react-hooks': reactHooks,

@@ -10,6 +10,7 @@ export interface SuggestionEntity {
 	description: string;
 	category: SuggestionCategory;
 	status: SuggestionStatus;
+	rejectionReason: string | null;
 	createdAt: Date;
 	updatedAt: Date | null;
 }

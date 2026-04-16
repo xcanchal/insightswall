@@ -1,9 +1,10 @@
-import { createFileRoute, Link, Outlet, useParams } from '@tanstack/react-router';
+import { createFileRoute, Link, Outlet, useNavigate, useParams } from '@tanstack/react-router';
 import { useProjectById } from '@/hooks/use-projects';
 import { ProjectIcon } from '@/components/project-icon';
 import { Spinner } from '@/components/spinner';
 import { ProjectSwitcher } from '@/components/headers/-partials/project-switcher';
 import { useProjectMemberByProjectId } from '@/hooks/use-project-members';
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/project/$projectId')({
 	component: ProjectLayout,
@@ -15,23 +16,22 @@ const activeTabClass = 'bg-background shadow-sm font-medium';
 function ProjectLayout() {
 	const { projectId } = useParams({ strict: false });
 	const { data: project, isLoading } = useProjectById(projectId ?? null);
-
+	const navigate = useNavigate();
 	const { data: projectMember } = useProjectMemberByProjectId(projectId ?? null);
 	const isAdmin = projectMember?.role === 'ADMIN';
 
-	/* if (isLoading) return <Spinner className="size-6" />; */
+	useEffect(() => {
+		if (!isLoading && !project) {
+			navigate({ to: '/projects', replace: true });
+		}
+	}, [isLoading, navigate, project]);
 
-	if (!project) return <div>Project not found</div>;
+	if (!project) return null;
 
 	return (
 		<div className="container mx-auto px-4 sm:px-0 py-6 lg:max-w-4xl">
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full items-center">
-					{/* {!isAdmin && (
-						<Link to="/projects" className="text-sm inline-flex items-center gap-1 text-muted-foreground hover:text-primary">
-							<HugeiconsIcon icon={ArrowLeftIcon} className="size-4" /> Back to projects
-						</Link>
-					)} */}
 					<div className="flex w-full gap-4 items-center justify-between">
 						{isAdmin ? (
 							<ProjectSwitcher currentProject={project} />

@@ -45,6 +45,7 @@ export const suggestions = pgTable('suggestions', {
 	description: text().notNull(),
 	category: suggestionCategoryEnum().notNull(),
 	status: suggestionStatusEnum().notNull().default('OPEN'),
+	rejectionReason: text(),
 	...timestamps,
 });
 
