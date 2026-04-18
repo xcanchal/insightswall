@@ -1,4 +1,5 @@
 import { Server } from './server.js';
+import { db } from './lib/db/index.js';
 
 (async () => {
 	try {
@@ -24,10 +25,8 @@ import { Server } from './server.js';
 
 		const server = new Server({
 			port: Number(process.env.PORT) || 3000,
-			drizzle: {
-				uri: process.env.DATABASE_URL || '',
-			},
 			frontendUrl: process.env.FRONTEND_URL,
+			db,
 		});
 
 		server.start();

@@ -11,6 +11,7 @@ const unvoteSuggestionRouteDefinition = createRoute({
 	request: { params: z.object({ suggestionId: z.uuid() }) },
 	responses: {
 		204: { description: 'Vote removed' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
 		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},

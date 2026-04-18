@@ -2,6 +2,7 @@ import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi';
 import { authMiddleware } from '../../../../lib/middlewares/auth.middleware.js';
 import { type AuthVariables } from '../../../../lib/auth.js';
 import { CreateSuggestionUseCase } from '../../application/use-cases/create-suggestion.use-case.js';
+import { ProjectNotFoundError } from '../../../projects/domain/project/project.errors.js';
 import { suggestionSchema } from '../suggestion.schemas.js';
 import { SUGGESTION_CATEGORIES } from '@app/types';
 
@@ -19,6 +20,9 @@ const createSuggestionRouteDefinition = createRoute({
 	request: { body: { content: { 'application/json': { schema: bodySchema } }, required: true } },
 	responses: {
 		201: { content: { 'application/json': { schema: suggestionSchema } }, description: 'Suggestion created' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
+		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
+		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Project not found' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},
 });
@@ -50,6 +54,7 @@ export class CreateSuggestionRoute {
 					201
 				);
 			} catch (error) {
+				if (error instanceof ProjectNotFoundError) return c.json({ error: error.message }, 404);
 				console.error(error);
 				return c.json({ error: 'Internal server error' }, 500);
 			}

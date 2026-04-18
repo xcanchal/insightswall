@@ -15,6 +15,7 @@ const deleteSuggestionRouteDefinition = createRoute({
 	},
 	responses: {
 		204: { description: 'Suggestion deleted' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
 		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
 		403: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Forbidden' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },

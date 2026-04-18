@@ -45,7 +45,7 @@ export class SuggestionRepository implements ISuggestionRepository {
 			.leftJoin(votes, eq(votes.suggestionId, suggestions.id))
 			.where(and(...conditions))
 			.groupBy(suggestions.id)
-			.orderBy(sortBy === 'newest' ? desc(suggestions.createdAt) : desc(voteCount));
+			.orderBy(sortBy === 'newest' ? desc(suggestions.createdAt) : desc(voteCount), desc(suggestions.createdAt));
 
 		return rows.map(({ suggestion, voteCount, userHasVoted }) => ({
 			suggestion: toSuggestion(suggestion),

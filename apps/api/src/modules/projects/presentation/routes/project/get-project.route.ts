@@ -14,6 +14,7 @@ const getProjectRouteDefinition = createRoute({
 	},
 	responses: {
 		200: { content: { 'application/json': { schema: projectSchema } }, description: 'Project' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
 		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Project not found' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},

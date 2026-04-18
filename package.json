@@ -11,7 +11,8 @@
 		"format:check": "npm run format:check --workspaces",
 		"build": "npm run build --workspaces",
 		"lint": "eslint .",
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "npm run test --workspaces",
+		"test:watch": "npm run test:watch --workspaces",
 		"typecheck": "npm run typecheck --workspaces",
 		"prepare": "husky install"
 	},

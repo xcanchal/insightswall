@@ -17,6 +17,8 @@ const createProjectRouteDefinition = createRoute({
 	request: { body: { content: { 'application/json': { schema: bodySchema } }, required: true } },
 	responses: {
 		201: { content: { 'application/json': { schema: projectSchema } }, description: 'Project created' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
+		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},
 });

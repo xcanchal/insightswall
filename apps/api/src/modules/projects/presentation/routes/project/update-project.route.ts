@@ -17,6 +17,7 @@ const updateProjectRouteDefinition = createRoute({
 	},
 	responses: {
 		200: { content: { 'application/json': { schema: projectSchema } }, description: 'Project updated' },
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
 		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
 		403: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Forbidden' },
 		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Project not found' },

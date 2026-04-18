@@ -7,7 +7,6 @@ import { cors } from 'hono/cors';
 import { ProjectRepository } from './modules/projects/infrastructure/project/project.repository.impl.js';
 import { ProjectMemberRepository } from './modules/projects/infrastructure/project-member/project-member.repository.impl.js';
 import { SuggestionRepository } from './modules/suggestions/infrastructure/suggestion.repository.impl.js';
-import { db } from './lib/db/index.js';
 import { CreateProjectRoute } from './modules/projects/presentation/routes/project/create-project.route.js';
 import { CreateProjectUseCase } from './modules/projects/application/use-cases/project/create-project.use-case.js';
 import { GetProjectsRoute } from './modules/projects/presentation/routes/project/get-projects.route.js';
@@ -35,10 +34,9 @@ import { DeleteSuggestionUseCase } from './modules/suggestions/application/use-c
 
 export type ServerConfig = {
 	port: number;
-	drizzle: {
-		uri: string;
-	};
 	frontendUrl: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	db: any;
 };
 
 export class Server {
@@ -75,9 +73,9 @@ export class Server {
         // RIGHT: suggestionRepo.addVote(suggestionId, userId)
           Repository — abstracts persistence. Only aggregate roots get one. Returns domain objects, not DB rows. */
 
-		this.projectRepository = new ProjectRepository(db);
-		this.projectMemberRepository = new ProjectMemberRepository(db);
-		this.suggestionRepository = new SuggestionRepository(db); // Suggestion, Vote, Comment
+		this.projectRepository = new ProjectRepository(this.config.db);
+		this.projectMemberRepository = new ProjectMemberRepository(this.config.db);
+		this.suggestionRepository = new SuggestionRepository(this.config.db); // Suggestion, Vote, Comment
 		/*  
 		const roadmapRepository = new RoadmapRepository(db); // Roadmap, RoadmapItem
 		const notificationRepository = new NotificationRepository(db); // Notification */
@@ -125,8 +123,8 @@ export class Server {
 	configureSuggestionRoutes() {
 		if (!this.suggestionRepository) throw new Error('Suggestion repository not configured');
 		if (!this.projectMemberRepository) throw new Error('Project member repository not configured');
-		new CreateSuggestionRoute(this.app, new CreateSuggestionUseCase(this.suggestionRepository)).route();
-		new GetSuggestionsRoute(this.app, new GetSuggestionsUseCase(this.suggestionRepository)).route();
+		new CreateSuggestionRoute(this.app, new CreateSuggestionUseCase(this.suggestionRepository, this.projectRepository!)).route();
+		new GetSuggestionsRoute(this.app, new GetSuggestionsUseCase(this.suggestionRepository, this.projectRepository!)).route();
 		new VoteSuggestionRoute(this.app, new VoteSuggestionUseCase(this.suggestionRepository)).route();
 		new UnvoteSuggestionRoute(this.app, new UnvoteSuggestionUseCase(this.suggestionRepository)).route();
 		new UpdateSuggestionStatusRoute(
@@ -135,6 +133,10 @@ export class Server {
 			this.projectMemberRepository
 		).route();
 		new DeleteSuggestionRoute(this.app, new DeleteSuggestionUseCase(this.suggestionRepository), this.projectMemberRepository).route();
+	}
+
+	get request() {
+		return this.app.request.bind(this.app);
 	}
 
 	start() {

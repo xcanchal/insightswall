@@ -17,6 +17,8 @@ const getProjectMemberRouteDefinition = createRoute({
 			content: { 'application/json': { schema: projectMemberSchema } },
 			description: 'Project member',
 		},
+		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
+		401: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Unauthorized' },
 		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Project member not found' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},
