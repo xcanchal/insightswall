@@ -4,12 +4,15 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "tsx watch src/index.ts",
+		"dev": "tsx watch --env-file=.env src/index.ts",
 		"build": "tsc",
+		"lint": "eslint .",
 		"start": "node dist/index.js",
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio"
@@ -17,16 +20,22 @@
 	"dependencies": {
 		"@app/types": "*",
 		"@hono/node-server": "^1.19.12",
-		"dotenv": "^17.4.0",
+		"@hono/swagger-ui": "^0.6.1",
+		"@hono/zod-openapi": "^1.2.4",
+		"better-auth": "^1.5.6",
 		"drizzle-orm": "^0.45.2",
 		"hono": "^4.12.9",
-		"pg": "^8.20.0"
+		"pg": "^8.20.0",
+		"resend": "^6.10.0",
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
+		"@electric-sql/pglite": "^0.4.4",
 		"@types/node": "^20.11.17",
 		"@types/pg": "^8.11.10",
 		"drizzle-kit": "^0.31.10",
 		"tsx": "^4.19.2",
-		"typescript": "^5.6.2"
+		"typescript": "^5.6.2",
+		"vitest": "^4.1.4"
 	}
 }
