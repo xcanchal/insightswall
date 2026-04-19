@@ -18,6 +18,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run build --workspace=@app/types
+
       - run: npm run format:check
 
       - run: npm run lint

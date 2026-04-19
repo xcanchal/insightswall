@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import type { SuggestionCategory, SuggestionStatus } from '@app/types';
+import type { SuggestionCategory, SuggestionSortBy, SuggestionStatus } from '@app/types';
 
 export type CreateSuggestionInput = {
 	projectId: string;
@@ -23,8 +23,6 @@ export type SuggestionWithVoteContextResponse = SuggestionResponse & {
 	voteCount: number;
 	userHasVoted: boolean;
 };
-
-export type SuggestionSortBy = 'mostVoted' | 'newest';
 
 export type SuggestionQueryParams = {
 	sortBy?: SuggestionSortBy;

@@ -1,12 +1,13 @@
+import type { SuggestionSortBy } from '@app/types';
 import type { SuggestionCategory, SuggestionEntity, SuggestionStatus } from './suggestion.entity.js';
+
+export type { SuggestionSortBy };
 
 export interface SuggestionWithVoteContext {
 	suggestion: SuggestionEntity;
 	voteCount: number;
 	userHasVoted: boolean;
 }
-
-export type SuggestionSortBy = 'mostVoted' | 'newest';
 
 export interface SuggestionFilters {
 	categories?: SuggestionCategory[];
