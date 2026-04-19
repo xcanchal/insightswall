@@ -24,6 +24,7 @@ export interface ISuggestionRepository {
 	): Promise<SuggestionWithVoteContext[]>;
 	updateStatus(suggestionId: string, status: SuggestionStatus, rejectionReason?: string): Promise<SuggestionEntity | null>;
 	delete(suggestionId: string): Promise<void>;
+	hasVoted(suggestionId: string, userId: string): Promise<boolean>;
 	vote(suggestionId: string, userId: string): Promise<void>;
 	unvote(suggestionId: string, userId: string): Promise<void>;
 }

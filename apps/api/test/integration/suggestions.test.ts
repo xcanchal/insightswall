@@ -73,6 +73,18 @@ describe('Suggestions', () => {
 				expect(res.status).toBe(401);
 			});
 
+			it('returns 400 when projectId is not a valid UUID', async () => {
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request('/api/suggestions', {
+					method: 'POST',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ projectId: 'not-a-uuid', description: 'Dark mode', category: 'FEATURE' }),
+				});
+
+				expect(res.status).toBe(400);
+			});
+
 			it('returns 400 when projectId is missing', async () => {
 				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
@@ -310,188 +322,264 @@ describe('Suggestions', () => {
 		const projectId = crypto.randomUUID();
 		const suggestionId = crypto.randomUUID();
 
-		it('returns 401 when not authenticated', async () => {
-			mockGetSession.mockResolvedValue(null);
+		describe('Error cases', () => {
+			it('returns 401 when not authenticated', async () => {
+				mockGetSession.mockResolvedValue(null);
 
-			const res = await server.request(`/api/projects/${projectId}/suggestions/${suggestionId}/status`, {
-				method: 'PATCH',
-				headers: TEST_HEADERS,
-				body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
+				const res = await server.request(`/api/projects/${projectId}/suggestions/${suggestionId}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'PLANNED' }),
+				});
+
+				expect(res.status).toBe(401);
 			});
 
-			expect(res.status).toBe(401);
+			it('returns 403 when user is not a project admin', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestionId}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
+				});
+
+				expect(res.status).toBe(403);
+			});
+
+			it('returns 400 when status is invalid', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'INVALID_STATUS' }),
+				});
+
+				expect(res.status).toBe(400);
+			});
+
+			it('returns 404 when suggestion does not exist', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
+				});
+
+				expect(res.status).toBe(404);
+			});
 		});
 
-		it('returns 403 when user is not a project admin', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+		describe('Success cases', () => {
+			it('updates suggestion status and returns 200', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Dark mode', category: 'FEATURE' })
+					.returning();
 
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestionId}/status`, {
-				method: 'PATCH',
-				headers: TEST_HEADERS,
-				body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not feasible' }),
+				});
+
+				expect(res.status).toBe(200);
+				const body = await res.json();
+				expect(body.status).toBe('REJECTED');
+				expect(body.rejectionReason).toBe('Not feasible');
 			});
-
-			expect(res.status).toBe(403);
-		});
-
-		it('returns 400 when status is invalid', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
-
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
-
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}/status`, {
-				method: 'PATCH',
-				headers: TEST_HEADERS,
-				body: JSON.stringify({ status: 'INVALID_STATUS' }),
-			});
-
-			expect(res.status).toBe(400);
-		});
-
-		it('returns 404 when suggestion does not exist', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
-
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
-
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}/status`, {
-				method: 'PATCH',
-				headers: TEST_HEADERS,
-				body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
-			});
-
-			expect(res.status).toBe(404);
-		});
-
-		it('updates suggestion status and returns 200', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
-			const [suggestion] = await db
-				.insert(suggestions)
-				.values({ projectId: project.id, userId: TEST_USER.id, description: 'Dark mode', category: 'FEATURE' })
-				.returning();
-
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
-
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}/status`, {
-				method: 'PATCH',
-				headers: TEST_HEADERS,
-				body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not feasible' }),
-			});
-
-			expect(res.status).toBe(200);
-			const body = await res.json();
-			expect(body.status).toBe('REJECTED');
-			expect(body.rejectionReason).toBe('Not feasible');
 		});
 	});
 
 	describe('DELETE /api/projects/:projectId/suggestions/:suggestionId', () => {
-		it('returns 401 when not authenticated', async () => {
-			mockGetSession.mockResolvedValue(null);
+		describe('Error cases', () => {
+			it('returns 401 when not authenticated', async () => {
+				mockGetSession.mockResolvedValue(null);
 
-			const res = await server.request(`/api/projects/${crypto.randomUUID()}/suggestions/${crypto.randomUUID()}`, {
-				method: 'DELETE',
-				headers: TEST_HEADERS,
+				const res = await server.request(`/api/projects/${crypto.randomUUID()}/suggestions/${crypto.randomUUID()}`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(401);
 			});
 
-			expect(res.status).toBe(401);
+			it('returns 403 when user is not a project admin', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(403);
+			});
 		});
 
-		it('returns 403 when user is not a project admin', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+		describe('Success cases', () => {
+			it('deletes a suggestion and returns 204', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Suggestion description', category: 'BUG' })
+					.returning();
 
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}`, {
-				method: 'DELETE',
-				headers: TEST_HEADERS,
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(204);
 			});
-
-			expect(res.status).toBe(403);
-		});
-
-		it('deletes a suggestion and returns 204', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
-			const [suggestion] = await db
-				.insert(suggestions)
-				.values({ projectId: project.id, userId: TEST_USER.id, description: 'To delete', category: 'BUG' })
-				.returning();
-
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
-
-			const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}`, {
-				method: 'DELETE',
-				headers: TEST_HEADERS,
-			});
-
-			expect(res.status).toBe(204);
 		});
 	});
 
 	describe('POST /api/suggestions/:suggestionId/votes', () => {
-		it('returns 401 when not authenticated', async () => {
-			mockGetSession.mockResolvedValue(null);
+		describe('Error cases', () => {
+			it('returns 400 when suggestionId is not a valid UUID', async () => {
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-			const res = await server.request(`/api/suggestions/${crypto.randomUUID()}/votes`, {
-				method: 'POST',
-				headers: TEST_HEADERS,
+				const res = await server.request('/api/suggestions/not-a-uuid/votes', {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(400);
 			});
 
-			expect(res.status).toBe(401);
+			it('returns 401 when not authenticated', async () => {
+				mockGetSession.mockResolvedValue(null);
+
+				const res = await server.request(`/api/suggestions/${crypto.randomUUID()}/votes`, {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(401);
+			});
+
+			it('returns 409 when user has already voted', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Test', category: 'FEATURE' })
+					.returning();
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				// Vote first
+				await server.request(`/api/suggestions/${suggestion.id}/votes`, {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				// Try to vote again
+				const res = await server.request(`/api/suggestions/${suggestion.id}/votes`, {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(409);
+			});
 		});
 
-		it('creates a vote and returns 204', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			const [suggestion] = await db
-				.insert(suggestions)
-				.values({ projectId: project.id, userId: TEST_USER.id, description: 'Test', category: 'FEATURE' })
-				.returning();
+		describe('Success cases', () => {
+			it('creates a vote and returns 204', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Test', category: 'FEATURE' })
+					.returning();
 
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-			const res = await server.request(`/api/suggestions/${suggestion.id}/votes`, {
-				method: 'POST',
-				headers: TEST_HEADERS,
+				const res = await server.request(`/api/suggestions/${suggestion.id}/votes`, {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(204);
+			});
+		});
+	});
+
+	describe('DELETE /api/suggestions/:suggestionId/votes', () => {
+		describe('Error cases', () => {
+			it('returns 400 when suggestionId is not a valid UUID', async () => {
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request('/api/suggestions/not-a-uuid/votes', {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(400);
 			});
 
-			expect(res.status).toBe(204);
+			it('returns 401 when not authenticated', async () => {
+				mockGetSession.mockResolvedValue(null);
+
+				const res = await server.request(`/api/suggestions/${crypto.randomUUID()}/votes`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(401);
+			});
 		});
 
-		it('removes a vote and returns 204', async () => {
-			await db.insert(users).values(TEST_USER);
-			const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
-			const [suggestion] = await db
-				.insert(suggestions)
-				.values({ projectId: project.id, userId: TEST_USER.id, description: 'Test', category: 'FEATURE' })
-				.returning();
+		describe('Success cases', () => {
+			it('removes a vote and returns 204', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Test', category: 'FEATURE' })
+					.returning();
 
-			mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-			// Vote first
-			await server.request(`/api/suggestions/${suggestion.id}/votes`, {
-				method: 'POST',
-				headers: TEST_HEADERS,
+				// Vote first
+				await server.request(`/api/suggestions/${suggestion.id}/votes`, {
+					method: 'POST',
+					headers: TEST_HEADERS,
+				});
+
+				// Then unvote
+				const res = await server.request(`/api/suggestions/${suggestion.id}/votes`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(204);
 			});
-
-			// Then unvote
-			const res = await server.request(`/api/suggestions/${suggestion.id}/votes`, {
-				method: 'DELETE',
-				headers: TEST_HEADERS,
-			});
-
-			expect(res.status).toBe(204);
 		});
 	});
 });

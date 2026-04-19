@@ -67,6 +67,14 @@ export class SuggestionRepository implements ISuggestionRepository {
 		await this.db.delete(suggestions).where(eq(suggestions.id, suggestionId));
 	}
 
+	async hasVoted(suggestionId: string, userId: string): Promise<boolean> {
+		const [row] = await this.db
+			.select()
+			.from(votes)
+			.where(and(eq(votes.suggestionId, suggestionId), eq(votes.userId, userId)));
+		return !!row;
+	}
+
 	async vote(suggestionId: string, userId: string): Promise<void> {
 		await this.db.insert(votes).values({ suggestionId, userId });
 	}
