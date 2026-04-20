@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { Footer } from '@/components/footer';
-import { InternalHeader } from '@/components/headers/internal-header';
+import { Header } from '@/components/header/header';
 
 export const Route = createFileRoute('/_internal')({
 	beforeLoad: ({ context }) => {
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/_internal')({
 function InternalLayout() {
 	return (
 		<div className="flex flex-col min-h-screen">
-			<InternalHeader />
+			<Header />
 			<main className="flex-1">
 				<Outlet />
 			</main>

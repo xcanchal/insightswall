@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { /* Bell,  */ User02Icon, Briefcase01Icon, Bell } from '@hugeicons/core-free-icons';
+import { User02Icon, Briefcase01Icon /* , Bell */ } from '@hugeicons/core-free-icons';
 
 export interface AuthButtonsProps {
 	signedIn: boolean;
@@ -12,12 +12,12 @@ const signedInLinks = [
 		to: '/projects',
 		label: 'Projects',
 		icon: Briefcase01Icon,
-	},
+	} /* 
 	{
 		to: '/notifications',
 		label: 'Notifications',
 		icon: Bell,
-	},
+	}, */,
 	{
 		to: '/account',
 		label: 'Account',
