@@ -126,7 +126,7 @@ function RouteComponent() {
 													onBlur={field.handleBlur}
 													onChange={(e) => field.handleChange(e.target.value)}
 													aria-invalid={isInvalid}
-													placeholder="Display name"
+													placeholder="Email address"
 													autoComplete="off"
 												/>
 												{isInvalid && <FieldError errors={field.state.meta.errors} />}
