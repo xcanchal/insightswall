@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useNavigate, useParams } from '@tanstack/react-router';
+import { createFileRoute, Link, Outlet, useMatch, useNavigate, useParams } from '@tanstack/react-router';
 import { useProjectById } from '@/hooks/use-projects';
 import { ProjectIcon } from '@/components/project-icon';
 import { Spinner } from '@/components/spinner';
@@ -26,10 +26,12 @@ function ProjectLayout() {
 		}
 	}, [isLoading, navigate, project]);
 
+	const isRoadmap = useMatch({ from: '/project/$projectId/roadmap/', shouldThrow: false });
+
 	if (!project) return null;
 
 	return (
-		<div className="container mx-auto px-4 sm:px-0 py-6 lg:max-w-4xl">
+		<div className={`container mx-auto px-4 sm:px-0 py-6 ${isRoadmap ? 'lg:max-w-6xl' : 'lg:max-w-4xl'}`}>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full items-center">
 					<div className="flex w-full gap-4 items-center justify-between">

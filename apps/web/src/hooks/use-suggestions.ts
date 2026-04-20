@@ -70,6 +70,15 @@ export function useUpdateSuggestionStatus(projectId: string) {
 	});
 }
 
+export function useRoadmapSuggestions(projectId: string | null | undefined) {
+	const params: SuggestionQueryParams = { statuses: ['PLANNED', 'IN_PROGRESS', 'DONE'], sortBy: 'mostVoted' };
+	return useQuery({
+		queryKey: suggestionsKeys.byProjectId(projectId ?? '', params),
+		queryFn: () => suggestionsApi.getByProjectId(projectId!, params),
+		enabled: !!projectId,
+	});
+}
+
 export function useDeleteSuggestion(projectId: string) {
 	const queryClient = useQueryClient();
 	return useMutation({

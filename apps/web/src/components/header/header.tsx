@@ -1,5 +1,5 @@
 import { useSession } from '@/lib/auth-client';
-import { AuthButtons } from './-partials/auth-buttons';
+import { NavLinks } from './-partials/nav-links';
 import { HeaderContainer } from './-partials/header-container';
 import { HeaderLogo } from './-partials/header-logo';
 
@@ -8,7 +8,7 @@ export const Header = () => {
 	return (
 		<HeaderContainer>
 			<HeaderLogo />
-			<AuthButtons signedIn={!!session?.user} />
+			<NavLinks signedIn={!!session?.user} />
 		</HeaderContainer>
 	);
 };
