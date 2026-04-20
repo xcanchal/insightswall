@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
-import { ExternalHeader } from '@/components/headers/external-header';
+import { Header } from '@/components/header/header';
 import { Footer } from '@/components/footer';
 
 export const Route = createFileRoute('/_external')({
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_external')({
 function ExternalLayout() {
 	return (
 		<div className="flex flex-col min-h-screen">
-			<ExternalHeader />
+			<Header />
 			<main className="flex-1">
 				<Outlet />
 			</main>

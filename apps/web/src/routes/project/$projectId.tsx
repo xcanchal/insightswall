@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useParams } from '@tanstack
 import { useProjectById } from '@/hooks/use-projects';
 import { ProjectIcon } from '@/components/project-icon';
 import { Spinner } from '@/components/spinner';
-import { ProjectSwitcher } from '@/components/headers/-partials/project-switcher';
+import { ProjectSwitcher } from '@/components/header/-partials/project-switcher';
 import { useProjectMemberByProjectId } from '@/hooks/use-project-members';
 import { useEffect } from 'react';
 
