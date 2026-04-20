@@ -23,6 +23,12 @@ export const auth = betterAuth({
 		},
 	},
 	trustedOrigins: [process.env.FRONTEND_URL!],
+	advanced: {
+		crossSubDomainCookies: {
+			enabled: !!process.env.COOKIE_DOMAIN,
+			domain: process.env.COOKIE_DOMAIN,
+		},
+	},
 });
 
 export type AuthVariables = {
