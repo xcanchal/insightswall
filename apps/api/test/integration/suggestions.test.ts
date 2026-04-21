@@ -10,29 +10,10 @@ vi.mock('../../src/lib/auth.js', () => ({
 import { sql } from 'drizzle-orm';
 import { projectMembers, projects, suggestions, votes } from '../../src/lib/db/schema.js';
 import { users } from '../../src/lib/db/auth-schema.js';
-import { auth } from '../../src/lib/auth.js';
-import { createTestDb, createTestServer } from '../helpers.js';
-import { Session, User } from 'better-auth';
-import { SuggestionEntity } from '../../src/modules/suggestions/domain/suggestion.entity.js';
-import { ProjectEntity } from '../../src/modules/projects/domain/project/project.entity.js';
-
-const mockGetSession = vi.mocked(auth.api.getSession);
-
-const TEST_USER: User = {
-	id: crypto.randomUUID(),
-	name: 'Test User',
-	email: 'test@example.com',
-	emailVerified: true as const,
-	image: null,
-	createdAt: new Date(),
-	updatedAt: new Date(),
-};
-
-const TEST_SESSION = { id: crypto.randomUUID(), token: 'test-token' } as Session;
-
-const TEST_HEADERS = {
-	'Content-Type': 'application/json',
-};
+import { createTestDb, createTestServer, mockGetSession, TEST_USER, TEST_SESSION, TEST_HEADERS } from '../helpers.js';
+import type { User } from 'better-auth';
+import type { SuggestionEntity } from '../../src/modules/suggestions/domain/suggestion.entity.js';
+import type { ProjectEntity } from '../../src/modules/projects/domain/project/project.entity.js';
 
 describe('Suggestions', () => {
 	let server: ReturnType<typeof createTestServer>;

@@ -4,7 +4,7 @@ import { authMiddleware } from '../../../../../lib/middlewares/auth.middleware.j
 import { GetProjectMemberUseCase } from '../../../application/use-cases/project-member/get-project-member.use-case.js';
 import { projectMemberSchema } from './project-member.schemas.js';
 
-const path = '/api/projects/:projectId/members' as const;
+const path = '/api/projects/:projectId/me' as const;
 
 const getProjectMemberRouteDefinition = createRoute({
 	method: 'get',

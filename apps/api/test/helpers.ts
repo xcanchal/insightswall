@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
@@ -6,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 import * as schema from '../src/lib/db/schema.js';
 import * as authSchema from '../src/lib/db/auth-schema.js';
 import { Server } from '../src/server.js';
+import { auth } from '../src/lib/auth.js';
+import type { Session, User } from 'better-auth';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,3 +31,21 @@ export function createTestServer(db: ReturnType<typeof drizzle>) {
 		db,
 	});
 }
+
+export const TEST_USER: User = {
+	id: crypto.randomUUID(),
+	name: 'Test User',
+	email: 'test@example.com',
+	emailVerified: true as const,
+	image: null,
+	createdAt: new Date(),
+	updatedAt: new Date(),
+};
+
+export const TEST_SESSION = { id: crypto.randomUUID(), token: 'test-token' } as Session;
+
+export const TEST_HEADERS = {
+	'Content-Type': 'application/json',
+};
+
+export const mockGetSession = vi.mocked(auth.api.getSession);

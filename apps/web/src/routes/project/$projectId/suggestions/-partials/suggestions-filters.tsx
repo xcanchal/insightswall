@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import { SUGGESTION_STATUSES, SuggestionCategory, SuggestionStatus } from '@app/types';
 import { SUGGESTION_CATEGORIES } from '@app/types';
+import { formatSuggestionStatus } from '@/utils';
 
 interface SuggestionsFiltersProps {
 	search: string;
@@ -83,7 +84,7 @@ export const SuggestionsFilters = ({
 									checked={statuses.includes(status)}
 									onCheckedChange={(checked) => onStatusChange(checked ? [...statuses, status] : statuses.filter((s) => s !== status))}
 								>
-									{status.replace('_', ' ')}
+									{formatSuggestionStatus(status)}
 								</DropdownMenuCheckboxItem>
 							))}
 						</DropdownMenuGroup>

@@ -1,7 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { User02Icon, Briefcase01Icon } from '@hugeicons/core-free-icons';
+import { Briefcase01Icon, UserCircle02Icon } from '@hugeicons/core-free-icons';
 
 export interface NavLinksProps {
 	signedIn: boolean;
@@ -21,7 +21,7 @@ const signedInLinks = [
 	{
 		to: '/account',
 		label: 'Account',
-		icon: User02Icon,
+		icon: UserCircle02Icon,
 	},
 ];
 
@@ -33,9 +33,9 @@ export const NavLinks = ({ signedIn }: NavLinksProps) => {
 			{signedInLinks.map((link) => {
 				const isActive = link.to === '/projects' ? pathname.startsWith('/project') : pathname.startsWith(link.to);
 				return (
-					<Link key={link.to} to={link.to} className={`text-sm font-semibold flex items-center gap-1 ${isActive ? 'text-primary' : ''}`}>
-						<HugeiconsIcon icon={link.icon} className="size-5" />
-						{link.label}
+					<Link key={link.to} to={link.to} className={`text-sm font-semibold flex items-center gap-2 ${isActive ? 'text-primary' : ''}`}>
+						<HugeiconsIcon icon={link.icon} className="size-6 sm:size-5" />
+						<span className="hidden sm:flex">{link.label}</span>
 					</Link>
 				);
 			})}
