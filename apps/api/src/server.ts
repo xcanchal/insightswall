@@ -31,6 +31,8 @@ import { UpdateSuggestionStatusRoute } from './modules/suggestions/presentation/
 import { UpdateSuggestionStatusUseCase } from './modules/suggestions/application/use-cases/update-suggestion-status.use-case.js';
 import { DeleteSuggestionRoute } from './modules/suggestions/presentation/routes/delete-suggestion.route.js';
 import { DeleteSuggestionUseCase } from './modules/suggestions/application/use-cases/delete-suggestion.use-case.js';
+import { EditSuggestionRoute } from './modules/suggestions/presentation/routes/edit-suggestion.route.js';
+import { EditSuggestionUseCase } from './modules/suggestions/application/use-cases/edit-suggestion.use-case.js';
 
 export type ServerConfig = {
 	port: number;
@@ -132,7 +134,8 @@ export class Server {
 			new UpdateSuggestionStatusUseCase(this.suggestionRepository),
 			this.projectMemberRepository
 		).route();
-		new DeleteSuggestionRoute(this.app, new DeleteSuggestionUseCase(this.suggestionRepository), this.projectMemberRepository).route();
+		new DeleteSuggestionRoute(this.app, new DeleteSuggestionUseCase(this.suggestionRepository, this.projectMemberRepository)).route();
+		new EditSuggestionRoute(this.app, new EditSuggestionUseCase(this.suggestionRepository)).route();
 	}
 
 	get request() {

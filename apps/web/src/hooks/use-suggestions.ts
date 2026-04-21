@@ -5,7 +5,7 @@ import {
 	type SuggestionQueryParams,
 	type SuggestionWithVoteContextResponse,
 } from '@/api/suggestions';
-import type { SuggestionStatus } from '@app/types';
+import type { SuggestionCategory, SuggestionStatus } from '@app/types';
 
 export const suggestionsKeys = {
 	all: ['suggestions'] as const,
@@ -55,6 +55,17 @@ export function useVoteSuggestion(projectId: string, params: SuggestionQueryPara
 			if (context?.previous) {
 				queryClient.setQueryData(suggestionsKeys.byProjectId(projectId, params), context.previous);
 			}
+		},
+	});
+}
+
+export function useEditSuggestion(projectId: string) {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ suggestionId, description, category }: { suggestionId: string; description: string; category: SuggestionCategory }) =>
+			suggestionsApi.editSuggestion(projectId, suggestionId, description, category),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [...suggestionsKeys.all, projectId] });
 		},
 	});
 }

@@ -54,6 +54,20 @@ export class SuggestionRepository implements ISuggestionRepository {
 		}));
 	}
 
+	async findById(suggestionId: string): Promise<SuggestionEntity | null> {
+		const [row] = await this.db.select().from(suggestions).where(eq(suggestions.id, suggestionId));
+		return row ? toSuggestion(row) : null;
+	}
+
+	async update(suggestionId: string, description: string, category: SuggestionCategory): Promise<SuggestionEntity | null> {
+		const [row] = await this.db
+			.update(suggestions)
+			.set({ description, category, updatedAt: sql`now()` })
+			.where(eq(suggestions.id, suggestionId))
+			.returning();
+		return row ? toSuggestion(row) : null;
+	}
+
 	async updateStatus(suggestionId: string, status: SuggestionStatus, rejectionReason?: string): Promise<SuggestionEntity | null> {
 		const [row] = await this.db
 			.update(suggestions)

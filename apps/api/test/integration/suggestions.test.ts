@@ -422,13 +422,19 @@ describe('Suggestions', () => {
 				expect(res.status).toBe(401);
 			});
 
-			it('returns 403 when user is not a project admin', async () => {
+			it('returns 403 when user is not the owner or a project admin', async () => {
 				await db.insert(users).values(TEST_USER);
+				const otherUser = { id: crypto.randomUUID(), name: 'Other', email: 'other@example.com', emailVerified: true, image: null };
+				await db.insert(users).values(otherUser);
 				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: otherUser.id, description: 'Not mine', category: 'BUG' })
+					.returning();
 
 				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
 
-				const res = await server.request(`/api/projects/${project.id}/suggestions/${crypto.randomUUID()}`, {
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}`, {
 					method: 'DELETE',
 					headers: TEST_HEADERS,
 				});
@@ -438,13 +444,32 @@ describe('Suggestions', () => {
 		});
 
 		describe('Success cases', () => {
-			it('deletes a suggestion and returns 204', async () => {
+			it('returns 204 when user is the suggestion owner', async () => {
 				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: project.id, userId: TEST_USER.id, description: 'My suggestion', category: 'BUG' })
+					.returning();
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}/suggestions/${suggestion.id}`, {
+					method: 'DELETE',
+					headers: TEST_HEADERS,
+				});
+
+				expect(res.status).toBe(204);
+			});
+
+			it('returns 204 when user is a project admin but not the owner', async () => {
+				const otherUser = { id: crypto.randomUUID(), name: 'Other', email: 'other@example.com', emailVerified: true, image: null };
+				await db.insert(users).values([TEST_USER, otherUser]);
 				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
 				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
 				const [suggestion] = await db
 					.insert(suggestions)
-					.values({ projectId: project.id, userId: TEST_USER.id, description: 'Suggestion description', category: 'BUG' })
+					.values({ projectId: project.id, userId: otherUser.id, description: 'Not my suggestion', category: 'BUG' })
 					.returning();
 
 				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });

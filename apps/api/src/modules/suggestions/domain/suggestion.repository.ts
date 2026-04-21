@@ -23,6 +23,8 @@ export interface ISuggestionRepository {
 		sortBy: SuggestionSortBy,
 		filters?: SuggestionFilters
 	): Promise<SuggestionWithVoteContext[]>;
+	findById(suggestionId: string): Promise<SuggestionEntity | null>;
+	update(suggestionId: string, description: string, category: SuggestionCategory): Promise<SuggestionEntity | null>;
 	updateStatus(suggestionId: string, status: SuggestionStatus, rejectionReason?: string): Promise<SuggestionEntity | null>;
 	delete(suggestionId: string): Promise<void>;
 	hasVoted(suggestionId: string, userId: string): Promise<boolean>;

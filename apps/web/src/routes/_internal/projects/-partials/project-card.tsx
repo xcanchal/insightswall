@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import type { ProjectResponse } from '@/api/projects';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Delete02Icon, MoreHorizontalCircle01Icon, PencilEdit01Icon, Warning } from '@hugeicons/core-free-icons';
+import { Delete02Icon, MoreHorizontalCircle01Icon, PencilEdit02Icon, Warning } from '@hugeicons/core-free-icons';
 import { ProjectIcon } from '@/components/project-icon';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -119,7 +119,7 @@ export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 								setEditOpen(true);
 							}}
 						>
-							<HugeiconsIcon icon={PencilEdit01Icon} className="size-5" />
+							<HugeiconsIcon icon={PencilEdit02Icon} className="size-5" />
 							Edit
 						</DropdownMenuItem>
 						<DropdownMenuItem variant="destructive" onSelect={() => setDeleteOpen(true)} className="text-base">

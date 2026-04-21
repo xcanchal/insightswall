@@ -26,13 +26,13 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
+			<DropdownMenuTrigger asChild className="w-full sm:w-auto">
 				<Button variant="outline" size="lg" className="text-lg h-11">
 					<ProjectIcon url={currentProject.url} sizeClassName="size-5" />
 					{currentProject.name} <HugeiconsIcon icon={ArrowDownIcon} className="size-3.5 text-muted-foreground" />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="min-w-48 max-w-64" align="start">
+			<DropdownMenuContent className="sm:min-w-48 sm:max-w-64" align="start">
 				<DropdownMenuGroup>
 					<DropdownMenuLabel>Projects</DropdownMenuLabel>
 					{projects.map((project) => (
