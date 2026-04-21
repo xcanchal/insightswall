@@ -28,7 +28,7 @@ export const Route = createFileRoute('/_external/')({
 
 function Index() {
 	return (
-		<div className="container mx-auto px-4 md:px-0">
+		<div className="container mx-auto px-4 pb-8 md:px-0">
 			<div className="flex flex-col items-center justify-center gap-8 py-16 md:py-20">
 				<h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-center leading-10 md:leading-16 lg:leading-20">
 					Listen to your users. <br /> Make the correct decisions
