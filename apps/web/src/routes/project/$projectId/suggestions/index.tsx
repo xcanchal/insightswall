@@ -97,7 +97,7 @@ function ProjectSuggestions() {
 					</div>
 				) : (
 					<div className="flex flex-col gap-6">
-						<div className="flex items-center justify-between gap-2">
+						<div className="flex flex-col sm:flex-row items-center justify-between gap-2">
 							<SuggestionsFilters
 								search={search}
 								categories={categories}

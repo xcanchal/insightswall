@@ -52,10 +52,7 @@ export const CreateSuggestionForm = ({ onSubmit, onCancel }: CreateSuggestionFor
 										<SelectLabel>Category</SelectLabel>
 										{SUGGESTION_CATEGORIES.map((category) => (
 											<SelectItem key={category} value={category}>
-												<HugeiconsIcon
-													icon={category === 'FEATURE' ? SparklesIcon : BugIcon}
-													/* className={c === 'FEATURE' ? 'text-blue-600' : 'text-amber-500'} */
-												/>
+												<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} />
 												{category}
 											</SelectItem>
 										))}

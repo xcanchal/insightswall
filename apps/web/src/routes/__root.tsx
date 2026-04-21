@@ -1,20 +1,23 @@
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+/* import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { TanStackRouterDevtools } from '@tanstack/router-devtools'; */
 import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { Toaster } from 'sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import type { RouterContext } from '../lib/router';
 
 const RootLayout = () => (
-	<div className="flex flex-col min-h-screen">
-		<Outlet />
-		<Toaster position="bottom-right" />
-		{import.meta.env.DEV && (
+	<TooltipProvider>
+		<div className="flex flex-col min-h-screen">
+			<Outlet />
+			<Toaster position="bottom-right" />
+			{/* {import.meta.env.DEV && (
 			<>
 				<TanStackRouterDevtools />
 				<ReactQueryDevtools />
 			</>
-		)}
-	</div>
+		)} */}
+		</div>
+	</TooltipProvider>
 );
 
 const NotFound = () => (

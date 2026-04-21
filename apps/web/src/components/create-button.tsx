@@ -10,7 +10,7 @@ export type CreateButtonProps = {
 
 export const CreateButton = ({ label, size = 'default', onClick }: CreateButtonProps) => {
 	return (
-		<Button variant="default" onClick={onClick} className="w-fit" size={size}>
+		<Button variant="default" onClick={onClick} className="w-full sm:w-fit" size={size}>
 			<HugeiconsIcon icon={PlusSignIcon} /> {label}
 		</Button>
 	);

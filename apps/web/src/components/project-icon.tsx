@@ -8,7 +8,7 @@ export interface FaviconLoaderProps {
 
 export const ProjectIcon = ({ url, sizeClassName = 'size-7' }: FaviconLoaderProps) => {
 	return url ? (
-		<img src={`https://www.google.com/s2/favicons?domain=${url}&sz=32`} className={`${sizeClassName} rounded-sm`} />
+		<img src={`https://www.google.com/s2/favicons?domain=${url}&sz=32`} className={`${sizeClassName} rounded-xs`} />
 	) : (
 		<HugeiconsIcon icon={Globe02Icon} className={`${sizeClassName} text-muted-foreground`} />
 	);

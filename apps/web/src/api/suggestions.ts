@@ -41,6 +41,8 @@ export const suggestionsApi = {
 		return apiClient.get<SuggestionWithVoteContextResponse[]>(`/api/projects/${projectId}/suggestions?${query.toString()}`);
 	},
 	create: (data: CreateSuggestionInput) => apiClient.post<SuggestionResponse>('/api/suggestions', data),
+	editSuggestion: (projectId: string, suggestionId: string, description: string, category: SuggestionCategory) =>
+		apiClient.patch<SuggestionResponse>(`/api/projects/${projectId}/suggestions/${suggestionId}`, { description, category }),
 	updateStatus: (projectId: string, suggestionId: string, status: SuggestionStatus, rejectionReason?: string) =>
 		apiClient.patch<SuggestionResponse>(`/api/projects/${projectId}/suggestions/${suggestionId}/status`, { status, rejectionReason }),
 	deleteSuggestion: (projectId: string, suggestionId: string) =>

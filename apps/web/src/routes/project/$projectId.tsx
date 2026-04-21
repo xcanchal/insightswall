@@ -10,7 +10,7 @@ export const Route = createFileRoute('/project/$projectId')({
 	component: ProjectLayout,
 });
 
-const tabClass = 'px-4 py-2 text-sm rounded-md transition-colors';
+const tabClass = 'px-4 py-2 text-sm rounded-md transition-colors flex-1 text-center';
 const activeTabClass = 'bg-background shadow-sm font-medium';
 
 function ProjectLayout() {
@@ -34,16 +34,16 @@ function ProjectLayout() {
 		<div className={`container mx-auto px-4 sm:px-0 py-6 ${isRoadmap ? 'lg:max-w-6xl' : 'lg:max-w-4xl'}`}>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full items-center">
-					<div className="flex w-full gap-4 items-center justify-between">
+					<div className="flex flex-col sm:flex-row w-full gap-4 items-center justify-between">
 						{isAdmin ? (
 							<ProjectSwitcher currentProject={project} />
 						) : (
-							<div className="flex items-center gap-2">
+							<div className="flex w-full sm:w-auto items-center gap-2">
 								<ProjectIcon url={project.url} />
 								<h1 className="text-2xl font-semibold">{project.name}</h1>
 							</div>
 						)}
-						<div className="flex items-center gap-1 bg-muted p-1 rounded-lg">
+						<div className="flex items-center gap-1 w-full sm:w-auto bg-muted p-1 rounded-lg">
 							<Link
 								to="/project/$projectId/suggestions"
 								params={{ projectId: projectId! }}

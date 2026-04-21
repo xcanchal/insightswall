@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
-import { cn } from '@/lib/utils';
 import { SUGGESTION_STATUSES, SuggestionCategory, SuggestionStatus } from '@app/types';
 import { SUGGESTION_CATEGORIES } from '@app/types';
 
@@ -36,72 +35,78 @@ export const SuggestionsFilters = ({
 	onShowChange,
 }: SuggestionsFiltersProps) => {
 	return (
-		<div className="flex items-center gap-2 w-full">
-			<InputGroup>
+		<div className="flex flex-col sm:flex-row items-center gap-2 w-full">
+			{/* Search */}
+			<InputGroup className="w-full">
 				<InputGroupAddon>
 					<HugeiconsIcon icon={SearchIcon} className="size-4" />
 				</InputGroupAddon>
 				<InputGroupInput value={search} onChange={(e) => onSearchChange(e.target.value)} placeholder="Search..." />
 			</InputGroup>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="outline">
-						Category <HugeiconsIcon icon={ArrowDownIcon} className="size-4" />
+			<div className="flex items-center gap-1 sm:gap-2 w-full md:w-auto">
+				{/* Category */}
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="outline" className="flex flex-1 justify-left">
+							Category <HugeiconsIcon icon={ArrowDownIcon} className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className="sm:w-48" align="start">
+						<DropdownMenuGroup>
+							{SUGGESTION_CATEGORIES.map((category) => (
+								<DropdownMenuCheckboxItem
+									key={category}
+									checked={categories.includes(category)}
+									onCheckedChange={(checked) =>
+										onCategoryChange(checked ? [...categories, category] : categories.filter((c) => c !== category))
+									}
+								>
+									<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} />
+									{category}
+								</DropdownMenuCheckboxItem>
+							))}
+						</DropdownMenuGroup>
+					</DropdownMenuContent>
+				</DropdownMenu>
+				{/* Status */}
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="outline" className="flex flex-1 justify-left">
+							Status <HugeiconsIcon icon={ArrowDownIcon} className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent className="sm:w-48" align="start">
+						<DropdownMenuGroup>
+							{SUGGESTION_STATUSES.map((status) => (
+								<DropdownMenuCheckboxItem
+									key={status}
+									checked={statuses.includes(status)}
+									onCheckedChange={(checked) => onStatusChange(checked ? [...statuses, status] : statuses.filter((s) => s !== status))}
+								>
+									{status.replace('_', ' ')}
+								</DropdownMenuCheckboxItem>
+							))}
+						</DropdownMenuGroup>
+					</DropdownMenuContent>
+				</DropdownMenu>
+				{/* Sorting */}
+				<ButtonGroup className="w-full sm:w-auto flex flex-1">
+					<Button
+						variant="outline"
+						className={`flex-1 ${show === 'mostVoted' ? 'bg-neutral-100 text-neutral-900' : ''}`}
+						onClick={() => onShowChange('mostVoted')}
+					>
+						Most voted
 					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent className="w-48" align="start">
-					<DropdownMenuGroup>
-						{SUGGESTION_CATEGORIES.map((category) => (
-							<DropdownMenuCheckboxItem
-								key={category}
-								checked={categories.includes(category)}
-								onCheckedChange={(checked) =>
-									onCategoryChange(checked ? [...categories, category] : categories.filter((c) => c !== category))
-								}
-							>
-								<HugeiconsIcon icon={category === 'FEATURE' ? SparklesIcon : BugIcon} />
-								{category}
-							</DropdownMenuCheckboxItem>
-						))}
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenu>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="outline">
-						Status <HugeiconsIcon icon={ArrowDownIcon} className="size-4" />
+					<Button
+						variant="outline"
+						className={`flex-1 ${show === 'newest' ? 'bg-neutral-100 text-neutral-900' : ''}`}
+						onClick={() => onShowChange('newest')}
+					>
+						Newest
 					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent className="w-48" align="start">
-					<DropdownMenuGroup>
-						{SUGGESTION_STATUSES.map((status) => (
-							<DropdownMenuCheckboxItem
-								key={status}
-								checked={statuses.includes(status)}
-								onCheckedChange={(checked) => onStatusChange(checked ? [...statuses, status] : statuses.filter((s) => s !== status))}
-							>
-								{status}
-							</DropdownMenuCheckboxItem>
-						))}
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenu>
-			<ButtonGroup>
-				<Button
-					variant="outline"
-					className={cn(show === 'mostVoted' && 'bg-neutral-100 text-neutral-900')}
-					onClick={() => onShowChange('mostVoted')}
-				>
-					Most voted
-				</Button>
-				<Button
-					variant="outline"
-					className={cn(show === 'newest' && 'bg-neutral-100 text-neutral-900')}
-					onClick={() => onShowChange('newest')}
-				>
-					Newest
-				</Button>
-			</ButtonGroup>
+				</ButtonGroup>
+			</div>
 		</div>
 	);
 };
