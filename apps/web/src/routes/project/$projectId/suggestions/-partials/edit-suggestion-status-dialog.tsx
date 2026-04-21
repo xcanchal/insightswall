@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { SuggestionStatus, SUGGESTION_STATUSES } from '@app/types';
 import type { SuggestionWithVoteContextResponse } from '@/api/suggestions';
+import { formatSuggestionStatus } from '@/utils';
 
 export interface EditSuggestionStatusDialogProps {
 	suggestion: SuggestionWithVoteContextResponse;
@@ -37,9 +38,9 @@ export const EditSuggestionStatusDialog = ({
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
-								{SUGGESTION_STATUSES.map((s) => (
-									<SelectItem key={s} value={s}>
-										{s}
+								{SUGGESTION_STATUSES.map((status) => (
+									<SelectItem key={status} value={status}>
+										{formatSuggestionStatus(status)}
 									</SelectItem>
 								))}
 							</SelectContent>

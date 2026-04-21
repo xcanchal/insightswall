@@ -87,44 +87,42 @@ export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: Sugg
 
 	return (
 		<>
-			<div className="border rounded-xl p-5 flex flex-col gap-2 shadow-lg shadow-foreground/5 bg-background">
+			<div className="border rounded-xl p-6  flex flex-col gap-2 shadow-lg shadow-foreground/5 bg-background">
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
 					<div className="flex flex-col gap-4 flex-1">
 						<div className="flex flex-col sm:flex-row gap-8">
-							<p className="text-lg flex flex-1 items-start gap-2">
-								<SuggestionCategoryIcon category={suggestion.category} />
+							<p className="text-lg flex flex-1 items-start gap-3">
 								<span className="-mt-0.5 text-lg sm:text-xl">{suggestion.description}</span>
 							</p>
-							<div className="flex items-center justify-between sm:justify-start sm:gap-2">
-								<SuggestionCardVote suggestion={suggestion} isPending={isPending} handleVote={handleVote} />
-								{(isProjectAdmin || isOwner) && (
-									<SuggestionCardActionsMenu
-										suggestion={suggestion}
-										isProjectAdmin={isProjectAdmin}
-										isOwner={isOwner}
-										onEditStatus={() => setEditStatusDialogOpen(true)}
-										onEdit={() => setEditDialogOpen(true)}
-										onDelete={() => setDeleteDialogOpen(true)}
-									/>
-								)}
-							</div>
 						</div>
-						<div className="flex items-center justify-between gap-3">
-							<div className="flex items-center gap-2">
-								<SuggestionStatusPill status={suggestion.status} />
-								{suggestion.status === 'REJECTED' && suggestion.rejectionReason && (
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<button type="button" className="text-red-700">
-												<HugeiconsIcon icon={HelpCircleIcon} className="size-5" />
-											</button>
-										</TooltipTrigger>
-										<TooltipContent>Reason:{suggestion.rejectionReason}</TooltipContent>
-									</Tooltip>
-								)}
-							</div>
+						<div className="flex items-center gap-2">
+							<SuggestionCategoryIcon category={suggestion.category} />
+							<SuggestionStatusPill status={suggestion.status} />
+							{suggestion.status === 'REJECTED' && suggestion.rejectionReason && (
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<button type="button" className="text-red-700">
+											<HugeiconsIcon icon={HelpCircleIcon} className="size-5" />
+										</button>
+									</TooltipTrigger>
+									<TooltipContent>Reason:{suggestion.rejectionReason}</TooltipContent>
+								</Tooltip>
+							)}
 							<p className="text-sm text-muted-foreground">Created {formatDate(new Date(suggestion.createdAt))}</p>
 						</div>
+					</div>
+					<div className="flex items-center justify-between sm:justify-start sm:gap-2">
+						<SuggestionCardVote suggestion={suggestion} isPending={isPending} handleVote={handleVote} />
+						{(isProjectAdmin || isOwner) && (
+							<SuggestionCardActionsMenu
+								suggestion={suggestion}
+								isProjectAdmin={isProjectAdmin}
+								isOwner={isOwner}
+								onEditStatus={() => setEditStatusDialogOpen(true)}
+								onEdit={() => setEditDialogOpen(true)}
+								onDelete={() => setDeleteDialogOpen(true)}
+							/>
+						)}
 					</div>
 				</div>
 			</div>

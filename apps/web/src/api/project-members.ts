@@ -10,5 +10,5 @@ export type ProjectMemberResponse = {
 };
 
 export const projectMembersApi = {
-	getByProjectId: (projectId: string) => apiClient.get<ProjectMemberResponse>(`/api/projects/${projectId}/members`),
+	getMe: (projectId: string) => apiClient.get<ProjectMemberResponse>(`/api/projects/${projectId}/me`),
 };

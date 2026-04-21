@@ -3,7 +3,7 @@ import { useProjectById } from '@/hooks/use-projects';
 import { ProjectIcon } from '@/components/project-icon';
 import { Spinner } from '@/components/spinner';
 import { ProjectSwitcher } from '@/components/header/-partials/project-switcher';
-import { useProjectMemberByProjectId } from '@/hooks/use-project-members';
+import { useProjectMe } from '@/hooks/use-project-members';
 import { useEffect } from 'react';
 
 export const Route = createFileRoute('/project/$projectId')({
@@ -17,7 +17,7 @@ function ProjectLayout() {
 	const { projectId } = useParams({ strict: false });
 	const { data: project, isLoading } = useProjectById(projectId ?? null);
 	const navigate = useNavigate();
-	const { data: projectMember } = useProjectMemberByProjectId(projectId ?? null);
+	const { data: projectMember } = useProjectMe(projectId ?? null);
 	const isAdmin = projectMember?.role === 'ADMIN';
 
 	useEffect(() => {
