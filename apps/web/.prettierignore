@@ -1,2 +1,4 @@
 dist
 routeTree.gen.ts
+test-results
+playwright-report

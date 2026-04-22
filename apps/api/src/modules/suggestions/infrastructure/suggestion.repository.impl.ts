@@ -68,11 +68,16 @@ export class SuggestionRepository implements ISuggestionRepository {
 		return row ? toSuggestion(row) : null;
 	}
 
-	async updateStatus(suggestionId: string, status: SuggestionStatus, rejectionReason?: string): Promise<SuggestionEntity | null> {
+	async updateStatus(
+		projectId: string,
+		suggestionId: string,
+		status: SuggestionStatus,
+		rejectionReason?: string
+	): Promise<SuggestionEntity | null> {
 		const [row] = await this.db
 			.update(suggestions)
 			.set({ status, rejectionReason: rejectionReason ?? null, updatedAt: sql`now()` })
-			.where(eq(suggestions.id, suggestionId))
+			.where(and(eq(suggestions.id, suggestionId), eq(suggestions.projectId, projectId)))
 			.returning();
 		return row ? toSuggestion(row) : null;
 	}
