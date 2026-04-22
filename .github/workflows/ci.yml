@@ -20,12 +20,51 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build --workspace=@app/types
+      - name: Build shared packages
+        run: npm run build --workspace=@app/types
 
-      - run: npm run format:check
+      - name: Check formatting
+        run: npm run format:check
 
-      - run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-      - run: npm run typecheck
+      - name: Typecheck
+        run: npm run typecheck
 
-      - run: npm run test
+      - name: Build API
+        run: npm run build --workspace=@app/api
+
+      - name: Test API
+        run: npm run test --workspace=@app/api
+
+      - name: Build web
+        run: npm run build --workspace=@app/web
+        env:
+          VITE_API_URL: http://127.0.0.1:3000
+          VITE_BETTER_AUTH_URL: http://127.0.0.1:3000
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Test web
+        run: npm run test --workspace=@app/web
+        env:
+          VITE_API_URL: http://127.0.0.1:3000
+          VITE_BETTER_AUTH_URL: http://127.0.0.1:3000
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: playwright-test-results
+          path: apps/web/test-results/
+          retention-days: 14
