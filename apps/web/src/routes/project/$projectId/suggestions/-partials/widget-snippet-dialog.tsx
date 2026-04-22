@@ -30,6 +30,10 @@ export const WidgetSnippetDialog = ({ open, onOpenChange, projectId }: WidgetSni
 						<code>{snippet}</code>
 					</pre>
 					<p className="text-xs text-muted-foreground">
+						You can place the script in the <code className="bg-muted px-1 rounded">{'<head>'}</code> or{' '}
+						<code className="bg-muted px-1 rounded">{'</body>'}</code>.
+					</p>
+					<p className="text-xs text-muted-foreground">
 						Optional attributes: <code className="bg-muted px-1 rounded">data-label</code> (button text),{' '}
 						<code className="bg-muted px-1 rounded">data-color</code> (background color).
 					</p>

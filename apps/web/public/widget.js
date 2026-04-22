@@ -2,6 +2,8 @@
 	var script = document.currentScript;
 	if (!script) return;
 
+	var BUTTON_ID = 'insightswall-widget-button';
+	var STYLE_ID = 'insightswall-widget-style';
 	var projectId = script.getAttribute('data-project');
 	if (!projectId) {
 		console.warn('[InsightsWall] Missing data-project attribute on widget script.');
@@ -13,41 +15,57 @@
 	var baseUrl = new URL(script.src).origin;
 	var targetUrl = baseUrl + '/project/' + projectId + '/suggestions';
 
-	var btn = document.createElement('button');
-	btn.textContent = label;
-	btn.setAttribute('aria-label', 'Send feedback');
+	function ensureStyles() {
+		if (document.getElementById(STYLE_ID)) return;
 
-	btn.style.cssText = [
-		'position:fixed',
-		'bottom:20px',
-		'right:20px',
-		'z-index:9999',
-		'padding:12px 20px',
-		'border:none',
-		'border-radius:999px',
-		'background:' + bgColor,
-		'color:#fff',
-		'font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif',
-		'font-size:14px',
-		'font-weight:600',
-		'cursor:pointer',
-		'box-shadow:0 4px 12px rgba(0,0,0,0.15)',
-		'transition:transform 0.15s ease,box-shadow 0.15s ease',
-	].join(';');
+		var style = document.createElement('style');
+		style.id = STYLE_ID;
+		style.textContent = [
+			'#' + BUTTON_ID + '{',
+			'position:fixed;',
+			'bottom:20px;',
+			'right:20px;',
+			'z-index:9999;',
+			'padding:12px 20px;',
+			'border:none;',
+			'border-radius:999px;',
+			'background:' + bgColor + ';',
+			'color:#fff;',
+			'font-family:system-ui,sans-serif;',
+			'font-size:14px;',
+			'font-weight:600;',
+			'cursor:pointer;',
+			'box-shadow:0 4px 12px rgba(0,0,0,0.15);',
+			'transition:transform 0.15s ease,box-shadow 0.15s ease;',
+			'}',
+			'#' + BUTTON_ID + ':hover{',
+			'transform:scale(1.05);',
+			'box-shadow:0 6px 16px rgba(0,0,0,0.2);',
+			'}',
+		].join('');
 
-	btn.addEventListener('mouseenter', function () {
-		btn.style.transform = 'scale(1.05)';
-		btn.style.boxShadow = '0 6px 16px rgba(0,0,0,0.2)';
-	});
+		(document.head || document.documentElement).appendChild(style);
+	}
 
-	btn.addEventListener('mouseleave', function () {
-		btn.style.transform = 'scale(1)';
-		btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-	});
+	function mount() {
+		if (!document.body) return false;
+		if (document.getElementById(BUTTON_ID)) return true;
 
-	btn.addEventListener('click', function () {
-		window.open(targetUrl, '_blank', 'noopener');
-	});
+		ensureStyles();
 
-	document.body.appendChild(btn);
+		var btn = document.createElement('button');
+		btn.id = BUTTON_ID;
+		btn.textContent = label;
+
+		btn.addEventListener('click', function () {
+			window.open(targetUrl, '_blank', 'noopener');
+		});
+
+		document.body.appendChild(btn);
+		return true;
+	}
+
+	if (!mount()) {
+		document.addEventListener('DOMContentLoaded', mount, { once: true });
+	}
 })();

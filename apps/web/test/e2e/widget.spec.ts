@@ -7,6 +7,10 @@ function widgetHtml(attrs: string = '') {
 	return `<!doctype html><html><body><script src="${WIDGET_URL}" data-project="${PROJECT_ID}" ${attrs}></script></body></html>`;
 }
 
+function widgetHtmlInHead(attrs: string = '') {
+	return `<!doctype html><html><head><script src="${WIDGET_URL}" data-project="${PROJECT_ID}" ${attrs}></script></head><body></body></html>`;
+}
+
 test.describe('Widget', () => {
 	test('renders a floating feedback button', async ({ page }) => {
 		await page.setContent(widgetHtml());
@@ -37,6 +41,14 @@ test.describe('Widget', () => {
 
 		const btn = page.getByRole('button', { name: 'Send feedback' });
 		await expect(btn).toHaveCSS('background-color', 'rgb(37, 99, 235)');
+	});
+
+	test('renders when embedded from the head before body is available', async ({ page }) => {
+		await page.setContent(widgetHtmlInHead());
+
+		const btn = page.getByRole('button', { name: 'Send feedback' });
+		await expect(btn).toBeVisible();
+		await expect(btn).toHaveText('💡 Feedback');
 	});
 
 	test('does not render button when data-project is missing', async ({ page }) => {
