@@ -1,10 +1,15 @@
 import { createFileRoute, Link, Outlet, useMatch, useNavigate, useParams } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useProjectById } from '@/hooks/use-projects';
 import { ProjectIcon } from '@/components/project-icon';
 import { Spinner } from '@/components/spinner';
 import { ProjectSwitcher } from '@/components/header/-partials/project-switcher';
 import { useProjectMe } from '@/hooks/use-project-members';
 import { useEffect } from 'react';
+import { WidgetSnippetDialog } from './$projectId/suggestions/-partials/widget-snippet-dialog';
+import { Button } from '@/components/ui/button';
+import { CodeIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 
 export const Route = createFileRoute('/project/$projectId')({
 	component: ProjectLayout,
@@ -26,17 +31,23 @@ function ProjectLayout() {
 		}
 	}, [isLoading, navigate, project]);
 
+	const [widgetDialogOpen, setWidgetDialogOpen] = useState(false);
 	const isRoadmap = useMatch({ from: '/project/$projectId/roadmap/', shouldThrow: false });
 
 	if (!project) return null;
 
 	return (
-		<div className={`container mx-auto px-4 sm:px-0 py-6 ${isRoadmap ? 'lg:max-w-6xl' : 'lg:max-w-4xl'}`}>
+		<div className={`container mx-auto px-4 sm:px-0 py-6 ${isRoadmap ? 'lg:max-w-5xl' : 'lg:max-w-4xl'}`}>
 			<div className="flex w-full flex-col gap-4">
 				<div className="flex w-full items-center">
 					<div className="flex flex-col sm:flex-row w-full gap-4 items-center justify-between">
 						{isAdmin ? (
-							<ProjectSwitcher currentProject={project} />
+							<div className="flex w-full sm:w-auto items-center gap-2">
+								<ProjectSwitcher currentProject={project} />
+								<Button variant="outline" onClick={() => setWidgetDialogOpen(true)} className="h-11" size="lg">
+									<HugeiconsIcon icon={CodeIcon} className="size-4" /> Embed widget
+								</Button>
+							</div>
 						) : (
 							<div className="flex w-full sm:w-auto items-center gap-2">
 								<ProjectIcon url={project.url} />
@@ -65,6 +76,7 @@ function ProjectLayout() {
 				</div>
 				{isLoading ? <Spinner className="size-6 mx-auto" /> : <Outlet />}
 			</div>
+			{projectId && <WidgetSnippetDialog open={widgetDialogOpen} onOpenChange={setWidgetDialogOpen} projectId={projectId} />}
 		</div>
 	);
 }

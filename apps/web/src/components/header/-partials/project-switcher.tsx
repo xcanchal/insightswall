@@ -29,7 +29,7 @@ export const ProjectSwitcher = ({ currentProject }: ProjectSwitcherProps) => {
 			<DropdownMenuTrigger asChild className="w-full sm:w-auto">
 				<Button variant="outline" size="lg" className="text-lg h-11">
 					<ProjectIcon url={currentProject.url} sizeClassName="size-5" />
-					{currentProject.name} <HugeiconsIcon icon={ArrowDownIcon} className="size-3.5 text-muted-foreground" />
+					{currentProject.name} <HugeiconsIcon icon={ArrowDownIcon} className="size-4" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="sm:min-w-48 sm:max-w-64" align="start">
