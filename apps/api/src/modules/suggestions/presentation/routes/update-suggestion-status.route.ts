@@ -57,9 +57,9 @@ export class UpdateSuggestionStatusRoute {
 		this.app.use(this.routePath, createProjectAdminMiddleware(this.projectMemberRepository));
 		this.app.openapi(updateSuggestionStatusRouteDefinition, async (c) => {
 			try {
-				const { suggestionId } = c.req.valid('param');
+				const { projectId, suggestionId } = c.req.valid('param');
 				const { status, rejectionReason } = c.req.valid('json');
-				const suggestion = await this.updateSuggestionStatusUseCase.execute(suggestionId, status, rejectionReason);
+				const suggestion = await this.updateSuggestionStatusUseCase.execute(projectId, suggestionId, status, rejectionReason);
 				if (!suggestion) return c.json({ error: 'Suggestion not found' }, 404);
 				return c.json(
 					{
