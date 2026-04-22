@@ -362,6 +362,27 @@ describe('Suggestions', () => {
 
 				expect(res.status).toBe(404);
 			});
+
+			it('returns 404 when suggestion belongs to a different project', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [adminProject] = await db.insert(projects).values({ name: 'Admin Project' }).returning();
+				const [otherProject] = await db.insert(projects).values({ name: 'Other Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: adminProject.id, userId: TEST_USER.id, role: 'ADMIN' });
+				const [suggestion] = await db
+					.insert(suggestions)
+					.values({ projectId: otherProject.id, userId: TEST_USER.id, description: 'Cross-project target', category: 'FEATURE' })
+					.returning();
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${adminProject.id}/suggestions/${suggestion.id}/status`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ status: 'REJECTED', rejectionReason: 'Not needed' }),
+				});
+
+				expect(res.status).toBe(404);
+			});
 		});
 
 		describe('Success cases', () => {
