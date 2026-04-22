@@ -49,3 +49,6 @@ jobs:
 
       - name: Test web
         run: npm run test --workspace=@app/web
+        env:
+          VITE_API_URL: http://127.0.0.1:3000
+          VITE_BETTER_AUTH_URL: http://127.0.0.1:3000
