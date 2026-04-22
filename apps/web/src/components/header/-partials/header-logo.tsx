@@ -4,7 +4,7 @@ import { BulbIcon } from '@hugeicons/core-free-icons';
 
 export const HeaderLogo = () => {
 	return (
-		<Link to="/" className="font-bold flex items-center gap-1 font-heading text-xl">
+		<Link to="/" className="flex items-center gap-1 font-heading text-2xl font-black tracking-tight transition-colors ">
 			<HugeiconsIcon icon={BulbIcon} /> Insightswall
 		</Link>
 	);
