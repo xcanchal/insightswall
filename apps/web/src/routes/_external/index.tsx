@@ -218,7 +218,7 @@ function Index() {
 										<h3>Suggestions</h3>
 										<div className="flex flex-col gap-2">
 											{suggestions.map((suggestion) => (
-												<SuggestionCard key={suggestion.id} suggestion={suggestion} isProjectAdmin={false} queryParams={{}} />
+												<SuggestionCard key={suggestion.id} suggestion={suggestion} isProjectAdmin={false} queryParams={{}} readOnly />
 											))}
 										</div>
 									</CardContent>

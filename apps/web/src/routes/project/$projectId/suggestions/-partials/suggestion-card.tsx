@@ -21,9 +21,10 @@ interface SuggestionCardProps {
 	suggestion: SuggestionWithVoteContextResponse;
 	isProjectAdmin: boolean;
 	queryParams: SuggestionQueryParams;
+	readOnly?: boolean;
 }
 
-export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: SuggestionCardProps) => {
+export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams, readOnly }: SuggestionCardProps) => {
 	const { mutate: vote, isPending } = useVoteSuggestion(suggestion.projectId, queryParams);
 	const { mutate: updateStatus, isPending: isUpdating } = useUpdateSuggestionStatus(suggestion.projectId);
 	const { mutate: editSuggestion, isPending: isEditing } = useEditSuggestion(suggestion.projectId);
@@ -38,6 +39,7 @@ export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: Sugg
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
 	const handleVote = () => {
+		if (readOnly) return;
 		if (!session?.user) {
 			setProtectedActionDialogOpen(true);
 			return;
@@ -46,6 +48,7 @@ export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: Sugg
 	};
 
 	const handleUpdateStatus = (selectedStatus: SuggestionStatus, rejectionReason?: string) => {
+		if (readOnly) return;
 		updateStatus(
 			{
 				suggestionId: suggestion.id,
@@ -63,6 +66,7 @@ export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: Sugg
 	};
 
 	const handleEdit = (values: { description: string; category: SuggestionCategory }) => {
+		if (readOnly) return;
 		editSuggestion(
 			{ suggestionId: suggestion.id, ...values },
 			{
@@ -87,7 +91,9 @@ export const SuggestionCard = ({ suggestion, isProjectAdmin, queryParams }: Sugg
 
 	return (
 		<>
-			<div className="border rounded-xl p-6  flex flex-col gap-2 shadow-lg shadow-foreground/5 bg-background">
+			<div
+				className={`border rounded-xl p-6  flex flex-col gap-2 shadow-lg shadow-foreground/5 bg-background ${readOnly ? 'pointer-events-none' : ''}`}
+			>
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
 					<div className="flex flex-col gap-4 flex-1">
 						<div className="flex flex-col sm:flex-row gap-8">
