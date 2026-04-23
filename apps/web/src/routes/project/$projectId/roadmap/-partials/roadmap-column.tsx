@@ -4,6 +4,7 @@ import type { SuggestionWithVoteContextResponse } from '@/api/suggestions';
 import { RoadmapCard } from './roadmap-card';
 
 interface RoadmapColumnProps {
+	className?: string;
 	status: SuggestionStatus;
 	suggestions: SuggestionWithVoteContextResponse[];
 	isAdmin: boolean;
@@ -15,12 +16,15 @@ const columnConfig: Record<string, { label: string; headerClass: string }> = {
 	DONE: { label: 'DONE', headerClass: 'bg-green-100 text-green-700' },
 };
 
-export const RoadmapColumn = ({ status, suggestions, isAdmin }: RoadmapColumnProps) => {
+export const RoadmapColumn = ({ className, status, suggestions, isAdmin }: RoadmapColumnProps) => {
 	const { setNodeRef, isOver } = useDroppable({ id: status });
 	const config = columnConfig[status] ?? { label: status, headerClass: 'bg-neutral-100 text-neutral-700' };
 
 	return (
-		<div ref={setNodeRef} className={`flex flex-col rounded-xl bg-neutral-50 min-h-48 ${isOver ? 'ring-3 ring-black/15' : ''}`}>
+		<div
+			ref={setNodeRef}
+			className={`flex flex-col rounded-xl bg-neutral-50 min-h-48 ${className} ${isOver ? 'ring-3 ring-black/15' : ''}`}
+		>
 			<div className={`flex items-center gap-2 px-4 py-3 rounded-lg m-2 ${config.headerClass}`}>
 				<span className="text-sm">{config.label}</span>
 				<span className="text-xs rounded-full bg-white/50 px-2 py-0.5">{suggestions.length}</span>

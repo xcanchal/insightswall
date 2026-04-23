@@ -15,6 +15,10 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Card, CardContent } from '@/components/ui/card';
+import { SuggestionWithVoteContextResponse } from '@/api/suggestions';
+import { SuggestionCard } from '../project/$projectId/suggestions/-partials/suggestion-card';
+import { RoadmapColumn } from '../project/$projectId/roadmap/-partials/roadmap-column';
+import { ProjectIcon } from '@/components/project-icon';
 
 const features = [
 	{
@@ -103,11 +107,66 @@ const builtFor = [
 	},
 ];
 
+const suggestions: SuggestionWithVoteContextResponse[] = [
+	{
+		id: '1',
+		projectId: '1',
+		userId: '1',
+		description: 'I would like to be able to specify the age of the reader to adapt the difficulty ',
+		category: 'FEATURE',
+		status: 'PLANNED',
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		rejectionReason: null,
+		voteCount: 5,
+		userHasVoted: false,
+	},
+	{
+		id: '2',
+		projectId: '1',
+		userId: '1',
+		description: 'Sometimes the illustrations generation takes too long',
+		category: 'BUG',
+		status: 'IN_PROGRESS',
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		rejectionReason: null,
+		voteCount: 3,
+		userHasVoted: false,
+	},
+	{
+		id: '3',
+		projectId: '1',
+		userId: '1',
+		description: 'I would like to print a physical copy of the storybook and receive it at home',
+		category: 'FEATURE',
+		status: 'IN_PROGRESS',
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		rejectionReason: null,
+		voteCount: 1,
+		userHasVoted: false,
+	},
+	{
+		id: '4',
+		projectId: '1',
+		userId: '1',
+		description: 'I would like to add a new language to the storybook',
+		category: 'FEATURE',
+		status: 'DONE',
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		rejectionReason: null,
+		voteCount: 0,
+		userHasVoted: false,
+	},
+];
+
 export const Route = createFileRoute('/_external/')({
 	component: Index,
 });
 
-const sectionContainerClassName = 'container mx-auto max-w-6xl px-4 md:px-0 py-12 sm:py-20';
+const sectionContainerClassName = 'container mx-auto max-w-6xl py-12 sm:py-20 px-4 md:px-0';
 const sectionHeadingWrapperClassName = 'mx-auto text-center text-balance flex flex-col gap-6';
 const sectionCategoryClassName = 'text-sm font-semibold uppercase tracking-tight text-primary';
 const sectionHeadingClassName = 'text-3xl font-black tracking-tight leading-tight text-balance sm:text-4xl md:text-5xl';
@@ -118,34 +177,80 @@ const cardDescriptionClassName = 'text-sm leading-7 text-zinc-600';
 function Index() {
 	return (
 		<div>
-			<section className="container mx-auto max-w-6xl px-4 md:px-0">
-				<div className={sectionContainerClassName}>
+			<section id="hero" className="container mx-auto px-4 md:px-0">
+				<div className={`${sectionContainerClassName} px-0!`}>
 					<div className="flex flex-col items-center justify-center gap-8">
-						{/* <div className="rounded-full border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 shadow-sm bg-neutral-100 mb-4">
-							Public feedback board + voting + roadmap
-						</div> */}
-						<div className="flex flex-col items-center justify-center gap-2">
-							<h1 className="text-balance font-black tracking-tight text-5xl md:text-6xl lg:text-7xl text-center leading-10 md:leading-15 lg:leading-18">
-								Collect feature requests, let users vote, and share your public roadmap.
-							</h1>
-							<p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-zinc-600 sm:text-xl text-center">
-								Insightswall helps SaaS companies, startups, and solopreneurs collect product feedback, prioritize ideas with votes, and
-								communicate progress through a publicly visible roadmap.
-							</p>
-						</div>
-						<div className="flex flex-col items-center justify-center gap-6">
-							<Link to="/auth/signup">
-								<Button className="h-12 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-lg md:rounded-xl">
-									Get started <HugeiconsIcon icon={ArrowRight} className="size-8" />
-								</Button>
-							</Link>
-							<p className="text-center text-zinc-600">
-								Already have an account?{' '}
-								<Link to="/auth/login" className="font-semibold">
-									Log in
+						<div className="flex flex-col items-center justify-center gap-8 max-w-4xl mx-auto">
+							<div className="flex flex-col items-center justify-center gap-2">
+								<h1 className="text-balance font-black tracking-tight text-5xl md:text-6xl lg:text-7xl text-center leading-10 md:leading-15 lg:leading-18">
+									Turn <span className="text-primary">user feedback</span> into a clear, public roadmap
+								</h1>
+								<p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-zinc-600 sm:text-xl text-center">
+									Insightswall helps companies to collect product feedback, prioritize ideas with votes, and communicate progress through a
+									publicly visible roadmap.
+								</p>
+							</div>
+							<div className="flex flex-col items-center justify-center gap-6">
+								<Link to="/auth/signup">
+									<Button className="h-12 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-lg md:rounded-xl">
+										Get started <HugeiconsIcon icon={ArrowRight} className="size-8" />
+									</Button>
 								</Link>
-							</p>
+								<p className="text-center text-zinc-600">
+									Already have an account?{' '}
+									<Link to="/auth/login" className="font-semibold">
+										Log in
+									</Link>
+								</p>
+							</div>
 						</div>
+
+						<Card className="rounded-xl border-zinc-200 bg-zinc-50 flex flex-col gap-6 px-4 py-6 sm:px-6 sm:py-6 mt-8 relative overflow-visible">
+							<div className="flex flex-col gap-2">
+								<h3 className="flex items-center gap-2">
+									<ProjectIcon url="https://unlimitedtales.com" /> UnlimitedTales
+								</h3>
+								{/* <p className="text-sm text-muted-foreground">UnlimitedTales feedback board</p> */}
+							</div>
+							<div className="flex flex-col sm:flex-row gap-4 w-full ">
+								<Card className="flex flex-2 pt-2 pb-4 px-0 sm:pt-6 sm:pb-8">
+									<CardContent className="flex flex-col gap-4 scale-[0.9] -my-11 p-0">
+										<h3>Suggestions</h3>
+										<div className="flex flex-col gap-2">
+											{suggestions.map((suggestion) => (
+												<SuggestionCard key={suggestion.id} suggestion={suggestion} isProjectAdmin={false} queryParams={{}} />
+											))}
+										</div>
+									</CardContent>
+								</Card>
+								<Card className="flex flex-3 pt-2 pb-4 px-4 sm:pt-6 sm:pb-8">
+									<CardContent className="flex flex-col gap-4 scale-[0.9] -my-8 -mx-4 p-0 h-full flex-1">
+										<h3>Roadmap</h3>
+										<div className="flex flex-col sm:flex-row gap-1 h-full flex-1">
+											<RoadmapColumn
+												className="h-full flex-1"
+												status="PLANNED"
+												suggestions={suggestions.filter((s) => s.status === 'PLANNED')}
+												isAdmin={false}
+											/>
+											<RoadmapColumn
+												className="h-full flex-1"
+												status="IN_PROGRESS"
+												suggestions={suggestions.filter((s) => s.status === 'IN_PROGRESS')}
+												isAdmin={false}
+											/>
+											<RoadmapColumn
+												className="h-full flex-1"
+												status="DONE"
+												suggestions={suggestions.filter((s) => s.status === 'DONE')}
+												isAdmin={false}
+											/>
+										</div>
+									</CardContent>
+								</Card>
+							</div>
+							<div className="text-xs absolute right-4 -top-3 text-orange-600 bg-orange-100 rounded-full px-3 py-1 font-semibold">DEMO</div>
+						</Card>
 					</div>
 				</div>
 			</section>
@@ -193,7 +298,7 @@ function Index() {
 					<div className="mt-10 sm:mt-14 grid gap-4 lg:grid-cols-4">
 						{steps.map((step, index) => (
 							<Card key={step.number} className="rounded-xl border-zinc-200 bg-white shadow-sm">
-								<CardContent className="px-8 py-2 flex flex-col gap-6">
+								<CardContent className="px-8 pt-4 pb-2 flex flex-col gap-6">
 									<div className="text-2xl text-orange-600 font-semibold bg-orange-50 rounded-full w-12 h-12 flex items-center justify-center">
 										{index + 1}
 									</div>
@@ -208,7 +313,7 @@ function Index() {
 				</div>
 			</section>
 
-			<section id="scattered-feedback">
+			<section id="scattered-feedback" className="border-t border-zinc-200">
 				<div className={sectionContainerClassName}>
 					<div className={sectionHeadingWrapperClassName}>
 						<div className={sectionCategoryClassName}>A solution to scattered feedback</div>
@@ -256,6 +361,28 @@ function Index() {
 								</CardContent>
 							</Card>
 						))}
+					</div>
+				</div>
+			</section>
+
+			<section id="get-started" className="border-t border-zinc-200">
+				<div className={sectionContainerClassName}>
+					<div className="bg-primary p-12 sm:p-16 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-8 sm:gap-28">
+						<div className="flex flex-col gap-4">
+							<h2 className={`${sectionHeadingClassName} text-white`}>Start collecting feedback today</h2>
+							<p className="text-white/80 text-lg">
+								Create your project board in a couple minutes and start building a better product with your users.
+							</p>
+						</div>
+						<Link to="/auth/signup">
+							<Button
+								size="lg"
+								variant="outline"
+								className="h-12 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-lg md:rounded-xl w-full sm:w-auto"
+							>
+								Get started <HugeiconsIcon icon={ArrowRight} className="size-8" />
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</section>
