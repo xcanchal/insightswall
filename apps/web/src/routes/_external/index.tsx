@@ -223,7 +223,7 @@ function Index() {
 										</div>
 									</CardContent>
 								</Card>
-								<Card className="flex flex-3 pt-2 pb-4 px-4 sm:pt-6 sm:pb-8">
+								<Card className="flex flex-3 pt-2 pb-4 px-4 sm:pt-3 sm:pb-5 sm:px-0">
 									<CardContent className="flex flex-col gap-4 scale-[0.9] -my-8 -mx-4 p-0 h-full flex-1">
 										<h3>Roadmap</h3>
 										<div className="flex flex-col sm:flex-row gap-1 h-full flex-1">
