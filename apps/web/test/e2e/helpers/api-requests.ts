@@ -1,10 +1,10 @@
 import { Page } from '@playwright/test';
 import { type ProjectResponse } from '../../../src/api/projects';
-import type { Session } from 'better-auth';
+import type { Session, User } from 'better-auth';
 import { SuggestionResponse } from '../../../src/api/suggestions';
 import { ProjectMemberResponse } from '../../../src/api/project-members';
 
-export function mockGetSessionRequest(page: Page, response: Session | null) {
+export function mockGetSessionRequest(page: Page, response: { user: User; session: Session } | null) {
 	return page.route('**/get-session', async (route) => {
 		await route.fulfill({ json: response });
 	});
@@ -28,8 +28,13 @@ export function mockCreateProjectRequest(page: Page, response: ProjectResponse) 
 }
 
 export function mockGetProjectRequest(page: Page, projectId: string, response: ProjectResponse) {
-	return page.route(`**/api/projects/${projectId}`, async (route) => {
-		await route.fulfill({ json: response });
+	return page.route(`**/api/projects/${projectId}`, async (route, request) => {
+		if (request.method() === 'GET') {
+			await route.fulfill({ json: response });
+			return;
+		}
+
+		await route.fallback();
 	});
 }
 
@@ -40,7 +45,7 @@ export function mockGetProjectMemberRequest(page: Page, projectId: string, respo
 }
 
 export function mockGetProjectSuggestionsRequest(page: Page, projectId: string, response: SuggestionResponse[]) {
-	return page.route(`**/api/projects/${projectId}/suggestions`, async (route) => {
+	return page.route(`**/api/projects/${projectId}/suggestions**`, async (route) => {
 		await route.fulfill({ json: response });
 	});
 }

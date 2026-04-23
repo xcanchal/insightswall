@@ -31,7 +31,7 @@ test.describe('Projects page', () => {
 		const session = sessionFactory.build({ userId: user.id });
 
 		test.beforeEach(async ({ page }) => {
-			await mockGetSessionRequest(page, session);
+			await mockGetSessionRequest(page, { user, session });
 		});
 
 		test('shows the empty state', async ({ page }) => {
