@@ -185,7 +185,7 @@ function Index() {
 								<h1 className="text-balance font-black tracking-tight text-5xl md:text-6xl lg:text-7xl text-center leading-10 md:leading-15 lg:leading-18">
 									Turn <span className="text-primary">user feedback</span> into a clear, public roadmap
 								</h1>
-								<p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-zinc-600 sm:text-xl text-center">
+								<p className="mx-auto mt-6 max-w-3xl sm:text-lg md:text-xl leading-6 sm:leading-7 md:leading-8 text-zinc-600 text-center">
 									Insightswall helps products to collect feedback, prioritize ideas with votes, and communicate progress through a publicly
 									visible roadmap.
 								</p>
