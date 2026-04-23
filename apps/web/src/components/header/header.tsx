@@ -7,7 +7,7 @@ import { Logo } from '@/components/logo';
 const landingLinks = [
 	{ href: '#features', label: 'Features' },
 	{ href: '#how-it-works', label: 'How it works' },
-	{ href: '#scattered-feedback', label: 'Centralization' },
+	{ href: '#scattered-feedback', label: 'Solution' },
 	{ href: '#use-cases', label: 'Use cases' },
 ];
 

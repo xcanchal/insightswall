@@ -37,7 +37,7 @@ test.describe('Landing page', () => {
 		const header = page.locator('header');
 		await expect(header.getByRole('link', { name: 'Features' })).toHaveAttribute('href', '#features');
 		await expect(header.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how-it-works');
-		await expect(header.getByRole('link', { name: 'Centralization' })).toHaveAttribute('href', '#scattered-feedback');
+		await expect(header.getByRole('link', { name: 'Solution' })).toHaveAttribute('href', '#scattered-feedback');
 		await expect(header.getByRole('link', { name: 'Use cases' })).toHaveAttribute('href', '#use-cases');
 	});
 
