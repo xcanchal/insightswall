@@ -1,9 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { EmptyProjects } from './-partials/empty-projects';
 import { useCreateProject, projectsKeys, useProjects } from '@/hooks/use-projects';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Alert02Icon } from '@hugeicons/core-free-icons';
-import { Alert } from '@/components/ui/alert';
 import { useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { CreateProjectForm } from './-partials/create-project-form';
@@ -12,13 +9,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ProjectsList } from './-partials/projects-list';
 import { CreateButton } from '@/components/create-button';
 import { Spinner } from '@/components/spinner';
+import { AlertBanner } from '@/components/alert';
 
 export const Route = createFileRoute('/_internal/projects/')({
 	component: UserProjects,
 });
 
 function UserProjects() {
-	const { data: projects, isLoading: loadingProjects, error } = useProjects();
+	const { data: projects, isLoading: loadingProjects, error: loadingError } = useProjects();
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const { mutateAsync } = useCreateProject();
 	const queryClient = useQueryClient();
@@ -58,10 +56,8 @@ function UserProjects() {
 					</>
 				) : (
 					<>
-						{error ? (
-							<Alert variant="destructive" className="text-lg bg-red-100 border-0">
-								<HugeiconsIcon icon={Alert02Icon} className="size-6" /> Error loading projects
-							</Alert>
+						{loadingError ? (
+							<AlertBanner type="error" message="Failed to load projects" />
 						) : (
 							<>
 								{loadingProjects ? (
