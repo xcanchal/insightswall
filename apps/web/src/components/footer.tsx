@@ -41,7 +41,7 @@ const useCases = [
 export const Footer = () => {
 	return (
 		<footer className="border-t border-zinc-200 bg-[#faf9f7]">
-			<div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:px-8">
+			<div className="mx-auto grid max-w-7xl gap-10 px-6 py-8 sm:py-12 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:px-8">
 				<div>
 					<div className="flex items-center gap-3">
 						<Logo />
