@@ -8,12 +8,12 @@ export const Route = createFileRoute('/project')({
 
 function ProjectLayout() {
 	return (
-		<div className="flex flex-col min-h-screen">
+		<>
 			<Header />
 			<main className="flex-1">
 				<Outlet />
 			</main>
 			<Footer />
-		</div>
+		</>
 	);
 }

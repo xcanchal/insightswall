@@ -130,6 +130,10 @@
 	--radius-4xl: calc(var(--radius) * 2.6);
 }
 
+main {
+	@apply min-h-[calc(100vh-64px)];
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;

@@ -8,12 +8,12 @@ export const Route = createFileRoute('/_external')({
 
 function ExternalLayout() {
 	return (
-		<div className="flex flex-col min-h-screen">
+		<>
 			<Header />
 			<main className="flex-1">
 				<Outlet />
 			</main>
 			<Footer />
-		</div>
+		</>
 	);
 }

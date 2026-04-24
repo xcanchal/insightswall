@@ -26,7 +26,7 @@ function ProjectLayout() {
 	}, [isLoading, navigate, project, projectErrorStatusCode]);
 
 	const isRoadmap = useMatch({ from: '/project/$projectId/roadmap/', shouldThrow: false });
-	const containerClassName = `container mx-auto px-4 sm:px-0 py-6 ${isRoadmap ? 'lg:max-w-5xl' : 'lg:max-w-4xl'}`;
+	const containerClassName = `container mx-auto px-4 sm:px-0 py-4 sm:py-6 ${isRoadmap ? 'lg:max-w-5xl' : 'lg:max-w-4xl'}`;
 
 	if (isLoading) {
 		return (
@@ -47,15 +47,17 @@ function ProjectLayout() {
 	if (!project) return null;
 
 	return (
-		<div className={containerClassName}>
-			<div className="flex w-full flex-col gap-4">
+		<div className={`${containerClassName} flex min-h-full flex-1 flex-col`}>
+			<div className="flex w-full flex-1 flex-col gap-4">
 				<div className="flex w-full items-center">
 					<div className="flex flex-col sm:flex-row w-full gap-4 items-center justify-between">
 						<ProjectHeader project={project} isAdmin={projectMember?.role === 'ADMIN'} />
 						<ProjectSectionToggle projectId={project.id} />
 					</div>
 				</div>
-				<Outlet />
+				<div className="flex flex-1 flex-col">
+					<Outlet />
+				</div>
 			</div>
 		</div>
 	);

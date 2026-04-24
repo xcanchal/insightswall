@@ -119,7 +119,7 @@ export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 								setEditOpen(true);
 							}}
 						>
-							<HugeiconsIcon icon={PencilEdit02Icon} className="size-5" />
+							<HugeiconsIcon icon={PencilEdit02Icon} className="size-4" />
 							Edit
 						</DropdownMenuItem>
 						<DropdownMenuItem variant="destructive" onSelect={() => setDeleteOpen(true)} className="text-base">
