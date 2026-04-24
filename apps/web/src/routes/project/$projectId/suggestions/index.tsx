@@ -15,6 +15,7 @@ import { useIsProjectAdmin } from '@/hooks/use-is-project-admin';
 import { ProtectedActionDialog } from '@/components/protected-action-dialog';
 import { useSession } from '@/lib/auth-client';
 import { Spinner } from '@/components/spinner';
+import { AlertBanner } from '@/components/alert';
 
 const searchSchema = z.object({
 	search: z.string().optional(),
@@ -45,7 +46,7 @@ function ProjectSuggestions() {
 	const [protectedActionDialogOpen, setProtectedActionDialogOpen] = useState(false);
 	const { data: session } = useSession();
 
-	const { data: suggestions, isLoading: loadingSuggestions, isFetching } = useSuggestionsByProjectId(projectId ?? null, queryParams);
+	const { data: suggestions, isLoading: loadingSuggestions, isFetching, error } = useSuggestionsByProjectId(projectId ?? null, queryParams);
 	const { mutateAsync } = useCreateSuggestion(projectId!);
 
 	const isProjectAdmin = useIsProjectAdmin(projectId ?? '');
@@ -90,6 +91,8 @@ function ProjectSuggestions() {
 				</div>
 				{loadingSuggestions && !hasActiveFilters ? (
 					<Spinner className="size-6" />
+				) : error ? (
+					<AlertBanner type="error" message="Failed to load suggestions" />
 				) : (suggestions ?? []).length === 0 && !hasActiveFilters && !isFetching ? (
 					<div className="flex flex-col items-center justify-center gap-4 py-8">
 						<EmptySuggestions />

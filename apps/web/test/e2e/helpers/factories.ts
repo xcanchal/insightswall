@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { Session, User } from 'better-auth';
 import { type ProjectResponse } from '../../../src/api/projects';
 import { ProjectMemberResponse } from '../../../src/api/project-members';
+import { SuggestionWithVoteContextResponse } from '../../../src/api/suggestions';
 
 export const userFactory = Factory.define<User>('user').attrs({
 	id: () => faker.string.uuid(),
@@ -36,4 +37,18 @@ export const projectMemberFactory = Factory.define<ProjectMemberResponse>('proje
 	role: 'ADMIN',
 	createdAt: () => faker.date.past().toISOString(),
 	updatedAt: null,
+});
+
+export const suggestionFactory = Factory.define<SuggestionWithVoteContextResponse>('suggestion').attrs({
+	id: () => faker.string.uuid(),
+	projectId: () => faker.string.uuid(),
+	userId: () => faker.string.uuid(),
+	description: () => faker.lorem.sentence(),
+	category: 'FEATURE',
+	status: 'OPEN',
+	rejectionReason: null,
+	createdAt: () => faker.date.past().toISOString(),
+	updatedAt: null,
+	voteCount: 0,
+	userHasVoted: false,
 });
