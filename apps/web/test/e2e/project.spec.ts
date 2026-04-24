@@ -35,6 +35,23 @@ test.describe('Project shell', () => {
 			await expect(page).toHaveURL('/projects', { timeout: 15000 });
 		});
 
+		test('shows an inline error when loading the project fails', async ({ page }) => {
+			const projectId = 'broken-project';
+
+			await mockGetProjectRequest(page, projectId, {
+				status: 500,
+				json: { error: 'InternalServerError', message: 'Failed to load project', statusCode: 500 },
+			});
+			await mockGetProjectMemberRequest(page, projectId, {
+				json: projectMemberFactory.build({ projectId, userId: user.id }),
+			});
+			await mockGetProjectSuggestionsRequest(page, projectId, { json: [] });
+
+			await page.goto(`/project/${projectId}/suggestions`);
+
+			await expect(page.getByText('Failed to load project')).toBeVisible({ timeout: 15000 });
+		});
+
 		test('navigates between shared suggestions and roadmap tabs', async ({ page }) => {
 			const project = projectFactory.build();
 			const projectMember = projectMemberFactory.build({ projectId: project.id, userId: user.id, role: 'USER' });

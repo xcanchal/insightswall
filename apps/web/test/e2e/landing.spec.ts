@@ -93,7 +93,7 @@ test.describe('Landing page', () => {
 		});
 
 		test('navigates to projects from the header', async ({ page }) => {
-			await mockGetProjectsRequest(page, []);
+			await mockGetProjectsRequest(page, { json: [] });
 
 			await page.goto('/');
 			await page.locator('header').getByRole('link', { name: 'Projects' }).click();

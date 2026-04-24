@@ -2,6 +2,16 @@ if (!import.meta.env.VITE_API_URL) {
 	throw new Error('No valid API URL environment variable found');
 }
 
+export class ApiClientError extends Error {
+	statusCode: number;
+
+	constructor(message: string, statusCode: number) {
+		super(message);
+		this.name = 'ApiClientError';
+		this.statusCode = statusCode;
+	}
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
 	const res = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
 		headers: { 'Content-Type': 'application/json', ...init?.headers },
@@ -10,12 +20,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 	});
 
 	if (!res.ok) {
-		const error: Error = await res.json().catch(() => ({
+		const error: { message?: string; statusCode?: number } = await res.json().catch(() => ({
 			error: 'UnknownError',
 			message: res.statusText,
 			statusCode: res.status,
 		}));
-		throw new Error(error.message ?? 'Unknown error');
+		throw new ApiClientError(error.message ?? 'Unknown error', error.statusCode ?? res.status);
 	}
 
 	if (res.status === 204) return undefined as T;
