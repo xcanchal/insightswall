@@ -13,7 +13,13 @@ export interface SuggestionCardVoteProps {
 export const SuggestionCardVote = ({ suggestion, isPending, handleVote }: SuggestionCardVoteProps) => (
 	<ButtonGroup>
 		<p className="text-sm border px-2 flex items-center justify-center rounded-l-md min-w-10">{suggestion.voteCount}</p>
-		<Button variant={suggestion.userHasVoted ? 'default' : 'outline'} size="icon" disabled={isPending} onClick={handleVote}>
+		<Button
+			variant={suggestion.userHasVoted ? 'default' : 'outline'}
+			size="icon"
+			disabled={isPending}
+			onClick={handleVote}
+			aria-label={suggestion.userHasVoted ? 'Remove vote' : 'Vote on suggestion'}
+		>
 			<HugeiconsIcon icon={ThumbsUpIcon} />
 		</Button>
 	</ButtonGroup>

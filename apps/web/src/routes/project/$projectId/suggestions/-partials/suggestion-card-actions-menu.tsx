@@ -17,7 +17,7 @@ export const SuggestionCardActionsMenu = ({ isProjectAdmin, isOwner, onEditStatu
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="outline" size="icon">
+				<Button variant="outline" size="icon" aria-label="Suggestion actions">
 					<HugeiconsIcon icon={MoreHorizontalCircle01Icon} />
 				</Button>
 			</DropdownMenuTrigger>
