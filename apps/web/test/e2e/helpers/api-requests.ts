@@ -46,14 +46,21 @@ export function mockGetProjectMemberRequest(page: Page, projectId: string, fulfi
 }
 
 export function mockGetProjectSuggestionsRequest(page: Page, projectId: string, fulfill: FulfillOptions) {
-	return page.route(`**/api/projects/${projectId}/suggestions**`, async (route) => {
-		await route.fulfill(fulfill);
+	return page.route(`**/api/projects/${projectId}/suggestions**`, async (route, request) => {
+		const url = new URL(request.url());
+		if (request.method() === 'GET' && url.pathname === `/api/projects/${projectId}/suggestions`) {
+			await route.fulfill(fulfill);
+			return;
+		}
+
+		await route.fallback();
 	});
 }
 
 export function mockGetProjectSuggestionsRequestWithHandler(page: Page, projectId: string, handler: RouteHandler) {
 	return page.route(`**/api/projects/${projectId}/suggestions**`, async (route, request) => {
-		if (request.method() === 'GET') {
+		const url = new URL(request.url());
+		if (request.method() === 'GET' && url.pathname === `/api/projects/${projectId}/suggestions`) {
 			await handler(route, request);
 			return;
 		}
