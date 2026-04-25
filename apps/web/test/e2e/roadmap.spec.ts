@@ -101,10 +101,7 @@ test.describe('Roadmap page', () => {
 			});
 
 			await mockGetProjectSuggestionsRequest(page, project.id, { json: [plannedSuggestion, inProgressSuggestion, doneSuggestion] });
-
-			await page.goto(`/project/${project.id}/roadmap`);
-
-			await page.waitForRequest((request) => {
+			const roadmapRequest = page.waitForRequest((request) => {
 				const url = new URL(request.url());
 				return (
 					request.method() === 'GET' &&
@@ -114,6 +111,8 @@ test.describe('Roadmap page', () => {
 				);
 			});
 
+			await page.goto(`/project/${project.id}/roadmap`);
+			await roadmapRequest;
 			await expect(roadmapColumn(page, 'PLANNED').getByText(plannedSuggestion.description)).toBeVisible();
 			await expect(roadmapColumn(page, 'IN PROGRESS').getByText(inProgressSuggestion.description)).toBeVisible();
 			await expect(roadmapColumn(page, 'DONE').getByText(doneSuggestion.description)).toBeVisible();
