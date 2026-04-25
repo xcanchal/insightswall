@@ -11,6 +11,38 @@ export function mockGetSessionRequest(page: Page, response: { user: User; sessio
 	});
 }
 
+export function mockSignInEmailRequest(page: Page, responder: RouteResponder) {
+	return page.route('**/sign-in/email', async (route, request) => {
+		if (request.method() !== 'POST') {
+			await route.fallback();
+			return;
+		}
+
+		if (typeof responder === 'function') {
+			await responder(route, request);
+			return;
+		}
+
+		await route.fulfill(responder);
+	});
+}
+
+export function mockSignUpEmailRequest(page: Page, responder: RouteResponder) {
+	return page.route('**/sign-up/email', async (route, request) => {
+		if (request.method() !== 'POST') {
+			await route.fallback();
+			return;
+		}
+
+		if (typeof responder === 'function') {
+			await responder(route, request);
+			return;
+		}
+
+		await route.fulfill(responder);
+	});
+}
+
 export function mockGetProjectsRequest(page: Page, fulfill: FulfillOptions) {
 	return page.route('**/api/projects', async (route) => {
 		await route.fulfill(fulfill);
