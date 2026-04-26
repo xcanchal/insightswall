@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
 import { AlertCircleIcon, Loading03Icon } from '@hugeicons/core-free-icons';
@@ -26,10 +25,10 @@ export type SignupFormValues = z.infer<typeof SignupFormSchema>;
 interface SignupFormProps {
 	serverError: string | null;
 	onSubmit: (values: SignupFormValues) => Promise<void> | void;
-	footer?: ReactNode;
+	onGoToLogin: () => void;
 }
 
-export const SignupForm = ({ serverError, onSubmit, footer }: SignupFormProps) => {
+export const SignupForm = ({ serverError, onSubmit, onGoToLogin }: SignupFormProps) => {
 	const form = useForm({
 		defaultValues: {
 			name: '',
@@ -163,7 +162,16 @@ export const SignupForm = ({ serverError, onSubmit, footer }: SignupFormProps) =
 					<Button type="submit" form="signup-form" className="w-full" size="lg" disabled={form.state.isSubmitting}>
 						{form.state.isSubmitting ? <HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" /> : 'Create account'}
 					</Button>
-					{footer}
+					<p className="text-sm text-center text-muted-foreground">
+						<span>Already have an account?</span>
+						<Button
+							variant="link"
+							onClick={onGoToLogin}
+							className="no-underline text-neutral-900 hover:text-primary hover:no-underline px-1"
+						>
+							Log in
+						</Button>
+					</p>
 				</CardFooter>
 			</Card>
 		</div>

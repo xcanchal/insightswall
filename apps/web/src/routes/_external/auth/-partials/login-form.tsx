@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Alert } from '@/components/ui/alert';
 import { AlertCircleIcon, Loading03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ReactNode } from 'react';
 
 export const LoginFormSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email address'),
@@ -19,10 +18,10 @@ export type LoginFormValues = z.infer<typeof LoginFormSchema>;
 interface LoginFormProps {
 	serverError: string | null;
 	onSubmit: (values: LoginFormValues) => Promise<void> | void;
-	footer?: ReactNode;
+	onGoToSignup: () => void;
 }
 
-export const LoginForm = ({ serverError, onSubmit, footer }: LoginFormProps) => {
+export const LoginForm = ({ serverError, onSubmit, onGoToSignup }: LoginFormProps) => {
 	const form = useForm({
 		defaultValues: {
 			email: '',
@@ -105,11 +104,20 @@ export const LoginForm = ({ serverError, onSubmit, footer }: LoginFormProps) => 
 						</FieldGroup>
 					</form>
 				</CardContent>
-				<CardFooter className="flex flex-col gap-4">
+				<CardFooter className="flex flex-col gap-2">
 					<Button type="submit" form="login-form" className="w-full" size="lg" disabled={form.state.isSubmitting}>
 						{form.state.isSubmitting ? <HugeiconsIcon icon={Loading03Icon} className="size-5 animate-spin" /> : 'Log in'}
 					</Button>
-					{footer}
+					<p className="text-sm text-center text-muted-foreground">
+						<span>Don&apos;t have an account?</span>
+						<Button
+							variant="link"
+							onClick={onGoToSignup}
+							className="no-underline text-neutral-900 hover:text-primary hover:no-underline px-1"
+						>
+							Sign up
+						</Button>
+					</p>
 				</CardFooter>
 			</Card>
 		</div>

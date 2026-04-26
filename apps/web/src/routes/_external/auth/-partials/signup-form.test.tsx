@@ -4,7 +4,7 @@ import { SignupForm } from './signup-form';
 
 describe('SignupForm', () => {
 	it('renders the signup form', async () => {
-		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} />);
+		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} onGoToLogin={vi.fn()} />);
 
 		await expect.element(screen.getByText('Create an account')).toBeVisible();
 		await expect.element(screen.getByLabelText('Name')).toBeVisible();
@@ -15,7 +15,7 @@ describe('SignupForm', () => {
 	});
 
 	it('shows validation errors on empty submit', async () => {
-		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} />);
+		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} onGoToLogin={vi.fn()} />);
 
 		await screen.getByRole('button', { name: 'Create account' }).click();
 
@@ -26,7 +26,7 @@ describe('SignupForm', () => {
 	});
 
 	it('shows an invalid email validation error', async () => {
-		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} />);
+		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} onGoToLogin={vi.fn()} />);
 
 		await screen.getByLabelText('Name').fill('Signup User');
 		await screen.getByLabelText('Email').fill('not-an-email');
@@ -38,7 +38,7 @@ describe('SignupForm', () => {
 	});
 
 	it('shows a password mismatch validation error', async () => {
-		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} />);
+		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} onGoToLogin={vi.fn()} />);
 
 		await screen.getByLabelText('Name').fill('Signup User');
 		await screen.getByLabelText('Email').fill('signup@example.com');
@@ -51,7 +51,7 @@ describe('SignupForm', () => {
 
 	it('calls onSubmit with the entered values', async () => {
 		const onSubmit = vi.fn();
-		const screen = await render(<SignupForm serverError={null} onSubmit={onSubmit} />);
+		const screen = await render(<SignupForm serverError={null} onSubmit={onSubmit} onGoToLogin={vi.fn()} />);
 
 		await screen.getByLabelText('Name').fill('Signup User');
 		await screen.getByLabelText('Email').fill('signup@example.com');
@@ -70,8 +70,19 @@ describe('SignupForm', () => {
 	});
 
 	it('renders the server error message', async () => {
-		const screen = await render(<SignupForm serverError="User already exists" onSubmit={vi.fn()} />);
+		const screen = await render(<SignupForm serverError="User already exists" onSubmit={vi.fn()} onGoToLogin={vi.fn()} />);
 
 		await expect.element(screen.getByText('User already exists')).toBeVisible();
+	});
+
+	it('calls onGoToLogin when the login action is clicked', async () => {
+		const onGoToLogin = vi.fn();
+		const screen = await render(<SignupForm serverError={null} onSubmit={vi.fn()} onGoToLogin={onGoToLogin} />);
+
+		await screen.getByRole('button', { name: 'Log in' }).click();
+
+		await vi.waitFor(() => {
+			expect(onGoToLogin).toHaveBeenCalledOnce();
+		});
 	});
 });
