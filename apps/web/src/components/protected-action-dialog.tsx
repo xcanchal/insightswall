@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Link } from '@tanstack/react-router';
 
 interface ProtectedActionDialogProps {
@@ -13,8 +13,8 @@ export const ProtectedActionDialog = ({ isOpen, message, onOpenChange }: Protect
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-sm text-center flex flex-col items-center gap-6">
 				<div className="flex flex-col gap-4">
-					<h2>Sign in required</h2>
-					<p className="text-muted-foreground">{message}</p>
+					<DialogTitle>Sign in required</DialogTitle>
+					<DialogDescription className="text-muted-foreground">{message}</DialogDescription>
 				</div>
 				<div className="flex gap-2 w-full">
 					<Button asChild variant="outline" className="flex-1" onClick={() => onOpenChange(false)}>
