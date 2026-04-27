@@ -322,6 +322,25 @@ describe('Projects', () => {
 		});
 
 		describe('Success cases', () => {
+			it('preserves the project url when it is omitted from the request body', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Old Name', url: 'https://old.example.com' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ name: 'New Name' }),
+				});
+
+				expect(res.status).toBe(200);
+				const body = await res.json();
+				expect(body.name).toBe('New Name');
+				expect(body.url).toBe('https://old.example.com');
+			});
+
 			it('updates the project name and url and returns 200', async () => {
 				await db.insert(users).values(TEST_USER);
 				const [project] = await db.insert(projects).values({ name: 'Old Name', url: 'https://old.example.com' }).returning();

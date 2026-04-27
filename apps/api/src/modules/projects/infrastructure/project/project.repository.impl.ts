@@ -25,12 +25,9 @@ export class ProjectRepository implements IProjectRepository {
 		return row ? toProject(row) : null;
 	}
 
-	async update(id: string, name: string, url: string | null): Promise<ProjectEntity | null> {
-		const [row] = await this.db
-			.update(projects)
-			.set({ name, url, updatedAt: sql`now()` })
-			.where(eq(projects.id, id))
-			.returning();
+	async update(id: string, name: string, url?: string | null): Promise<ProjectEntity | null> {
+		const values = url === undefined ? { name, updatedAt: sql`now()` } : { name, url, updatedAt: sql`now()` };
+		const [row] = await this.db.update(projects).set(values).where(eq(projects.id, id)).returning();
 		return row ? toProject(row) : null;
 	}
 

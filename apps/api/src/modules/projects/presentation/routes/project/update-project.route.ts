@@ -51,8 +51,8 @@ export class UpdateProjectRoute {
 		this.app.openapi(updateProjectRouteDefinition, async (c) => {
 			try {
 				const { projectId } = c.req.valid('param');
-				const { name, url = null } = c.req.valid('json');
-				const project = await this.updateProjectUseCase.execute(projectId, name, url ?? null);
+				const { name, url } = c.req.valid('json');
+				const project = await this.updateProjectUseCase.execute(projectId, name, url);
 				if (!project) return c.json({ error: 'Project not found' }, 404);
 				return c.json({ ...project, createdAt: project.createdAt.toISOString(), updatedAt: project.updatedAt?.toISOString() ?? null }, 200);
 			} catch (error) {
