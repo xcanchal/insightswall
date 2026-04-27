@@ -4,7 +4,7 @@ import type { IProjectRepository } from '../../../domain/project/project.reposit
 export class UpdateProjectUseCase {
 	constructor(private readonly projectRepository: IProjectRepository) {}
 
-	async execute(projectId: string, name: string): Promise<ProjectEntity | null> {
-		return this.projectRepository.update(projectId, name);
+	async execute(projectId: string, name: string, url: string | null): Promise<ProjectEntity | null> {
+		return this.projectRepository.update(projectId, name, url);
 	}
 }

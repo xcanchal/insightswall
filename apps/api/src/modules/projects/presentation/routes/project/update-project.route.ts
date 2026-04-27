@@ -7,13 +7,17 @@ import { projectSchema } from './project.schemas.js';
 import type { IProjectMemberRepository } from '../../../domain/project-member/project-member.repository.js';
 
 const path = '/api/projects/:projectId' as const;
+const bodySchema = z.object({
+	name: z.string().min(1).max(50),
+	url: z.url().nullish(),
+});
 
 const updateProjectRouteDefinition = createRoute({
 	method: 'patch',
 	path,
 	request: {
 		params: z.object({ projectId: z.uuid() }),
-		body: { content: { 'application/json': { schema: z.object({ name: z.string().min(1).max(50) }) } }, required: true },
+		body: { content: { 'application/json': { schema: bodySchema } }, required: true },
 	},
 	responses: {
 		200: { content: { 'application/json': { schema: projectSchema } }, description: 'Project updated' },
@@ -47,8 +51,8 @@ export class UpdateProjectRoute {
 		this.app.openapi(updateProjectRouteDefinition, async (c) => {
 			try {
 				const { projectId } = c.req.valid('param');
-				const { name } = c.req.valid('json');
-				const project = await this.updateProjectUseCase.execute(projectId, name);
+				const { name, url = null } = c.req.valid('json');
+				const project = await this.updateProjectUseCase.execute(projectId, name, url ?? null);
 				if (!project) return c.json({ error: 'Project not found' }, 404);
 				return c.json({ ...project, createdAt: project.createdAt.toISOString(), updatedAt: project.updatedAt?.toISOString() ?? null }, 200);
 			} catch (error) {
