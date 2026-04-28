@@ -10,20 +10,36 @@ import { useState } from 'react';
 import { useDeleteProject, useUpdateProject } from '@/hooks/use-projects';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import { Field, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
+import * as z from 'zod';
+
+const EditProjectSchema = z.object({
+	name: z.string().trim().min(1, 'Name is required').max(50, 'Name must be at most 50 characters'),
+	url: z.union([z.string().url('Must be a valid URL'), z.literal('')]),
+});
 
 export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 	const [name, setName] = useState(project.name);
+	const [url, setUrl] = useState(project.url ?? '');
+	const [editError, setEditError] = useState<{ name?: string[]; url?: string[] }>({});
 
 	const { mutate: updateProject, isPending: isUpdating } = useUpdateProject();
 	const { mutate: deleteProject, isPending: isDeleting } = useDeleteProject();
 
 	const handleEdit = (e: React.FormEvent) => {
 		e.preventDefault();
+
+		const validation = EditProjectSchema.safeParse({ name, url });
+		if (!validation.success) {
+			setEditError(validation.error.flatten().fieldErrors);
+			return;
+		}
+
+		setEditError({});
 		updateProject(
-			{ projectId: project.id, name },
+			{ projectId: project.id, data: { name: validation.data.name, url: validation.data.url || null } },
 			{
 				onSuccess: () => {
 					toast.success('Project updated');
@@ -56,10 +72,31 @@ export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 								id="name"
 								name="name"
 								value={name}
-								onChange={(e) => setName(e.target.value)}
+								onChange={(e) => {
+									setName(e.target.value);
+									if (editError.name) setEditError((current) => ({ ...current, name: undefined }));
+								}}
 								placeholder="Type project name..."
 								autoFocus
 							/>
+							{editError.name && <FieldError errors={editError.name.map((message) => ({ message }))} />}
+						</Field>
+						<Field>
+							<FieldLabel htmlFor="url">
+								Website URL <span className="text-muted-foreground text-xs font-normal">(optional)</span>
+							</FieldLabel>
+							<Input
+								id="url"
+								name="url"
+								value={url}
+								onChange={(e) => {
+									setUrl(e.target.value);
+									if (editError.url) setEditError((current) => ({ ...current, url: undefined }));
+								}}
+								placeholder="https://myproduct.com"
+								autoComplete="off"
+							/>
+							{editError.url && <FieldError errors={editError.url.map((message) => ({ message }))} />}
 						</Field>
 						<div className="flex justify-end gap-2">
 							<Button type="button" variant="outline" onClick={() => setEditOpen(false)}>
@@ -116,6 +153,8 @@ export const ProjectCard = ({ project }: { project: ProjectResponse }) => {
 							className="text-base"
 							onSelect={() => {
 								setName(project.name);
+								setUrl(project.url ?? '');
+								setEditError({});
 								setEditOpen(true);
 							}}
 						>

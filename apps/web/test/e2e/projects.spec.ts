@@ -136,7 +136,7 @@ test.describe('Projects page', () => {
 		});
 
 		test.describe('Edit project', () => {
-			test('edits a project', async ({ page }) => {
+			test('edits a project name and url', async ({ page }) => {
 				const project = projectFactory.build();
 				await mockGetProjectsRequest(page, { json: [project] });
 
@@ -144,12 +144,13 @@ test.describe('Projects page', () => {
 				await page.locator('div.group').filter({ hasText: project.name }).getByRole('button').click();
 				await page.getByRole('menuitem', { name: 'Edit' }).click();
 
-				const updatedProject = { ...project, name: 'New Name' };
+				const updatedProject = { ...project, name: 'New Name', url: 'https://new-name.test' };
 				await mockUpdateProjectRequest(page, project.id, { json: updatedProject });
 				await mockGetProjectsRequest(page, { json: [updatedProject] });
 				await mockGetProjectRequest(page, project.id, { json: updatedProject });
 
 				await page.getByLabel('Project name').fill(updatedProject.name);
+				await page.getByLabel('Website URL (optional)').fill(updatedProject.url);
 				await page.getByRole('button', { name: 'Save' }).click();
 
 				await expect(page.getByRole('heading', { name: updatedProject.name })).toBeVisible();
@@ -172,6 +173,20 @@ test.describe('Projects page', () => {
 				await expect(page.getByText('Failed to update project')).toBeVisible();
 				await expect(page.getByRole('heading', { name: 'Edit project' })).toBeVisible();
 				await expect(page.getByLabel('Project name')).toHaveValue('Broken update');
+			});
+
+			test('does not submit an invalid url while editing', async ({ page }) => {
+				const project = projectFactory.build();
+				await mockGetProjectsRequest(page, { json: [project] });
+
+				await page.goto('/projects');
+				await page.locator('div.group').filter({ hasText: project.name }).getByRole('button').click();
+				await page.getByRole('menuitem', { name: 'Edit' }).click();
+				await page.getByLabel('Website URL (optional)').fill('not-a-url');
+				await page.getByRole('button', { name: 'Save' }).click();
+
+				await expect(page.getByText('Must be a valid URL')).toBeVisible();
+				await expect(page.getByRole('heading', { name: 'Edit project' })).toBeVisible();
 			});
 		});
 

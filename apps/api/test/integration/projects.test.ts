@@ -303,12 +303,28 @@ describe('Projects', () => {
 
 				expect(res.status).toBe(400);
 			});
+
+			it('returns 400 when url is not a valid URL', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ name: 'Updated', url: 'not-a-url' }),
+				});
+
+				expect(res.status).toBe(400);
+			});
 		});
 
 		describe('Success cases', () => {
-			it('updates the project name and returns 200', async () => {
+			it('preserves the project url when it is omitted from the request body', async () => {
 				await db.insert(users).values(TEST_USER);
-				const [project] = await db.insert(projects).values({ name: 'Old Name' }).returning();
+				const [project] = await db.insert(projects).values({ name: 'Old Name', url: 'https://old.example.com' }).returning();
 				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
 
 				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
@@ -322,7 +338,45 @@ describe('Projects', () => {
 				expect(res.status).toBe(200);
 				const body = await res.json();
 				expect(body.name).toBe('New Name');
+				expect(body.url).toBe('https://old.example.com');
+			});
+
+			it('updates the project name and url and returns 200', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Old Name', url: 'https://old.example.com' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ name: 'New Name', url: 'https://new.example.com' }),
+				});
+
+				expect(res.status).toBe(200);
+				const body = await res.json();
+				expect(body.name).toBe('New Name');
+				expect(body.url).toBe('https://new.example.com');
 				expect(body.id).toBe(project.id);
+			});
+
+			it('clears the project url when null is provided', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Old Name', url: 'https://old.example.com' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ name: 'Old Name', url: null }),
+				});
+
+				expect(res.status).toBe(200);
+				const body = await res.json();
+				expect(body.url).toBeNull();
 			});
 		});
 	});
