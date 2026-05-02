@@ -3,11 +3,11 @@ import { db } from './lib/db/index.js';
 
 (async () => {
 	try {
-		if (!process.env.DATABASE_URL && !process.env.DATABASE_URL_DIRECT) {
+		if (!process.env.DATABASE_URL) {
 			throw new Error('No valid DATABASE URL environment variable found');
 		}
 
-		if (!process.env.BETTER_AUTH_URL && !process.env.BETTER_AUTH_URL_DIRECT) {
+		if (!process.env.BETTER_AUTH_URL) {
 			throw new Error('No valid AUTH credentials found in the environment');
 		}
 
