@@ -22,6 +22,11 @@ export const auth = betterAuth({
 			});
 		},
 	},
+	user: {
+		deleteUser: {
+			enabled: true,
+		},
+	},
 	trustedOrigins: [process.env.FRONTEND_URL!],
 	advanced: {
 		crossSubDomainCookies: {
