@@ -8,4 +8,4 @@ export const authClient = createAuthClient({
 	baseURL: import.meta.env.VITE_BETTER_AUTH_URL,
 });
 
-export const { signUp, signIn, useSession, signOut } = authClient;
+export const { signUp, signIn, useSession, signOut, deleteUser } = authClient;
