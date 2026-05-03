@@ -17,16 +17,18 @@ function UserSettings() {
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const handleDeleteAccount = async () => {
-		try {
-			setIsDeleting(true);
-			await deleteUser();
-			setDeleteDialogOpen(false);
-		} catch (error) {
-			console.error(error);
-			toast.error('Failed to delete account.');
-		} finally {
+		setIsDeleting(true);
+
+		const { error } = await deleteUser();
+
+		if (error) {
+			toast.error(error.message || 'Failed to delete account.');
 			setIsDeleting(false);
+			return;
 		}
+
+		setDeleteDialogOpen(false);
+		setIsDeleting(false);
 	};
 
 	return (
