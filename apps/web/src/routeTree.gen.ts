@@ -15,6 +15,7 @@ import { Route as ExternalRouteImport } from './routes/_external'
 import { Route as ExternalIndexRouteImport } from './routes/_external/index'
 import { Route as ProjectProjectIdRouteImport } from './routes/project/$projectId'
 import { Route as InternalAccountRouteImport } from './routes/_internal/account'
+import { Route as ExternalAboutRouteImport } from './routes/_external/about'
 import { Route as ProjectProjectIdIndexRouteImport } from './routes/project/$projectId/index'
 import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
 import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
@@ -50,6 +51,11 @@ const InternalAccountRoute = InternalAccountRouteImport.update({
   id: '/account',
   path: '/account',
   getParentRoute: () => InternalRoute,
+} as any)
+const ExternalAboutRoute = ExternalAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => ExternalRoute,
 } as any)
 const ProjectProjectIdIndexRoute = ProjectProjectIdIndexRouteImport.update({
   id: '/',
@@ -92,6 +98,7 @@ const ProjectProjectIdRoadmapIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof ExternalIndexRoute
   '/project': typeof ProjectRouteWithChildren
+  '/about': typeof ExternalAboutRoute
   '/account': typeof InternalAccountRoute
   '/project/$projectId': typeof ProjectProjectIdRouteWithChildren
   '/auth/login': typeof ExternalAuthLoginRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof ExternalIndexRoute
   '/project': typeof ProjectRouteWithChildren
+  '/about': typeof ExternalAboutRoute
   '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/_external': typeof ExternalRouteWithChildren
   '/_internal': typeof InternalRouteWithChildren
   '/project': typeof ProjectRouteWithChildren
+  '/_external/about': typeof ExternalAboutRoute
   '/_internal/account': typeof InternalAccountRoute
   '/project/$projectId': typeof ProjectProjectIdRouteWithChildren
   '/_external/': typeof ExternalIndexRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/project'
+    | '/about'
     | '/account'
     | '/project/$projectId'
     | '/auth/login'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/project'
+    | '/about'
     | '/account'
     | '/auth/login'
     | '/auth/signup'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/_external'
     | '/_internal'
     | '/project'
+    | '/_external/about'
     | '/_internal/account'
     | '/project/$projectId'
     | '/_external/'
@@ -223,6 +235,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalAccountRouteImport
       parentRoute: typeof InternalRoute
     }
+    '/_external/about': {
+      id: '/_external/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof ExternalAboutRouteImport
+      parentRoute: typeof ExternalRoute
+    }
     '/project/$projectId/': {
       id: '/project/$projectId/'
       path: '/'
@@ -276,6 +295,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface ExternalRouteChildren {
+  ExternalAboutRoute: typeof ExternalAboutRoute
   ExternalIndexRoute: typeof ExternalIndexRoute
   ExternalAuthLoginRoute: typeof ExternalAuthLoginRoute
   ExternalAuthSignupRoute: typeof ExternalAuthSignupRoute
@@ -283,6 +303,7 @@ interface ExternalRouteChildren {
 }
 
 const ExternalRouteChildren: ExternalRouteChildren = {
+  ExternalAboutRoute: ExternalAboutRoute,
   ExternalIndexRoute: ExternalIndexRoute,
   ExternalAuthLoginRoute: ExternalAuthLoginRoute,
   ExternalAuthSignupRoute: ExternalAuthSignupRoute,
