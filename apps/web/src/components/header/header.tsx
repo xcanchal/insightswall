@@ -23,7 +23,7 @@ export const Header = () => {
 				{isLanding && (
 					<nav className="hidden md:flex items-center gap-6">
 						{landingLinks.map((link) => (
-							<a key={link.href} href={link.href} className="text-sm font-medium text-zinc-600 hover:text-zinc-950">
+							<a key={link.href} href={link.href} className="text-sm font-medium text-zinc-600 hover:text-primary">
 								{link.label}
 							</a>
 						))}

@@ -15,9 +15,13 @@ import { Route as ExternalRouteImport } from './routes/_external'
 import { Route as ExternalIndexRouteImport } from './routes/_external/index'
 import { Route as ProjectProjectIdRouteImport } from './routes/project/$projectId'
 import { Route as InternalAccountRouteImport } from './routes/_internal/account'
+import { Route as ExternalAlternativesRouteImport } from './routes/_external/alternatives'
 import { Route as ExternalAboutRouteImport } from './routes/_external/about'
 import { Route as ProjectProjectIdIndexRouteImport } from './routes/project/$projectId/index'
 import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
+import { Route as ExternalResourcesPublicRoadmapSoftwareRouteImport } from './routes/_external/resources/public-roadmap-software'
+import { Route as ExternalResourcesFeatureVotingSoftwareRouteImport } from './routes/_external/resources/feature-voting-software'
+import { Route as ExternalResourcesCustomerFeedbackSoftwareRouteImport } from './routes/_external/resources/customer-feedback-software'
 import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
 import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
 import { Route as ExternalAuthLoginRouteImport } from './routes/_external/auth/login'
@@ -52,6 +56,11 @@ const InternalAccountRoute = InternalAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => InternalRoute,
 } as any)
+const ExternalAlternativesRoute = ExternalAlternativesRouteImport.update({
+  id: '/alternatives',
+  path: '/alternatives',
+  getParentRoute: () => ExternalRoute,
+} as any)
 const ExternalAboutRoute = ExternalAboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -67,6 +76,24 @@ const InternalProjectsIndexRoute = InternalProjectsIndexRouteImport.update({
   path: '/projects/',
   getParentRoute: () => InternalRoute,
 } as any)
+const ExternalResourcesPublicRoadmapSoftwareRoute =
+  ExternalResourcesPublicRoadmapSoftwareRouteImport.update({
+    id: '/resources/public-roadmap-software',
+    path: '/resources/public-roadmap-software',
+    getParentRoute: () => ExternalRoute,
+  } as any)
+const ExternalResourcesFeatureVotingSoftwareRoute =
+  ExternalResourcesFeatureVotingSoftwareRouteImport.update({
+    id: '/resources/feature-voting-software',
+    path: '/resources/feature-voting-software',
+    getParentRoute: () => ExternalRoute,
+  } as any)
+const ExternalResourcesCustomerFeedbackSoftwareRoute =
+  ExternalResourcesCustomerFeedbackSoftwareRouteImport.update({
+    id: '/resources/customer-feedback-software',
+    path: '/resources/customer-feedback-software',
+    getParentRoute: () => ExternalRoute,
+  } as any)
 const ExternalAuthVerifyEmailRoute = ExternalAuthVerifyEmailRouteImport.update({
   id: '/auth/verify-email',
   path: '/auth/verify-email',
@@ -99,11 +126,15 @@ export interface FileRoutesByFullPath {
   '/': typeof ExternalIndexRoute
   '/project': typeof ProjectRouteWithChildren
   '/about': typeof ExternalAboutRoute
+  '/alternatives': typeof ExternalAlternativesRoute
   '/account': typeof InternalAccountRoute
   '/project/$projectId': typeof ProjectProjectIdRouteWithChildren
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
+  '/resources/customer-feedback-software': typeof ExternalResourcesCustomerFeedbackSoftwareRoute
+  '/resources/feature-voting-software': typeof ExternalResourcesFeatureVotingSoftwareRoute
+  '/resources/public-roadmap-software': typeof ExternalResourcesPublicRoadmapSoftwareRoute
   '/projects/': typeof InternalProjectsIndexRoute
   '/project/$projectId/': typeof ProjectProjectIdIndexRoute
   '/project/$projectId/roadmap/': typeof ProjectProjectIdRoadmapIndexRoute
@@ -113,10 +144,14 @@ export interface FileRoutesByTo {
   '/': typeof ExternalIndexRoute
   '/project': typeof ProjectRouteWithChildren
   '/about': typeof ExternalAboutRoute
+  '/alternatives': typeof ExternalAlternativesRoute
   '/account': typeof InternalAccountRoute
   '/auth/login': typeof ExternalAuthLoginRoute
   '/auth/signup': typeof ExternalAuthSignupRoute
   '/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
+  '/resources/customer-feedback-software': typeof ExternalResourcesCustomerFeedbackSoftwareRoute
+  '/resources/feature-voting-software': typeof ExternalResourcesFeatureVotingSoftwareRoute
+  '/resources/public-roadmap-software': typeof ExternalResourcesPublicRoadmapSoftwareRoute
   '/projects': typeof InternalProjectsIndexRoute
   '/project/$projectId': typeof ProjectProjectIdIndexRoute
   '/project/$projectId/roadmap': typeof ProjectProjectIdRoadmapIndexRoute
@@ -128,12 +163,16 @@ export interface FileRoutesById {
   '/_internal': typeof InternalRouteWithChildren
   '/project': typeof ProjectRouteWithChildren
   '/_external/about': typeof ExternalAboutRoute
+  '/_external/alternatives': typeof ExternalAlternativesRoute
   '/_internal/account': typeof InternalAccountRoute
   '/project/$projectId': typeof ProjectProjectIdRouteWithChildren
   '/_external/': typeof ExternalIndexRoute
   '/_external/auth/login': typeof ExternalAuthLoginRoute
   '/_external/auth/signup': typeof ExternalAuthSignupRoute
   '/_external/auth/verify-email': typeof ExternalAuthVerifyEmailRoute
+  '/_external/resources/customer-feedback-software': typeof ExternalResourcesCustomerFeedbackSoftwareRoute
+  '/_external/resources/feature-voting-software': typeof ExternalResourcesFeatureVotingSoftwareRoute
+  '/_external/resources/public-roadmap-software': typeof ExternalResourcesPublicRoadmapSoftwareRoute
   '/_internal/projects/': typeof InternalProjectsIndexRoute
   '/project/$projectId/': typeof ProjectProjectIdIndexRoute
   '/project/$projectId/roadmap/': typeof ProjectProjectIdRoadmapIndexRoute
@@ -145,11 +184,15 @@ export interface FileRouteTypes {
     | '/'
     | '/project'
     | '/about'
+    | '/alternatives'
     | '/account'
     | '/project/$projectId'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
+    | '/resources/customer-feedback-software'
+    | '/resources/feature-voting-software'
+    | '/resources/public-roadmap-software'
     | '/projects/'
     | '/project/$projectId/'
     | '/project/$projectId/roadmap/'
@@ -159,10 +202,14 @@ export interface FileRouteTypes {
     | '/'
     | '/project'
     | '/about'
+    | '/alternatives'
     | '/account'
     | '/auth/login'
     | '/auth/signup'
     | '/auth/verify-email'
+    | '/resources/customer-feedback-software'
+    | '/resources/feature-voting-software'
+    | '/resources/public-roadmap-software'
     | '/projects'
     | '/project/$projectId'
     | '/project/$projectId/roadmap'
@@ -173,12 +220,16 @@ export interface FileRouteTypes {
     | '/_internal'
     | '/project'
     | '/_external/about'
+    | '/_external/alternatives'
     | '/_internal/account'
     | '/project/$projectId'
     | '/_external/'
     | '/_external/auth/login'
     | '/_external/auth/signup'
     | '/_external/auth/verify-email'
+    | '/_external/resources/customer-feedback-software'
+    | '/_external/resources/feature-voting-software'
+    | '/_external/resources/public-roadmap-software'
     | '/_internal/projects/'
     | '/project/$projectId/'
     | '/project/$projectId/roadmap/'
@@ -235,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalAccountRouteImport
       parentRoute: typeof InternalRoute
     }
+    '/_external/alternatives': {
+      id: '/_external/alternatives'
+      path: '/alternatives'
+      fullPath: '/alternatives'
+      preLoaderRoute: typeof ExternalAlternativesRouteImport
+      parentRoute: typeof ExternalRoute
+    }
     '/_external/about': {
       id: '/_external/about'
       path: '/about'
@@ -255,6 +313,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/'
       preLoaderRoute: typeof InternalProjectsIndexRouteImport
       parentRoute: typeof InternalRoute
+    }
+    '/_external/resources/public-roadmap-software': {
+      id: '/_external/resources/public-roadmap-software'
+      path: '/resources/public-roadmap-software'
+      fullPath: '/resources/public-roadmap-software'
+      preLoaderRoute: typeof ExternalResourcesPublicRoadmapSoftwareRouteImport
+      parentRoute: typeof ExternalRoute
+    }
+    '/_external/resources/feature-voting-software': {
+      id: '/_external/resources/feature-voting-software'
+      path: '/resources/feature-voting-software'
+      fullPath: '/resources/feature-voting-software'
+      preLoaderRoute: typeof ExternalResourcesFeatureVotingSoftwareRouteImport
+      parentRoute: typeof ExternalRoute
+    }
+    '/_external/resources/customer-feedback-software': {
+      id: '/_external/resources/customer-feedback-software'
+      path: '/resources/customer-feedback-software'
+      fullPath: '/resources/customer-feedback-software'
+      preLoaderRoute: typeof ExternalResourcesCustomerFeedbackSoftwareRouteImport
+      parentRoute: typeof ExternalRoute
     }
     '/_external/auth/verify-email': {
       id: '/_external/auth/verify-email'
@@ -296,18 +375,29 @@ declare module '@tanstack/react-router' {
 
 interface ExternalRouteChildren {
   ExternalAboutRoute: typeof ExternalAboutRoute
+  ExternalAlternativesRoute: typeof ExternalAlternativesRoute
   ExternalIndexRoute: typeof ExternalIndexRoute
   ExternalAuthLoginRoute: typeof ExternalAuthLoginRoute
   ExternalAuthSignupRoute: typeof ExternalAuthSignupRoute
   ExternalAuthVerifyEmailRoute: typeof ExternalAuthVerifyEmailRoute
+  ExternalResourcesCustomerFeedbackSoftwareRoute: typeof ExternalResourcesCustomerFeedbackSoftwareRoute
+  ExternalResourcesFeatureVotingSoftwareRoute: typeof ExternalResourcesFeatureVotingSoftwareRoute
+  ExternalResourcesPublicRoadmapSoftwareRoute: typeof ExternalResourcesPublicRoadmapSoftwareRoute
 }
 
 const ExternalRouteChildren: ExternalRouteChildren = {
   ExternalAboutRoute: ExternalAboutRoute,
+  ExternalAlternativesRoute: ExternalAlternativesRoute,
   ExternalIndexRoute: ExternalIndexRoute,
   ExternalAuthLoginRoute: ExternalAuthLoginRoute,
   ExternalAuthSignupRoute: ExternalAuthSignupRoute,
   ExternalAuthVerifyEmailRoute: ExternalAuthVerifyEmailRoute,
+  ExternalResourcesCustomerFeedbackSoftwareRoute:
+    ExternalResourcesCustomerFeedbackSoftwareRoute,
+  ExternalResourcesFeatureVotingSoftwareRoute:
+    ExternalResourcesFeatureVotingSoftwareRoute,
+  ExternalResourcesPublicRoadmapSoftwareRoute:
+    ExternalResourcesPublicRoadmapSoftwareRoute,
 }
 
 const ExternalRouteWithChildren = ExternalRoute._addFileChildren(

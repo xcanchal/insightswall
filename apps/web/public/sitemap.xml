@@ -8,4 +8,20 @@
 		<loc>https://insightswall.com/about</loc>
 		<priority>0.6</priority>
 	</url>
+	<url>
+		<loc>https://insightswall.com/alternatives</loc>
+		<priority>0.6</priority>
+	</url>
+	<url>
+		<loc>https://insightswall.com/resources/public-roadmap-software</loc>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>https://insightswall.com/resources/customer-feedback-software</loc>
+		<priority>0.7</priority>
+	</url>
+	<url>
+		<loc>https://insightswall.com/resources/feature-voting-software</loc>
+		<priority>0.7</priority>
+	</url>
 </urlset>

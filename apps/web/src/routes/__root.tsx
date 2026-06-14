@@ -22,7 +22,7 @@ const NotFound = () => (
 	<div className="flex flex-col flex-1 items-center justify-center gap-4">
 		<h1 className="text-6xl font-bold">404</h1>
 		<p className="text-muted-foreground">This page doesn&apos;t exist.</p>
-		<Link to="/" className="text-sm font-semibold hover:underline">
+		<Link to="/" className="text-sm font-semibold hover:text-primary">
 			Go to the homepage
 		</Link>
 	</div>

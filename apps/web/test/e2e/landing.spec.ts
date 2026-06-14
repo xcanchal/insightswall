@@ -65,6 +65,21 @@ test.describe('Landing page', () => {
 
 			await expect(footer.locator('div').filter({ hasText: /^Company$/ })).toBeVisible();
 			await expect(footer.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
+
+			await expect(footer.locator('div').filter({ hasText: /^Resources$/ })).toBeVisible();
+			await expect(footer.getByRole('link', { name: 'Alternatives' })).toHaveAttribute('href', '/alternatives');
+			await expect(footer.getByRole('link', { name: 'Public roadmap software' })).toHaveAttribute(
+				'href',
+				'/resources/public-roadmap-software'
+			);
+			await expect(footer.getByRole('link', { name: 'Customer feedback software' })).toHaveAttribute(
+				'href',
+				'/resources/customer-feedback-software'
+			);
+			await expect(footer.getByRole('link', { name: 'Feature voting software' })).toHaveAttribute(
+				'href',
+				'/resources/feature-voting-software'
+			);
 		});
 
 		test('all landing page sections are present', async ({ page }) => {
