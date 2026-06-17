@@ -53,15 +53,18 @@ test.describe('Landing page', () => {
 			await page.goto('/');
 			const footer = page.locator('footer');
 			await expect(footer.getByText('Product')).toBeVisible();
-			await expect(footer.getByRole('link', { name: 'Features' })).toHaveAttribute('href', '#features');
-			await expect(footer.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how-it-works');
-			await expect(footer.getByRole('link', { name: 'Centralize feedback' })).toHaveAttribute('href', '#scattered-feedback');
+			await expect(footer.getByRole('link', { name: 'Features' })).toHaveAttribute('href', '/#features');
+			await expect(footer.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '/#how-it-works');
+			await expect(footer.getByRole('link', { name: 'Centralize feedback' })).toHaveAttribute('href', '/#scattered-feedback');
 
 			await expect(footer.locator('div').filter({ hasText: /^Use cases$/ })).toBeVisible();
 			await expect(footer.getByRole('link', { name: 'For SaaS companies' })).toBeVisible();
 			await expect(footer.getByRole('link', { name: 'For indie makers' })).toBeVisible();
 			await expect(footer.getByRole('link', { name: 'For open source projects' })).toBeVisible();
 			await expect(footer.getByRole('link', { name: 'For agencies & consultants' })).toBeVisible();
+
+			await expect(footer.locator('div').filter({ hasText: /^Company$/ })).toBeVisible();
+			await expect(footer.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
 		});
 
 		test('all landing page sections are present', async ({ page }) => {

@@ -3,45 +3,52 @@ import { Logo } from '@/components/logo';
 const productLinks = [
 	{
 		title: 'Features',
-		anchor: '#features',
+		href: '/#features',
 	},
 	{
 		title: 'How it works',
-		anchor: '#how-it-works',
+		href: '/#how-it-works',
 	},
 	{
 		title: 'Centralize feedback',
-		anchor: '#scattered-feedback',
+		href: '/#scattered-feedback',
 	},
 	{
 		title: 'Use cases',
-		anchor: '#use-cases',
+		href: '/#use-cases',
 	},
 ];
 
 const useCases = [
 	{
 		title: 'For SaaS companies',
-		anchor: '#use-cases',
+		href: '/#use-cases',
 	},
 	{
 		title: 'For indie makers',
-		anchor: '#use-cases',
+		href: '/#use-cases',
 	},
 	{
 		title: 'For open source projects',
-		anchor: '#use-cases',
+		href: '/#use-cases',
 	},
 	{
 		title: 'For agencies & consultants',
-		anchor: '#use-cases',
+		href: '/#use-cases',
+	},
+];
+
+const companyLinks = [
+	{
+		title: 'About',
+		href: '/about',
 	},
 ];
 
 export const Footer = () => {
 	return (
 		<footer className="border-t border-zinc-200 bg-[#faf9f7]">
-			<div className="mx-auto grid max-w-7xl gap-10 px-6 py-8 sm:py-12 lg:grid-cols-[1.5fr_0.8fr_0.8fr] lg:px-8">
+			<div className="mx-auto grid max-w-7xl gap-10 px-6 py-8 sm:py-12 md:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr] lg:px-8">
 				<div>
 					<div className="flex items-center gap-3">
 						<Logo />
@@ -55,7 +62,7 @@ export const Footer = () => {
 					<div className="text-sm font-bold text-zinc-950">Product</div>
 					<div className="mt-4 space-y-3 text-sm text-zinc-600">
 						{productLinks.map((link) => (
-							<a key={link.title} href={link.anchor} className="block hover:text-zinc-950">
+							<a key={link.title} href={link.href} className="block hover:text-zinc-950">
 								{link.title}
 							</a>
 						))}
@@ -66,7 +73,18 @@ export const Footer = () => {
 					<div className="text-sm font-bold text-zinc-950">Use cases</div>
 					<div className="mt-4 space-y-3 text-sm text-zinc-600">
 						{useCases.map((link) => (
-							<a key={link.title} href={link.anchor} className="block hover:text-zinc-950">
+							<a key={link.title} href={link.href} className="block hover:text-zinc-950">
+								{link.title}
+							</a>
+						))}
+					</div>
+				</div>
+
+				<div>
+					<div className="text-sm font-bold text-zinc-950">Company</div>
+					<div className="mt-4 space-y-3 text-sm text-zinc-600">
+						{companyLinks.map((link) => (
+							<a key={link.title} href={link.href} className="block hover:text-zinc-950">
 								{link.title}
 							</a>
 						))}
