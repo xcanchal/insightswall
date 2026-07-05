@@ -1,0 +1,10 @@
+import type { ProjectEntity } from '../../../domain/project/project.entity';
+import type { IProjectRepository } from '../../../domain/project/project.repository';
+
+export class UpdateProjectUseCase {
+	constructor(private readonly projectRepository: IProjectRepository) {}
+
+	async execute(projectId: string, name: string, url?: string | null): Promise<ProjectEntity | null> {
+		return this.projectRepository.update(projectId, name, url);
+	}
+}
