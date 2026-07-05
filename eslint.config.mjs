@@ -6,7 +6,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 
 const nodeConfig = {
-	files: ['{apps/api,packages/types}/**/*.{js,mjs,cjs,ts}'],
+	files: ['src/server/**/*.{js,mjs,cjs,ts}', 'src/shared/**/*.{js,mjs,cjs,ts}', 'test/**/*.ts', '*.{ts,mjs}'],
 	languageOptions: {
 		globals: {
 			...globals.node,
@@ -21,8 +21,8 @@ const reactConfig = {
 			version: 'detect',
 		},
 	},
-	files: ['apps/web/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
-	ignores: ['apps/web/@/components/ui/**', '**/public/**', '**/routeTree.gen.ts'],
+	files: ['src/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
+	ignores: ['src/server/**', '**/public/**', '**/routeTree.gen.ts'],
 	plugins: {
 		react,
 		'react-hooks': reactHooks,
@@ -45,4 +45,4 @@ const reactConfig = {
 	},
 };
 
-export default defineConfig([globalIgnores(['**/dist/**', '**/node_modules/**']), nodeConfig, reactConfig]);
+export default defineConfig([globalIgnores(['**/dist/**', '**/node_modules/**', '**/routeTree.gen.ts']), nodeConfig, reactConfig]);

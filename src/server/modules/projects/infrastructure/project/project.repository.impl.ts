@@ -1,0 +1,50 @@
+import { eq, inArray, sql } from 'drizzle-orm';
+import { db as dbInstance } from '../../../../lib/db/index';
+import type { IProjectRepository } from '../../domain/project/project.repository';
+import { projects, projectMembers } from '../../../../lib/db/schema';
+import { toProject } from './project.mapper';
+import type { ProjectEntity } from '../../domain/project/project.entity';
+
+export class ProjectRepository implements IProjectRepository {
+	private db: typeof dbInstance;
+
+	constructor(db: typeof dbInstance) {
+		this.db = db;
+	}
+
+	async create(name: string, url: string | null, userId: string): Promise<ProjectEntity> {
+		return this.db.transaction(async (tx) => {
+			const [project] = await tx.insert(projects).values({ name, url }).returning();
+			await tx.insert(projectMembers).values({ projectId: project.id, userId, role: 'ADMIN' });
+			return toProject(project);
+		});
+	}
+
+	async findById(id: string): Promise<ProjectEntity | null> {
+		const row = await this.db.query.projects.findFirst({ where: eq(projects.id, id) });
+		return row ? toProject(row) : null;
+	}
+
+	async update(id: string, name: string, url?: string | null): Promise<ProjectEntity | null> {
+		const values = url === undefined ? { name, updatedAt: sql`now()` } : { name, url, updatedAt: sql`now()` };
+		const [row] = await this.db.update(projects).set(values).where(eq(projects.id, id)).returning();
+		return row ? toProject(row) : null;
+	}
+
+	async delete(id: string): Promise<void> {
+		await this.db.delete(projects).where(eq(projects.id, id));
+	}
+
+	async findAllByUserId(userId: string): Promise<ProjectEntity[]> {
+		const memberships = await this.db
+			.select({ projectId: projectMembers.projectId })
+			.from(projectMembers)
+			.where(eq(projectMembers.userId, userId));
+
+		if (memberships.length === 0) return [];
+
+		const projectIds = memberships.map((m) => m.projectId);
+		const rows = await this.db.select().from(projects).where(inArray(projects.id, projectIds));
+		return rows.map(toProject);
+	}
+}
