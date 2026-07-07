@@ -7,7 +7,7 @@ vi.mock('../../src/lib/auth.js', () => ({
 	},
 }));
 
-import { sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { projectMembers, projects, suggestions, votes } from '../../src/lib/db/schema.js';
 import { users } from '../../src/lib/db/auth-schema.js';
 import { createTestDb, createTestServer, mockGetSession, TEST_USER, TEST_SESSION, TEST_HEADERS } from '../helpers.js';
@@ -168,7 +168,7 @@ describe('Suggestions', () => {
 				.insert(users)
 				.values({ id: crypto.randomUUID(), name: 'User 2', email: 'user2@example.com', emailVerified: true, image: null })
 				.returning();
-			[project] = await db.insert(projects).values({ name: 'Test Project' }).returning();
+			[project] = await db.insert(projects).values({ name: 'Test Project', isRoadmapPublic: true }).returning();
 			[suggestion1] = await db
 				.insert(suggestions)
 				.values({
@@ -294,6 +294,43 @@ describe('Suggestions', () => {
 					expect(body).toHaveLength(2);
 					expect(body[0].id).toBe(suggestion2.id);
 					expect(body[1].id).toBe(suggestion3.id);
+				});
+			});
+
+			describe('Roadmap privacy', () => {
+				beforeEach(async () => {
+					await db.update(projects).set({ isRoadmapPublic: false }).where(eq(projects.id, project.id));
+				});
+
+				it('omits roadmap status suggestions for public viewers when roadmap is private', async () => {
+					mockGetSession.mockResolvedValue(null);
+
+					const res = await server.request(`/api/projects/${project.id}/suggestions`);
+
+					expect(res.status).toBe(200);
+					const body = await res.json();
+					expect(body).toHaveLength(1);
+					expect(body[0].id).toBe(suggestion1.id);
+				});
+
+				it('returns 403 when public viewers request only private roadmap statuses', async () => {
+					mockGetSession.mockResolvedValue(null);
+
+					const res = await server.request(`/api/projects/${project.id}/suggestions?statuses=PLANNED&statuses=IN_PROGRESS`);
+
+					expect(res.status).toBe(403);
+				});
+
+				it('allows project members to request private roadmap status suggestions', async () => {
+					await db.insert(projectMembers).values({ projectId: project.id, userId: user1.id, role: 'USER' });
+					mockGetSession.mockResolvedValue({ user: user1, session: TEST_SESSION });
+
+					const res = await server.request(`/api/projects/${project.id}/suggestions?statuses=PLANNED`);
+
+					expect(res.status).toBe(200);
+					const body = await res.json();
+					expect(body).toHaveLength(1);
+					expect(body[0].id).toBe(suggestion3.id);
 				});
 			});
 		});

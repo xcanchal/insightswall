@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 import type { SuggestionStatus } from '@app/types';
 import type { SuggestionWithVoteContextResponse } from '@/api/suggestions';
 import { useRoadmapSuggestions, useUpdateSuggestionStatus, suggestionsKeys } from '@/hooks/use-suggestions';
-import { useIsProjectAdmin } from '@/hooks/use-is-project-admin';
 import { Spinner } from '@/components/spinner';
 import { RoadmapColumn } from './roadmap-column';
 import { EmptyRoadmap } from './empty-roadmap';
@@ -13,12 +12,12 @@ const ROADMAP_STATUSES: SuggestionStatus[] = ['PLANNED', 'IN_PROGRESS', 'DONE'];
 
 interface RoadmapBoardProps {
 	projectId: string;
+	isAdmin: boolean;
 }
 
-export const RoadmapBoard = ({ projectId }: RoadmapBoardProps) => {
+export const RoadmapBoard = ({ projectId, isAdmin }: RoadmapBoardProps) => {
 	const { data: suggestions, isLoading } = useRoadmapSuggestions(projectId);
 	const { mutate: updateStatus } = useUpdateSuggestionStatus(projectId);
-	const isAdmin = useIsProjectAdmin(projectId);
 	const queryClient = useQueryClient();
 
 	const sensors = useSensors(

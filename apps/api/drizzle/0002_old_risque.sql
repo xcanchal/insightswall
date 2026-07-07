@@ -1,0 +1,1 @@
+ALTER TABLE "projects" ADD COLUMN "is_roadmap_public" boolean DEFAULT false NOT NULL;

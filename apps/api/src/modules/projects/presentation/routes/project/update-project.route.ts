@@ -10,6 +10,7 @@ const path = '/api/projects/:projectId' as const;
 const bodySchema = z.object({
 	name: z.string().min(1).max(50),
 	url: z.url().nullish(),
+	isRoadmapPublic: z.boolean().optional(),
 });
 
 const updateProjectRouteDefinition = createRoute({
@@ -51,8 +52,8 @@ export class UpdateProjectRoute {
 		this.app.openapi(updateProjectRouteDefinition, async (c) => {
 			try {
 				const { projectId } = c.req.valid('param');
-				const { name, url } = c.req.valid('json');
-				const project = await this.updateProjectUseCase.execute(projectId, name, url);
+				const { name, url, isRoadmapPublic } = c.req.valid('json');
+				const project = await this.updateProjectUseCase.execute(projectId, name, url, isRoadmapPublic);
 				if (!project) return c.json({ error: 'Project not found' }, 404);
 				return c.json({ ...project, createdAt: project.createdAt.toISOString(), updatedAt: project.updatedAt?.toISOString() ?? null }, 200);
 			} catch (error) {

@@ -1,6 +1,6 @@
 # Insightswall
 
-Insightswall is a feedback board and public roadmap platform for small software teams. It lets product teams collect suggestions, prioritize them with votes, and communicate progress through a public roadmap.
+Insightswall is a feedback board and optional roadmap platform for small software teams. It lets product teams collect suggestions, prioritize them with votes, and publish a roadmap when they are ready.
 
 ## Repository structure
 

@@ -46,13 +46,17 @@ function ProjectLayout() {
 
 	if (!project) return null;
 
+	const isProjectMember = !!projectMember;
+	const isProjectAdmin = projectMember?.role === 'ADMIN';
+	const canViewRoadmap = project.isRoadmapPublic || isProjectMember;
+
 	return (
 		<div className={`${containerClassName} flex min-h-full flex-1 flex-col`}>
 			<div className="flex w-full flex-1 flex-col gap-4">
 				<div className="flex w-full items-center">
 					<div className="flex flex-col sm:flex-row w-full gap-4 items-center justify-between">
-						<ProjectHeader project={project} isAdmin={projectMember?.role === 'ADMIN'} />
-						<ProjectSectionToggle projectId={project.id} />
+						<ProjectHeader project={project} isAdmin={isProjectAdmin} />
+						<ProjectSectionToggle projectId={project.id} showRoadmap={canViewRoadmap} />
 					</div>
 				</div>
 				<div className="flex flex-1 flex-col">

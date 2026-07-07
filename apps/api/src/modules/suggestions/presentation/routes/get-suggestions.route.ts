@@ -5,6 +5,7 @@ import { optionalAuthMiddleware } from '../../../../lib/middlewares/optional-aut
 import { GetSuggestionsUseCase } from '../../application/use-cases/get-suggestions.use-case.js';
 import { ProjectNotFoundError } from '../../../projects/domain/project/project.errors.js';
 import { suggestionWithVoteContextSchema } from '../suggestion.schemas.js';
+import { PrivateRoadmapError } from '../../domain/suggestion.errors.js';
 
 const path = '/api/projects/:projectId/suggestions';
 
@@ -23,6 +24,7 @@ const getSuggestionsRouteDefinition = createRoute({
 	responses: {
 		200: { content: { 'application/json': { schema: z.array(suggestionWithVoteContextSchema) } }, description: 'Suggestions list' },
 		400: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Bad request' },
+		403: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Roadmap is private' },
 		404: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Project not found' },
 		500: { content: { 'application/json': { schema: z.object({ error: z.string() }) } }, description: 'Internal server error' },
 	},
@@ -59,6 +61,7 @@ export class GetSuggestionsRoute {
 				);
 			} catch (error) {
 				if (error instanceof ProjectNotFoundError) return c.json({ error: error.message }, 404);
+				if (error instanceof PrivateRoadmapError) return c.json({ error: error.message }, 403);
 				console.error(error);
 				return c.json({ error: 'Internal server error' }, 500);
 			}

@@ -18,3 +18,10 @@ export class NotOwnerOrAdminError extends Error {
 		this.name = 'NotOwnerOrAdminError';
 	}
 }
+
+export class PrivateRoadmapError extends Error {
+	constructor() {
+		super('Roadmap is private');
+		this.name = 'PrivateRoadmapError';
+	}
+}

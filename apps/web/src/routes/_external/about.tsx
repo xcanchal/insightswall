@@ -5,13 +5,13 @@ const paragraphs = [
 	'As an independent developer building products on the side, I constantly needed a place to collect feature requests, understand what users wanted, and communicate what I was working on next.',
 	'The existing solutions were powerful, but often felt designed for larger organizations with dedicated product teams, complex workflows, and countless configuration options.',
 	"Most of the time, I didn't need all of that.",
-	'I just wanted a simple feedback board, a public roadmap, and a way to keep users informed.',
+	'I just wanted a simple feedback board, an optional roadmap, and a way to keep users informed when the time was right.',
 	'So I built InsightsWall.',
-	'The goal is straightforward: help software teams collect feedback, prioritize ideas, and share their roadmap without adding unnecessary complexity.',
+	'The goal is straightforward: help software teams collect feedback, prioritize ideas, and share progress only when they are ready.',
 	"Whether you're a solo founder, an indie maker, a startup, or a growing SaaS company, InsightsWall gives you the essential tools to stay connected with your users and build the right things.",
 	'No complicated setup. No enterprise jargon. Just a simple place where feedback and product development come together.',
 	"Today, InsightsWall is used by founders and product builders who believe that listening to customers shouldn't require a heavyweight product management platform.",
-	'Build in public. Listen to your users. Ship what matters.',
+	'Listen to your users. Publish intentionally. Ship what matters.',
 ];
 
 export const Route = createFileRoute('/_external/about')({

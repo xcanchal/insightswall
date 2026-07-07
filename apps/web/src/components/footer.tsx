@@ -54,7 +54,7 @@ export const Footer = () => {
 						<Logo />
 					</div>
 					<p className="mt-4 max-w-sm text-sm leading-7 text-zinc-600">
-						Public feedback board and roadmap for user-centric software companies.
+						Private-first feedback board and optional roadmap for user-centric software companies.
 					</p>
 				</div>
 

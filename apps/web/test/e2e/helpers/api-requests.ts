@@ -93,11 +93,16 @@ export function mockGetProjectMemberRequest(page: Page, projectId: string, fulfi
 	});
 }
 
-export function mockGetProjectSuggestionsRequest(page: Page, projectId: string, fulfill: FulfillOptions) {
+export function mockGetProjectSuggestionsRequest(page: Page, projectId: string, responder: RouteResponder) {
 	return page.route(`**/api/projects/${projectId}/suggestions**`, async (route, request) => {
 		const url = new URL(request.url());
 		if (request.method() === 'GET' && url.pathname === `/api/projects/${projectId}/suggestions`) {
-			await route.fulfill(fulfill);
+			if (typeof responder === 'function') {
+				await responder(route, request);
+				return;
+			}
+
+			await route.fulfill(responder);
 			return;
 		}
 
@@ -218,10 +223,15 @@ export function mockUnvoteSuggestionRequest(page: Page, suggestionId: string, re
 	});
 }
 
-export function mockUpdateProjectRequest(page: Page, projectId: string, fulfill: FulfillOptions) {
+export function mockUpdateProjectRequest(page: Page, projectId: string, responder: RouteResponder) {
 	return page.route(`**/api/projects/${projectId}`, async (route, request) => {
 		if (request.method() === 'PATCH') {
-			await route.fulfill(fulfill);
+			if (typeof responder === 'function') {
+				await responder(route, request);
+				return;
+			}
+
+			await route.fulfill(responder);
 			return;
 		}
 

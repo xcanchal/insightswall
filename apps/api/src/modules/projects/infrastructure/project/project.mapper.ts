@@ -9,6 +9,7 @@ export function toProject(row: ProjectRow): ProjectEntity {
 		id: row.id,
 		name: row.name,
 		url: row.url,
+		isRoadmapPublic: row.isRoadmapPublic,
 		createdAt: row.createdAt,
 		updatedAt: row.updatedAt,
 	};

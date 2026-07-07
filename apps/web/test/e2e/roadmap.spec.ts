@@ -5,6 +5,7 @@ import {
 	mockGetProjectRequest,
 	mockGetProjectSuggestionsRequest,
 	mockGetSessionRequest,
+	mockUpdateProjectRequest,
 	mockUpdateSuggestionStatusRequest,
 } from './helpers/api-requests';
 import { projectFactory, projectMemberFactory, sessionFactory, suggestionFactory, userFactory } from './helpers/factories';
@@ -59,14 +60,27 @@ test.describe('Roadmap page', () => {
 			await mockGetProjectRequest(page, project.id, { json: project });
 		});
 
-		test('shows the empty roadmap state without admin guidance', async ({ page }) => {
-			await mockGetProjectSuggestionsRequest(page, project.id, { json: [] });
+		test('shows the private roadmap state without requesting roadmap suggestions', async ({ page }) => {
+			let requestedRoadmapSuggestions = false;
+			await mockGetProjectSuggestionsRequest(page, project.id, async (route) => {
+				requestedRoadmapSuggestions = true;
+				await route.fulfill({ json: [] });
+			});
 
 			await page.goto(`/project/${project.id}/roadmap`);
 
+			await expect(page.getByRole('heading', { name: 'Roadmap is private' })).toBeVisible();
+			expect(requestedRoadmapSuggestions).toBe(false);
+		});
+
+		test('shows a public roadmap to visitors', async ({ page }) => {
+			const publicProject = projectFactory.build({ isRoadmapPublic: true });
+			await mockGetProjectRequest(page, publicProject.id, { json: publicProject });
+			await mockGetProjectSuggestionsRequest(page, publicProject.id, { json: [] });
+
+			await page.goto(`/project/${publicProject.id}/roadmap`);
+
 			await expect(page.getByRole('heading', { name: 'No suggestions in roadmap' })).toBeVisible();
-			await expect(page.getByText('No suggestions have been added to the roadmap.')).toBeVisible();
-			await expect(page.getByText('Change a suggestion status to Planned, In Progress, or Done to add them.')).not.toBeVisible();
 		});
 	});
 
@@ -132,8 +146,51 @@ test.describe('Roadmap page', () => {
 
 			await page.goto(`/project/${project.id}/roadmap`);
 
+			await expect(page.getByRole('checkbox', { name: 'Public roadmap' })).toBeVisible();
 			await expect(page.getByRole('heading', { name: 'No suggestions in roadmap' })).toBeVisible();
 			await expect(page.getByText('Change a suggestion status to Planned, In Progress, or Done to add them.')).toBeVisible();
+		});
+
+		test('confirms before publishing a private roadmap', async ({ page }) => {
+			const updatedProject = { ...project, isRoadmapPublic: true };
+
+			await mockGetProjectSuggestionsRequest(page, project.id, { json: [] });
+			await mockUpdateProjectRequest(page, project.id, async (route, request) => {
+				const body = request.postDataJSON() as { isRoadmapPublic?: boolean };
+				expect(body.isRoadmapPublic).toBe(true);
+				await route.fulfill({ json: updatedProject });
+			});
+
+			await page.goto(`/project/${project.id}/roadmap`);
+			await page.getByRole('checkbox', { name: 'Public roadmap' }).click();
+
+			await expect(page.getByRole('heading', { name: 'Publish roadmap?' })).toBeVisible();
+			await page.getByRole('button', { name: 'Publish roadmap' }).click();
+
+			await expect(page.getByText('Roadmap published')).toBeVisible();
+			await expect(page.getByRole('checkbox', { name: 'Public roadmap' })).toBeChecked();
+		});
+
+		test('makes a public roadmap private without confirmation', async ({ page }) => {
+			const publicProject = projectFactory.build({ isRoadmapPublic: true });
+			const publicProjectAdminMember = projectMemberFactory.build({ projectId: publicProject.id, userId: adminUser.id, role: 'ADMIN' });
+			const updatedProject = { ...publicProject, isRoadmapPublic: false };
+
+			await mockGetProjectRequest(page, publicProject.id, { json: publicProject });
+			await mockGetProjectMemberRequest(page, publicProject.id, { json: publicProjectAdminMember });
+			await mockGetProjectSuggestionsRequest(page, publicProject.id, { json: [] });
+			await mockUpdateProjectRequest(page, publicProject.id, async (route, request) => {
+				const body = request.postDataJSON() as { isRoadmapPublic?: boolean };
+				expect(body.isRoadmapPublic).toBe(false);
+				await route.fulfill({ json: updatedProject });
+			});
+
+			await page.goto(`/project/${publicProject.id}/roadmap`);
+			await page.getByRole('checkbox', { name: 'Public roadmap' }).click();
+
+			await expect(page.getByRole('heading', { name: 'Publish roadmap?' })).not.toBeVisible();
+			await expect(page.getByText('Roadmap made private')).toBeVisible();
+			await expect(page.getByRole('checkbox', { name: 'Public roadmap' })).not.toBeChecked();
 		});
 
 		test('moves a roadmap item to a new column', async ({ page }) => {

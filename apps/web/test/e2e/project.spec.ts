@@ -71,6 +71,22 @@ test.describe('Project shell', () => {
 			await expect(page).toHaveURL(`/project/${project.id}/suggestions`);
 		});
 
+		test('hides the private roadmap tab for authenticated non-members', async ({ page }) => {
+			const project = projectFactory.build({ isRoadmapPublic: false });
+
+			await mockGetProjectRequest(page, project.id, { json: project });
+			await mockGetProjectMemberRequest(page, project.id, {
+				status: 404,
+				json: { error: 'Project member not found' },
+			});
+			await mockGetProjectSuggestionsRequest(page, project.id, { json: [] });
+
+			await page.goto(`/project/${project.id}/suggestions`);
+
+			await expect(page.getByRole('link', { name: 'Suggestions' })).toBeVisible();
+			await expect(page.getByRole('link', { name: 'Roadmap' })).not.toBeVisible();
+		});
+
 		test.describe('When user is authenticated as non-admin', () => {
 			test('renders the shared project header without admin controls', async ({ page }) => {
 				const project = projectFactory.build({ name: 'Customer Portal' });

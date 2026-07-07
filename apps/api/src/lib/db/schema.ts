@@ -16,6 +16,7 @@ export const projects = pgTable('projects', {
 	id: uuid().primaryKey().defaultRandom(),
 	name: text().notNull(),
 	url: text(),
+	isRoadmapPublic: boolean().notNull().default(false),
 	...timestamps,
 });
 

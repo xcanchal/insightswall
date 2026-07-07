@@ -27,6 +27,7 @@ export const projectFactory = Factory.define<ProjectResponse>('project').attrs({
 	id: () => faker.string.uuid(),
 	name: () => faker.company.name(),
 	url: () => faker.internet.url(),
+	isRoadmapPublic: false,
 	createdAt: () => faker.date.past().toISOString(),
 	updatedAt: null,
 });

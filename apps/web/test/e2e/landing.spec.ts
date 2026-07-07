@@ -10,7 +10,8 @@ test.describe('Landing page', () => {
 
 		test('loads and displays key content', async ({ page }) => {
 			await page.goto('/');
-			await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+			await expect(page.getByRole('heading', { level: 1, name: /clear roadmap/i })).toBeVisible();
+			await expect(page.getByText('clear, public roadmap')).not.toBeVisible();
 			await expect(page.locator('#hero').getByRole('link', { name: 'Get started' })).toBeVisible();
 			await expect(page.locator('header').getByRole('link', { name: 'Log in' })).toBeVisible();
 			await expect(page.locator('header').getByRole('link', { name: 'Sign up' })).toBeVisible();

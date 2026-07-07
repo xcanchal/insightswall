@@ -126,7 +126,10 @@ export class Server {
 		if (!this.suggestionRepository) throw new Error('Suggestion repository not configured');
 		if (!this.projectMemberRepository) throw new Error('Project member repository not configured');
 		new CreateSuggestionRoute(this.app, new CreateSuggestionUseCase(this.suggestionRepository, this.projectRepository!)).route();
-		new GetSuggestionsRoute(this.app, new GetSuggestionsUseCase(this.suggestionRepository, this.projectRepository!)).route();
+		new GetSuggestionsRoute(
+			this.app,
+			new GetSuggestionsUseCase(this.suggestionRepository, this.projectRepository!, this.projectMemberRepository)
+		).route();
 		new VoteSuggestionRoute(this.app, new VoteSuggestionUseCase(this.suggestionRepository)).route();
 		new UnvoteSuggestionRoute(this.app, new UnvoteSuggestionUseCase(this.suggestionRepository)).route();
 		new UpdateSuggestionStatusRoute(

@@ -104,6 +104,7 @@ describe('Projects', () => {
 				const body = await res.json();
 				expect(body.name).toBe('My Project');
 				expect(body.url).toBeNull();
+				expect(body.isRoadmapPublic).toBe(false);
 				expect(body.id).toBeDefined();
 				expect(body.createdAt).toBeDefined();
 			});
@@ -122,6 +123,7 @@ describe('Projects', () => {
 				const body = await res.json();
 				expect(body.name).toBe('My Project');
 				expect(body.url).toBe('https://example.com');
+				expect(body.isRoadmapPublic).toBe(false);
 			});
 
 			it('adds the creator as ADMIN member', async () => {
@@ -209,6 +211,7 @@ describe('Projects', () => {
 				const body = await res.json();
 				expect(body.id).toBe(project.id);
 				expect(body.name).toBe('Public Project');
+				expect(body.isRoadmapPublic).toBe(false);
 			});
 
 			it('returns the project with authentication', async () => {
@@ -222,6 +225,7 @@ describe('Projects', () => {
 				const body = await res.json();
 				expect(body.id).toBe(project.id);
 				expect(body.name).toBe('My Project');
+				expect(body.isRoadmapPublic).toBe(false);
 				expect(body.createdAt).toBeDefined();
 			});
 		});
@@ -339,6 +343,7 @@ describe('Projects', () => {
 				const body = await res.json();
 				expect(body.name).toBe('New Name');
 				expect(body.url).toBe('https://old.example.com');
+				expect(body.isRoadmapPublic).toBe(false);
 			});
 
 			it('updates the project name and url and returns 200', async () => {
@@ -359,6 +364,24 @@ describe('Projects', () => {
 				expect(body.name).toBe('New Name');
 				expect(body.url).toBe('https://new.example.com');
 				expect(body.id).toBe(project.id);
+			});
+
+			it('updates roadmap visibility and returns 200', async () => {
+				await db.insert(users).values(TEST_USER);
+				const [project] = await db.insert(projects).values({ name: 'Old Name' }).returning();
+				await db.insert(projectMembers).values({ projectId: project.id, userId: TEST_USER.id, role: 'ADMIN' });
+
+				mockGetSession.mockResolvedValue({ user: TEST_USER, session: TEST_SESSION });
+
+				const res = await server.request(`/api/projects/${project.id}`, {
+					method: 'PATCH',
+					headers: TEST_HEADERS,
+					body: JSON.stringify({ name: 'Old Name', isRoadmapPublic: true }),
+				});
+
+				expect(res.status).toBe(200);
+				const body = await res.json();
+				expect(body.isRoadmapPublic).toBe(true);
 			});
 
 			it('clears the project url when null is provided', async () => {

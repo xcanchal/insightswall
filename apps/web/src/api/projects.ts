@@ -1,11 +1,12 @@
 import { apiClient } from '@/lib/api-client';
 
 export type CreateProjectInput = { name: string; url?: string | null };
-export type UpdateProjectInput = { name: string; url?: string | null };
+export type UpdateProjectInput = { name: string; url?: string | null; isRoadmapPublic?: boolean };
 export type ProjectResponse = {
 	id: string;
 	name: string;
 	url: string | null;
+	isRoadmapPublic: boolean;
 	createdAt: string;
 	updatedAt: string | null;
 };

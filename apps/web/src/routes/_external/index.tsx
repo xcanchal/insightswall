@@ -33,8 +33,8 @@ const features = [
 	},
 	{
 		icon: LayoutGrid,
-		title: 'Promote suggestions to a public roadmap',
-		description: 'Move the best ideas into planned, in progress, and done so customers can follow product progress transparently',
+		title: 'Publish a roadmap when you are ready',
+		description: 'Move the best ideas into planned, in progress, and done, then decide when that progress should be public',
 	},
 	{
 		icon: Search,
@@ -57,7 +57,7 @@ const steps = [
 	{
 		number: '01',
 		title: 'Create a project',
-		description: 'Set up a project board for your product, startup, or SaaS and make it ready for public feedback.',
+		description: 'Set up a project board for your product, startup, or SaaS and keep feedback organized from day one.',
 	},
 	{
 		number: '02',
@@ -71,8 +71,8 @@ const steps = [
 	},
 	{
 		number: '04',
-		title: 'Publish your roadmap',
-		description: 'Promote selected suggestions to roadmap columns so everyone can see what is planned, in progress, and delivered.',
+		title: 'Publish when ready',
+		description: 'Promote selected suggestions to roadmap columns and make them public only when the timing is right.',
 	},
 ];
 
@@ -80,7 +80,7 @@ const comparison = [
 	'Stop tracking product feedback in spreadsheets and random docs',
 	'Replace scattered ideas from email, Slack, support chats, and social media',
 	'Give customers a dedicated place to vote and follow progress',
-	'Communicate roadmap updates publicly without maintaining a separate page by hand',
+	'Publish roadmap updates when you are ready without maintaining a separate page by hand',
 ];
 
 const builtFor = [
@@ -96,13 +96,13 @@ const builtFor = [
 	},
 	{
 		title: 'Open source projects',
-		description: 'Let contributors guide the roadmap and improve collaboration.',
+		description: 'Let contributors guide priorities and publish roadmap updates when they are useful.',
 		icon: GlobeIcon,
 	},
 
 	{
 		title: 'Agencies & consultants',
-		description: 'Gather client feedback and keep everyone aligned with a shared roadmap.',
+		description: 'Gather client feedback and keep everyone aligned with a roadmap you can keep private or publish.',
 		icon: BriefcaseBusiness,
 	},
 ];
@@ -183,11 +183,11 @@ function Index() {
 						<div className="flex flex-col items-center justify-center gap-8 max-w-4xl mx-auto">
 							<div className="flex flex-col items-center justify-center gap-2">
 								<h1 className="text-balance font-black tracking-tight text-5xl md:text-6xl lg:text-7xl text-center leading-10 md:leading-15 lg:leading-18">
-									Turn <span className="text-primary">user feedback</span> into a clear, public roadmap
+									Turn <span className="text-primary">user feedback</span> into a clear roadmap
 								</h1>
 								<p className="mx-auto mt-6 max-w-3xl sm:text-lg md:text-xl leading-6 sm:leading-7 md:leading-8 text-zinc-600 text-center">
-									Insightswall helps products to collect feedback, prioritize ideas with votes, and communicate progress through a publicly
-									visible roadmap.
+									Insightswall helps products collect feedback privately, prioritize ideas with votes, and optionally publish a public
+									roadmap to communicate progress.
 								</p>
 							</div>
 							<div className="flex flex-col items-center justify-center gap-6">
@@ -259,7 +259,7 @@ function Index() {
 				<div className={sectionContainerClassName}>
 					<div className={sectionHeadingWrapperClassName}>
 						<div className={sectionCategoryClassName}>Features</div>
-						<h2 className={sectionHeadingClassName}>A centralized place to collect feedback and build a transparent roadmap</h2>
+						<h2 className={sectionHeadingClassName}>A centralized place to collect feedback and publish progress on your terms</h2>
 						<p className={sectionSubHeadingClassName}>
 							Insightswall is designed to help product teams centralize suggestions, prioritize what matters, and keep users in the loop.
 						</p>
@@ -290,9 +290,9 @@ function Index() {
 				<div className={sectionContainerClassName}>
 					<div className={sectionHeadingWrapperClassName}>
 						<div className={sectionCategoryClassName}>How it works</div>
-						<h2 className={sectionHeadingClassName}>A simple workflow from project creation to public roadmap</h2>
+						<h2 className={sectionHeadingClassName}>A simple workflow from private feedback to optional roadmap</h2>
 						<p className={sectionSubHeadingClassName}>
-							Create a project, collect suggestions, let users vote, and publish your public roadmap in a few clicks.
+							Create a project, collect suggestions, let users vote, and publish a roadmap only when it is useful.
 						</p>
 					</div>
 					<div className="mt-10 sm:mt-14 grid gap-4 lg:grid-cols-4">
@@ -345,8 +345,8 @@ function Index() {
 						<div className={sectionCategoryClassName}>WHO IS THIS FOR?</div>
 						<h2 className={sectionHeadingClassName}>A tool designed for modern software teams that put the users at the center</h2>
 						<p className={sectionSubHeadingClassName}>
-							Insightswall works well as a feature request tool, customer feedback portal, bug reporting board, and public roadmap page for
-							SaaS companies and indie products.
+							Insightswall works well as a feature request tool, customer feedback portal, bug reporting board, and optional roadmap page
+							for SaaS companies and indie products.
 						</p>
 					</div>
 					<div className="mt-10 sm:mt-14 grid gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
