@@ -10,6 +10,8 @@ import { AlertCircleIcon, Loading03Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Alert } from '@/components/ui/alert';
 import { useState } from 'react';
+import { getGoogleSignInErrorMessage, GoogleSignInButton } from './-partials/google-sign-in-button';
+import { FieldSeparator } from '@/components/ui/field';
 
 const LoginFormSchema = z.object({
 	email: z.string().min(1, 'Email is required').email('Invalid email address'),
@@ -26,7 +28,7 @@ export const Route = createFileRoute('/_external/auth/login')({
 });
 
 function RouteComponent() {
-	const [serverError, setServerError] = useState<string | null>(null);
+	const [serverError, setServerError] = useState<string | null>(() => getGoogleSignInErrorMessage());
 	const navigate = useNavigate();
 
 	const form = useForm({
@@ -74,6 +76,10 @@ function RouteComponent() {
 						<CardTitle className="text-2xl font-bold">Log in to your account</CardTitle>
 					</CardHeader>
 					<CardContent>
+						<div className="mb-6">
+							<GoogleSignInButton onError={setServerError} errorRedirectPath="/auth/login" />
+						</div>
+						<FieldSeparator className="mb-6">or use email and password</FieldSeparator>
 						<form
 							id="login-form"
 							onSubmit={(e) => {

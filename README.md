@@ -50,11 +50,18 @@ The API expects these variables:
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
 - `FRONTEND_URL`
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to enable Google sign in
 
 The web app expects:
 
 - `VITE_API_URL`
 - `VITE_BETTER_AUTH_URL`
+
+For Google OAuth, set the Google redirect URI to:
+
+```text
+http://localhost:3000/api/auth/callback/google
+```
 
 ### Run locally
 

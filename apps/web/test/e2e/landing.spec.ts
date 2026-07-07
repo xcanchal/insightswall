@@ -111,6 +111,7 @@ test.describe('Landing page', () => {
 			await expect(page).toHaveURL('/account');
 			await expect(page.getByRole('heading', { name: 'Account details' })).toBeVisible();
 			await expect(page.getByText(user.name)).toBeVisible();
+			await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
 		});
 	});
 });

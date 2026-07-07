@@ -44,7 +44,7 @@ function UserSettings() {
 							<b>Email</b> <span>{session?.user?.email}</span>
 						</span>
 						<Button onClick={() => signOut()} variant="outline" className="sm:w-fit mt-2">
-							Log out
+							Sign out
 						</Button>
 					</div>
 				</div>

@@ -2,7 +2,7 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import * as z from 'zod';
 import { useForm } from '@tanstack/react-form';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { signUp } from '@/lib/auth-client';
@@ -11,6 +11,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Alert } from '@/components/ui/alert';
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { getGoogleSignInErrorMessage, GoogleSignInButton } from './-partials/google-sign-in-button';
 
 const SignUpFormSchema = z
 	.object({
@@ -34,7 +35,7 @@ export const Route = createFileRoute('/_external/auth/signup')({
 });
 
 function RouteComponent() {
-	const [serverError, setServerError] = useState<string | null>(null);
+	const [serverError, setServerError] = useState<string | null>(() => getGoogleSignInErrorMessage());
 	const navigate = useNavigate();
 
 	const form = useForm({
@@ -82,6 +83,10 @@ function RouteComponent() {
 						<CardTitle className="text-2xl font-bold">Create an account</CardTitle>
 					</CardHeader>
 					<CardContent>
+						<div className="mb-6">
+							<GoogleSignInButton onError={setServerError} errorRedirectPath="/auth/signup" />
+						</div>
+						<FieldSeparator className="mb-6">or use email and password</FieldSeparator>
 						<form
 							id="signup-form"
 							onSubmit={(e) => {
