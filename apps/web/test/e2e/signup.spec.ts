@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { buildApiError, mockGetProjectsRequest, mockGetSessionRequest, mockSignUpEmailRequest } from './helpers/api-requests';
+import {
+	buildApiError,
+	mockGetProjectsRequest,
+	mockGetSessionRequest,
+	mockSignInSocialRequest,
+	mockSignUpEmailRequest,
+} from './helpers/api-requests';
 import { sessionFactory, userFactory } from './helpers/factories';
 
 const user = userFactory.build({ email: 'signup@example.com', name: 'Signup User' });
@@ -19,7 +25,37 @@ test.describe('Signup page', () => {
 			await expect(page.getByLabel('Email')).toBeVisible();
 			await expect(page.getByLabel('Password', { exact: true })).toBeVisible();
 			await expect(page.getByLabel('Confirm Password', { exact: true })).toBeVisible();
+			await expect(page.getByRole('button', { name: 'Sign in with Google' })).toBeVisible();
 			await expect(page.getByRole('button', { name: 'Create account' })).toBeVisible();
+		});
+
+		test('starts Google sign-in with the expected callback URLs', async ({ page }) => {
+			let resolveSignInSocialRequest!: (body: Record<string, unknown>) => void;
+			const signInSocialRequest = new Promise<Record<string, unknown>>((resolve) => {
+				resolveSignInSocialRequest = resolve;
+			});
+			await mockSignInSocialRequest(page, async (route, request) => {
+				resolveSignInSocialRequest(request.postDataJSON() as Record<string, unknown>);
+				await route.fulfill({ json: { redirect: false } });
+			});
+
+			await page.goto('/auth/signup');
+			await page.getByRole('button', { name: 'Sign in with Google' }).click();
+
+			const body = await signInSocialRequest;
+			const origin = new URL(page.url()).origin;
+
+			expect(body).toMatchObject({
+				provider: 'google',
+				callbackURL: `${origin}/projects`,
+				errorCallbackURL: `${origin}/auth/signup`,
+			});
+		});
+
+		test('shows a Google sign-in callback error', async ({ page }) => {
+			await page.goto('/auth/signup?error=access_denied&error_description=Denied');
+
+			await expect(page.getByText('Denied')).toBeVisible();
 		});
 
 		test('shows client validation errors', async ({ page }) => {

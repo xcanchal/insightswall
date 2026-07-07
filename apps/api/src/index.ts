@@ -23,6 +23,14 @@ import { db } from './lib/db/index.js';
 			throw new Error('No valid FRONTEND URL environment variable found');
 		}
 
+		if (!process.env.GOOGLE_CLIENT_ID) {
+			throw new Error('No valid GOOGLE CLIENT ID environment variable found');
+		}
+
+		if (!process.env.GOOGLE_CLIENT_SECRET) {
+			throw new Error('No valid GOOGLE CLIENT SECRET environment variable found');
+		}
+
 		const server = new Server({
 			port: Number(process.env.PORT) || 3000,
 			frontendUrl: process.env.FRONTEND_URL,

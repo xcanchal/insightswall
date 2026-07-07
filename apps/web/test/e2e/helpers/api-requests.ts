@@ -27,6 +27,22 @@ export function mockSignInEmailRequest(page: Page, responder: RouteResponder) {
 	});
 }
 
+export function mockSignInSocialRequest(page: Page, responder: RouteResponder) {
+	return page.route('**/sign-in/social', async (route, request) => {
+		if (request.method() !== 'POST') {
+			await route.fallback();
+			return;
+		}
+
+		if (typeof responder === 'function') {
+			await responder(route, request);
+			return;
+		}
+
+		await route.fulfill(responder);
+	});
+}
+
 export function mockSignUpEmailRequest(page: Page, responder: RouteResponder) {
 	return page.route('**/sign-up/email', async (route, request) => {
 		if (request.method() !== 'POST') {
