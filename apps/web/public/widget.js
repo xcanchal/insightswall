@@ -34,6 +34,8 @@
 			'font-family:system-ui,sans-serif;',
 			'font-size:14px;',
 			'font-weight:600;',
+			'line-height:1;',
+			'text-decoration:none;',
 			'cursor:pointer;',
 			'box-shadow:0 4px 12px rgba(0,0,0,0.15);',
 			'transition:transform 0.15s ease,box-shadow 0.15s ease;',
@@ -53,15 +55,14 @@
 
 		ensureStyles();
 
-		var btn = document.createElement('button');
-		btn.id = BUTTON_ID;
-		btn.textContent = label;
+		var link = document.createElement('a');
+		link.id = BUTTON_ID;
+		link.href = targetUrl;
+		link.target = '_blank';
+		link.rel = 'noopener';
+		link.textContent = label;
 
-		btn.addEventListener('click', function () {
-			window.open(targetUrl, '_blank', 'noopener');
-		});
-
-		document.body.appendChild(btn);
+		document.body.appendChild(link);
 		return true;
 	}
 
