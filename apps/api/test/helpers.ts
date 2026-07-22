@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as schema from '../src/lib/db/schema.js';
 import * as authSchema from '../src/lib/db/auth-schema.js';
+import * as productContextSchema from '../src/lib/db/product-context-schema.js';
 import { Server } from '../src/server.js';
 import { auth } from '../src/lib/auth.js';
 import type { Session, User } from 'better-auth';
@@ -15,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export async function createTestDb() {
 	const client = new PGlite();
 	const db = drizzle(client, {
-		schema: { ...schema, ...authSchema },
+		schema: { ...schema, ...authSchema, ...productContextSchema },
 		casing: 'snake_case',
 	});
 	await migrate(db, {
