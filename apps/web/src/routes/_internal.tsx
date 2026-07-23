@@ -3,6 +3,9 @@ import { Footer } from '@/components/footer';
 import { Header } from '@/components/header/header';
 
 export const Route = createFileRoute('/_internal')({
+	head: () => ({
+		meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+	}),
 	beforeLoad: ({ context }) => {
 		if (!context.isPending && !context.session) {
 			throw redirect({ to: '/auth/login' });

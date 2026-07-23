@@ -1,4 +1,4 @@
-import { useLocation } from '@tanstack/react-router';
+import { ClientOnly, useLocation } from '@tanstack/react-router';
 import { useSession } from '@/lib/auth-client';
 import { NavLinks } from './-partials/nav-links';
 import { HeaderContainer } from './-partials/header-container';
@@ -12,7 +12,6 @@ const landingLinks = [
 ];
 
 export const Header = () => {
-	const { data: session } = useSession();
 	const { pathname } = useLocation();
 	const isLanding = pathname === '/';
 
@@ -30,7 +29,15 @@ export const Header = () => {
 					</nav>
 				)}
 			</div>
-			<NavLinks signedIn={!!session?.user} />
+			<ClientOnly fallback={<NavLinks signedIn={false} />}>
+				<SessionAwareNavLinks />
+			</ClientOnly>
 		</HeaderContainer>
 	);
 };
+
+function SessionAwareNavLinks() {
+	const { data: session } = useSession();
+
+	return <NavLinks signedIn={!!session?.user} />;
+}

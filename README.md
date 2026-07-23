@@ -20,7 +20,7 @@ This project is organized as a monorepo:
 
 ## Tech stack
 
-- Front-end: React, Vite, TypeScript
+- Front-end: React, TanStack Start, TanStack Router, Vite, TypeScript
 - Back-end: Node.js, Hono, Better Auth
 - Database: PostgreSQL, Drizzle ORM
 - Styling: Tailwind CSS, shadcn/ui
@@ -113,3 +113,21 @@ npm run test
 - Husky runs local pre-commit checks
 - GitHub Actions runs CI on pull requests against `main`
 - Render deploys the production services automatically from `main`
+
+## Web rendering and deployment
+
+TanStack Start prerenders the public marketing routes during the web build and emits the static site to:
+
+```text
+apps/web/dist/client
+```
+
+The prerendered routes and sitemap configuration live in `apps/web/vite.config.ts`. When adding an indexable content route, add it to the `pages` array and give the route unique metadata and a canonical URL with `createSeo`.
+
+The authenticated application uses the generated `/_shell.html`. In the Render static-site settings:
+
+- Set the publish directory to `apps/web/dist/client`.
+- Remove the existing `/*` to `/index.html` rewrite.
+- Rewrite `/auth/*`, `/projects`, `/account`, and `/project/*` to `/_shell.html`.
+
+Keeping the rewrites limited to application paths allows prerendered content routes to resolve to their own HTML files and leaves unknown marketing URLs as real 404 responses.
