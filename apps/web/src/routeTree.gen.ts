@@ -9,32 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProjectRouteImport } from './routes/project'
-import { Route as InternalRouteImport } from './routes/_internal'
 import { Route as ExternalRouteImport } from './routes/_external'
+import { Route as InternalRouteImport } from './routes/_internal'
+import { Route as ProjectRouteImport } from './routes/project'
 import { Route as ExternalIndexRouteImport } from './routes/_external/index'
-import { Route as ProjectProjectIdRouteImport } from './routes/project/$projectId'
-import { Route as InternalAccountRouteImport } from './routes/_internal/account'
 import { Route as ExternalAboutRouteImport } from './routes/_external/about'
-import { Route as ProjectProjectIdIndexRouteImport } from './routes/project/$projectId/index'
-import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
-import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
-import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
+import { Route as InternalAccountRouteImport } from './routes/_internal/account'
+import { Route as ProjectProjectIdRouteImport } from './routes/project/$projectId'
 import { Route as ExternalAuthLoginRouteImport } from './routes/_external/auth/login'
-import { Route as ProjectProjectIdSuggestionsIndexRouteImport } from './routes/project/$projectId/suggestions/index'
+import { Route as ExternalAuthSignupRouteImport } from './routes/_external/auth/signup'
+import { Route as ExternalAuthVerifyEmailRouteImport } from './routes/_external/auth/verify-email'
+import { Route as InternalProjectsIndexRouteImport } from './routes/_internal/projects/index'
+import { Route as ProjectProjectIdIndexRouteImport } from './routes/project/$projectId/index'
 import { Route as ProjectProjectIdRoadmapIndexRouteImport } from './routes/project/$projectId/roadmap/index'
+import { Route as ProjectProjectIdSuggestionsIndexRouteImport } from './routes/project/$projectId/suggestions/index'
 
-const ProjectRoute = ProjectRouteImport.update({
-  id: '/project',
-  path: '/project',
+const ExternalRoute = ExternalRouteImport.update({
+  id: '/_external',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InternalRoute = InternalRouteImport.update({
   id: '/_internal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExternalRoute = ExternalRouteImport.update({
-  id: '/_external',
+const ProjectRoute = ProjectRouteImport.update({
+  id: '/project',
+  path: '/project',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExternalIndexRoute = ExternalIndexRouteImport.update({
@@ -42,34 +42,24 @@ const ExternalIndexRoute = ExternalIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ExternalRoute,
 } as any)
-const ProjectProjectIdRoute = ProjectProjectIdRouteImport.update({
-  id: '/$projectId',
-  path: '/$projectId',
-  getParentRoute: () => ProjectRoute,
+const ExternalAboutRoute = ExternalAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => ExternalRoute,
 } as any)
 const InternalAccountRoute = InternalAccountRouteImport.update({
   id: '/account',
   path: '/account',
   getParentRoute: () => InternalRoute,
 } as any)
-const ExternalAboutRoute = ExternalAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => ExternalRoute,
+const ProjectProjectIdRoute = ProjectProjectIdRouteImport.update({
+  id: '/$projectId',
+  path: '/$projectId',
+  getParentRoute: () => ProjectRoute,
 } as any)
-const ProjectProjectIdIndexRoute = ProjectProjectIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProjectProjectIdRoute,
-} as any)
-const InternalProjectsIndexRoute = InternalProjectsIndexRouteImport.update({
-  id: '/projects/',
-  path: '/projects/',
-  getParentRoute: () => InternalRoute,
-} as any)
-const ExternalAuthVerifyEmailRoute = ExternalAuthVerifyEmailRouteImport.update({
-  id: '/auth/verify-email',
-  path: '/auth/verify-email',
+const ExternalAuthLoginRoute = ExternalAuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
   getParentRoute: () => ExternalRoute,
 } as any)
 const ExternalAuthSignupRoute = ExternalAuthSignupRouteImport.update({
@@ -77,21 +67,31 @@ const ExternalAuthSignupRoute = ExternalAuthSignupRouteImport.update({
   path: '/auth/signup',
   getParentRoute: () => ExternalRoute,
 } as any)
-const ExternalAuthLoginRoute = ExternalAuthLoginRouteImport.update({
-  id: '/auth/login',
-  path: '/auth/login',
+const ExternalAuthVerifyEmailRoute = ExternalAuthVerifyEmailRouteImport.update({
+  id: '/auth/verify-email',
+  path: '/auth/verify-email',
   getParentRoute: () => ExternalRoute,
 } as any)
-const ProjectProjectIdSuggestionsIndexRoute =
-  ProjectProjectIdSuggestionsIndexRouteImport.update({
-    id: '/suggestions/',
-    path: '/suggestions/',
-    getParentRoute: () => ProjectProjectIdRoute,
-  } as any)
+const InternalProjectsIndexRoute = InternalProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => InternalRoute,
+} as any)
+const ProjectProjectIdIndexRoute = ProjectProjectIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectProjectIdRoute,
+} as any)
 const ProjectProjectIdRoadmapIndexRoute =
   ProjectProjectIdRoadmapIndexRouteImport.update({
     id: '/roadmap/',
     path: '/roadmap/',
+    getParentRoute: () => ProjectProjectIdRoute,
+  } as any)
+const ProjectProjectIdSuggestionsIndexRoute =
+  ProjectProjectIdSuggestionsIndexRouteImport.update({
+    id: '/suggestions/',
+    path: '/suggestions/',
     getParentRoute: () => ProjectProjectIdRoute,
   } as any)
 
@@ -193,11 +193,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/project': {
-      id: '/project'
-      path: '/project'
-      fullPath: '/project'
-      preLoaderRoute: typeof ProjectRouteImport
+    '/_external': {
+      id: '/_external'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ExternalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_internal': {
@@ -207,11 +207,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_external': {
-      id: '/_external'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof ExternalRouteImport
+    '/project': {
+      id: '/project'
+      path: '/project'
+      fullPath: '/project'
+      preLoaderRoute: typeof ProjectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_external/': {
@@ -221,12 +221,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExternalIndexRouteImport
       parentRoute: typeof ExternalRoute
     }
-    '/project/$projectId': {
-      id: '/project/$projectId'
-      path: '/$projectId'
-      fullPath: '/project/$projectId'
-      preLoaderRoute: typeof ProjectProjectIdRouteImport
-      parentRoute: typeof ProjectRoute
+    '/_external/about': {
+      id: '/_external/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof ExternalAboutRouteImport
+      parentRoute: typeof ExternalRoute
     }
     '/_internal/account': {
       id: '/_internal/account'
@@ -235,32 +235,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalAccountRouteImport
       parentRoute: typeof InternalRoute
     }
-    '/_external/about': {
-      id: '/_external/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof ExternalAboutRouteImport
-      parentRoute: typeof ExternalRoute
+    '/project/$projectId': {
+      id: '/project/$projectId'
+      path: '/$projectId'
+      fullPath: '/project/$projectId'
+      preLoaderRoute: typeof ProjectProjectIdRouteImport
+      parentRoute: typeof ProjectRoute
     }
-    '/project/$projectId/': {
-      id: '/project/$projectId/'
-      path: '/'
-      fullPath: '/project/$projectId/'
-      preLoaderRoute: typeof ProjectProjectIdIndexRouteImport
-      parentRoute: typeof ProjectProjectIdRoute
-    }
-    '/_internal/projects/': {
-      id: '/_internal/projects/'
-      path: '/projects'
-      fullPath: '/projects/'
-      preLoaderRoute: typeof InternalProjectsIndexRouteImport
-      parentRoute: typeof InternalRoute
-    }
-    '/_external/auth/verify-email': {
-      id: '/_external/auth/verify-email'
-      path: '/auth/verify-email'
-      fullPath: '/auth/verify-email'
-      preLoaderRoute: typeof ExternalAuthVerifyEmailRouteImport
+    '/_external/auth/login': {
+      id: '/_external/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof ExternalAuthLoginRouteImport
       parentRoute: typeof ExternalRoute
     }
     '/_external/auth/signup': {
@@ -270,18 +256,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExternalAuthSignupRouteImport
       parentRoute: typeof ExternalRoute
     }
-    '/_external/auth/login': {
-      id: '/_external/auth/login'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof ExternalAuthLoginRouteImport
+    '/_external/auth/verify-email': {
+      id: '/_external/auth/verify-email'
+      path: '/auth/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof ExternalAuthVerifyEmailRouteImport
       parentRoute: typeof ExternalRoute
     }
-    '/project/$projectId/suggestions/': {
-      id: '/project/$projectId/suggestions/'
-      path: '/suggestions'
-      fullPath: '/project/$projectId/suggestions/'
-      preLoaderRoute: typeof ProjectProjectIdSuggestionsIndexRouteImport
+    '/_internal/projects/': {
+      id: '/_internal/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof InternalProjectsIndexRouteImport
+      parentRoute: typeof InternalRoute
+    }
+    '/project/$projectId/': {
+      id: '/project/$projectId/'
+      path: '/'
+      fullPath: '/project/$projectId/'
+      preLoaderRoute: typeof ProjectProjectIdIndexRouteImport
       parentRoute: typeof ProjectProjectIdRoute
     }
     '/project/$projectId/roadmap/': {
@@ -289,6 +282,13 @@ declare module '@tanstack/react-router' {
       path: '/roadmap'
       fullPath: '/project/$projectId/roadmap/'
       preLoaderRoute: typeof ProjectProjectIdRoadmapIndexRouteImport
+      parentRoute: typeof ProjectProjectIdRoute
+    }
+    '/project/$projectId/suggestions/': {
+      id: '/project/$projectId/suggestions/'
+      path: '/suggestions'
+      fullPath: '/project/$projectId/suggestions/'
+      preLoaderRoute: typeof ProjectProjectIdSuggestionsIndexRouteImport
       parentRoute: typeof ProjectProjectIdRoute
     }
   }
@@ -362,3 +362,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

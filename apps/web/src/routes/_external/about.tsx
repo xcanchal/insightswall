@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { createSeo } from '@/lib/seo';
 
 const paragraphs = [
 	'InsightsWall was born from a simple frustration.',
@@ -15,6 +16,13 @@ const paragraphs = [
 ];
 
 export const Route = createFileRoute('/_external/about')({
+	head: () =>
+		createSeo({
+			title: 'About Insightswall | Simple Product Feedback Software',
+			description:
+				'Learn why Insightswall was built to give founders and software teams a simple feedback board, voting system, and transparent public roadmap.',
+			path: '/about',
+		}),
 	component: About,
 });
 

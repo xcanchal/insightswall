@@ -19,6 +19,7 @@ import { SuggestionWithVoteContextResponse } from '@/api/suggestions';
 import { SuggestionCard } from '../project/$projectId/suggestions/-partials/suggestion-card';
 import { RoadmapColumn } from '../project/$projectId/roadmap/-partials/roadmap-column';
 import { ProjectIcon } from '@/components/project-icon';
+import { createSeo } from '@/lib/seo';
 
 const features = [
 	{
@@ -115,8 +116,8 @@ const suggestions: SuggestionWithVoteContextResponse[] = [
 		description: 'I would like to be able to specify the age of the reader to adapt the difficulty ',
 		category: 'FEATURE',
 		status: 'PLANNED',
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString(),
+		createdAt: '2026-06-01T12:00:00.000Z',
+		updatedAt: '2026-06-01T12:00:00.000Z',
 		rejectionReason: null,
 		voteCount: 5,
 		userHasVoted: false,
@@ -128,8 +129,8 @@ const suggestions: SuggestionWithVoteContextResponse[] = [
 		description: 'Sometimes the illustrations generation takes too long',
 		category: 'BUG',
 		status: 'IN_PROGRESS',
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString(),
+		createdAt: '2026-06-01T12:00:00.000Z',
+		updatedAt: '2026-06-01T12:00:00.000Z',
 		rejectionReason: null,
 		voteCount: 3,
 		userHasVoted: false,
@@ -141,8 +142,8 @@ const suggestions: SuggestionWithVoteContextResponse[] = [
 		description: 'I would like to print a physical copy of the storybook and receive it at home',
 		category: 'FEATURE',
 		status: 'IN_PROGRESS',
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString(),
+		createdAt: '2026-06-01T12:00:00.000Z',
+		updatedAt: '2026-06-01T12:00:00.000Z',
 		rejectionReason: null,
 		voteCount: 1,
 		userHasVoted: false,
@@ -154,8 +155,8 @@ const suggestions: SuggestionWithVoteContextResponse[] = [
 		description: 'I would like to add a new language to the storybook',
 		category: 'FEATURE',
 		status: 'DONE',
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString(),
+		createdAt: '2026-06-01T12:00:00.000Z',
+		updatedAt: '2026-06-01T12:00:00.000Z',
 		rejectionReason: null,
 		voteCount: 0,
 		userHasVoted: false,
@@ -163,6 +164,13 @@ const suggestions: SuggestionWithVoteContextResponse[] = [
 ];
 
 export const Route = createFileRoute('/_external/')({
+	head: () =>
+		createSeo({
+			title: 'User Feedback Board & Public Roadmap | Insightswall',
+			description:
+				'Collect feature requests and bug reports, prioritize ideas with customer votes, and share a transparent public product roadmap with Insightswall.',
+			path: '/',
+		}),
 	component: Index,
 });
 

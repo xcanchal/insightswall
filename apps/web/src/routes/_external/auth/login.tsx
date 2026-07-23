@@ -19,6 +19,9 @@ const LoginFormSchema = z.object({
 });
 
 export const Route = createFileRoute('/_external/auth/login')({
+	head: () => ({
+		meta: [{ title: 'Log in | Insightswall' }, { name: 'robots', content: 'noindex, nofollow' }],
+	}),
 	beforeLoad: ({ context }) => {
 		if (!context.isPending && context.session) {
 			throw redirect({ to: '/projects' });

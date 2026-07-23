@@ -1,38 +1,48 @@
 import tailwindcss from '@tailwindcss/vite';
-import { tanstackRouter } from '@tanstack/router-plugin/vite';
+import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-const umamiWebsiteId = '2bddffc3-9476-4488-b112-915d25b7292e';
-const analyticsHosts = ['insightswall.com', 'www.insightswall.com'];
-
 export default defineConfig({
+	server: {
+		host: '0.0.0.0',
+		port: 5173,
+		strictPort: true,
+	},
 	plugins: [
-		tanstackRouter({
-			target: 'react',
-			autoCodeSplitting: true,
+		tanstackStart({
+			spa: {
+				enabled: true,
+				// Use a non-marketing route so the SPA shell and prerendered
+				// homepage can be emitted as separate HTML documents.
+				maskPath: '/projects',
+			},
+			prerender: {
+				enabled: false,
+				autoStaticPathsDiscovery: false,
+				crawlLinks: false,
+				failOnError: true,
+			},
+			pages: [
+				{
+					path: '/',
+					prerender: { enabled: true, crawlLinks: false },
+					sitemap: { priority: 1, changefreq: 'weekly' },
+				},
+				{
+					path: '/about',
+					prerender: { enabled: true, crawlLinks: false },
+					sitemap: { priority: 0.6, changefreq: 'monthly' },
+				},
+			],
+			sitemap: {
+				enabled: true,
+				host: 'https://insightswall.com',
+			},
 		}),
 		react(),
 		tailwindcss(),
-		{
-			name: 'inject-umami',
-			transformIndexHtml(html) {
-				const analyticsLoader = `
-		<script>
-			if (${JSON.stringify(analyticsHosts)}.includes(window.location.hostname)) {
-				const script = document.createElement('script');
-				script.defer = true;
-				script.src = 'https://analytics.xaviercanchal.com/script.js';
-				script.dataset.websiteId = '${umamiWebsiteId}';
-				script.dataset.domains = '${analyticsHosts.join(',')}';
-				document.body.appendChild(script);
-			}
-		</script>`;
-
-				return html.replace('</body>', `${analyticsLoader}\n\t</body>`);
-			},
-		},
 	],
 	resolve: {
 		alias: {

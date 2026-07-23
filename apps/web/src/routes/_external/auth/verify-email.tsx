@@ -4,6 +4,9 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { MailIcon } from '@hugeicons/core-free-icons';
 
 export const Route = createFileRoute('/_external/auth/verify-email')({
+	head: () => ({
+		meta: [{ title: 'Verify your email | Insightswall' }, { name: 'robots', content: 'noindex, nofollow' }],
+	}),
 	component: RouteComponent,
 });
 

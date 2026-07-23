@@ -26,6 +26,9 @@ const SignUpFormSchema = z
 	});
 
 export const Route = createFileRoute('/_external/auth/signup')({
+	head: () => ({
+		meta: [{ title: 'Sign up | Insightswall' }, { name: 'robots', content: 'noindex, nofollow' }],
+	}),
 	beforeLoad: ({ context }) => {
 		if (!context.isPending && context.session) {
 			throw redirect({ to: '/projects' });
