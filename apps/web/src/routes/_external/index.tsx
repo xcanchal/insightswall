@@ -392,6 +392,33 @@ function Index() {
 							</Button>
 						</Link>
 					</div>
+					<div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+						<a
+							href="https://www.producthunt.com/products/insightswall/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-insightswall"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<img
+								src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1214963&theme=light"
+								alt="Insightswall - User feedback board and public roadmap | Product Hunt"
+								width="250"
+								height="54"
+							/>
+						</a>
+						<a
+							href="https://www.tinyshelf.co/?ref=insightswall.com"
+							title="Featured on tinyshelf"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<img
+								src="https://www.tinyshelf.co/badge/tinyshelf-badge-light-5ca4026a.svg"
+								alt="Featured on tinyshelf"
+								width="216"
+								height="64"
+							/>
+						</a>
+					</div>
 				</div>
 			</section>
 		</div>
