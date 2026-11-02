@@ -25,7 +25,7 @@ This project is organized as a monorepo:
 - Database: PostgreSQL, Drizzle ORM
 - Styling: Tailwind CSS, shadcn/ui
 - Testing: Vitest, Playwright
-- Deployment: Render
+- Deployment: Coolify
 
 ## Getting started
 
@@ -112,7 +112,7 @@ npm run test
 
 - Husky runs local pre-commit checks
 - GitHub Actions runs CI on pull requests against `main`
-- Render deploys the production services automatically from `main`
+- Coolify deploys the production services automatically from `main`
 
 ## Web rendering and deployment
 
@@ -124,10 +124,6 @@ apps/web/dist/client
 
 The prerendered routes and sitemap configuration live in `apps/web/vite.config.ts`. When adding an indexable content route, add it to the `pages` array and give the route unique metadata and a canonical URL with `createSeo`.
 
-The authenticated application uses the generated `/_shell.html`. In the Render static-site settings:
+The authenticated application uses the generated `/_shell.html`. `apps/web/nginx.conf` serves it for `/auth/*`, `/projects`, `/account`, and `/project/*`. Keeping the rewrites limited to application paths allows prerendered content routes to resolve to their own HTML files and leaves unknown marketing URLs as real 404 responses.
 
-- Set the publish directory to `apps/web/dist/client`.
-- Remove the existing `/*` to `/index.html` rewrite.
-- Rewrite `/auth/*`, `/projects`, `/account`, and `/project/*` to `/_shell.html`.
-
-Keeping the rewrites limited to application paths allows prerendered content routes to resolve to their own HTML files and leaves unknown marketing URLs as real 404 responses.
+Both apps deploy to Coolify from Dockerfiles built with the repository root as context: `apps/api/Dockerfile` and `apps/web/Dockerfile`. The web image needs `VITE_API_URL` and `VITE_BETTER_AUTH_URL` as build arguments. Database migrations are not part of the deploy; run `npm run db:migrate --workspace=@app/api` against the production database. See `docs/coolify-migration.md`.
