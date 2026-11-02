@@ -19,7 +19,6 @@ flowchart LR
   Proxy --> API[api: Hono :3000]
   API --> DB[(Postgres<br/>Coolify resource)]
   API --> Resend[Resend]
-  API --> Brave[Brave Search]
   API --> Google[Google OAuth]
 ```
 
@@ -35,19 +34,19 @@ Both Dockerfiles build from the repo root because the apps depend on the `@app/t
 
 ## Environment variables
 
-| Variable                                                                                      | App | Kind            | Production value                         |
-| --------------------------------------------------------------------------------------------- | --- | --------------- | ---------------------------------------- |
-| `NODE_ENV`                                                                                    | api | runtime         | `production`                             |
-| `PORT`                                                                                        | api | runtime         | `3000`                                   |
-| `DATABASE_URL`                                                                                | api | runtime, secret | Internal URL of `insightswall-db`        |
-| `FRONTEND_URL`                                                                                | api | runtime         | `https://insightswall.com`               |
-| `BETTER_AUTH_URL`                                                                             | api | runtime         | `https://api.insightswall.com`           |
-| `BETTER_AUTH_SECRET`                                                                          | api | runtime, secret | New value from `openssl rand -base64 32` |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`                                                    | api | runtime, secret | Copy from Render                         |
-| `RESEND_API_KEY`, `EMAIL_FROM`                                                                | api | runtime, secret | Copy from Render                         |
-| `BRAVE_SEARCH_API_KEY`, `BRAVE_SEARCH_FRESHNESS`, `BRAVE_SEARCH_COUNTRY`, `BRAVE_SEARCH_LANG` | api | runtime         | Copy from Render                         |
-| `VITE_API_URL`                                                                                | web | build arg       | `https://api.insightswall.com`           |
-| `VITE_BETTER_AUTH_URL`                                                                        | web | build arg       | `https://api.insightswall.com`           |
+| Variable                                   | App | Kind            | Production value                         |
+| ------------------------------------------ | --- | --------------- | ---------------------------------------- |
+| `NODE_ENV`                                 | api | runtime         | `production`                             |
+| `PORT`                                     | api | runtime         | `3000`                                   |
+| `DATABASE_URL`                             | api | runtime, secret | Internal URL of `insightswall-db`        |
+| `FRONTEND_URL`                             | api | runtime         | `https://insightswall.com`               |
+| `BETTER_AUTH_URL`                          | api | runtime         | `https://api.insightswall.com`           |
+| `BETTER_AUTH_SECRET`                       | api | runtime, secret | New value from `openssl rand -base64 32` |
+| `COOKIE_DOMAIN`                            | api | runtime         | `.insightswall.com`                      |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | api | runtime, secret | Copy from Render                         |
+| `RESEND_API_KEY`, `EMAIL_FROM`             | api | runtime, secret | Copy from Render                         |
+| `VITE_API_URL`                             | web | build arg       | `https://api.insightswall.com`           |
+| `VITE_BETTER_AUTH_URL`                     | web | build arg       | `https://api.insightswall.com`           |
 
 ## nginx routing for the web app
 
@@ -79,7 +78,7 @@ sequenceDiagram
   Me->>R: Delete all Render services
 ```
 
-Data copy commands:
+Data copy commands. Take `RENDER_EXTERNAL_DATABASE_URL` from the production Postgres in Render (Connect → External Database URL). The `DATABASE_URL` in a local `.env` points to a development database.
 
 ```bash
 pg_dump --format=custom --no-owner --no-acl "$RENDER_EXTERNAL_DATABASE_URL" -f insightswall.dump
