@@ -69,7 +69,7 @@ http://localhost:3000/api/auth/callback/google
 Start PostgreSQL and apply the migrations:
 
 ```bash
-docker compose up -d db
+docker compose up -d --wait db
 npm run db:migrate --workspace=@app/api
 ```
 
