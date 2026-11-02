@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { serve } from '@hono/node-server';
 import { auth, type AuthVariables } from './lib/auth.js';
 import { cors } from 'hono/cors';
+import { sql } from 'drizzle-orm';
 import { ProjectRepository } from './modules/projects/infrastructure/project/project.repository.impl.js';
 import { ProjectMemberRepository } from './modules/projects/infrastructure/project-member/project-member.repository.impl.js';
 import { SuggestionRepository } from './modules/suggestions/infrastructure/suggestion.repository.impl.js';
@@ -94,8 +95,14 @@ export class Server {
 		/* this.app.route('/api/roadmap', roadmapRouter); */
 		/* this.app.route('/api/notifications', notificationRouter); */
 
-		// Health check
-		this.app.get('/health', (c) => c.json({ status: 'ok' }));
+		this.app.get('/health', async (c) => {
+			try {
+				await this.config.db.execute(sql`select 1`);
+				return c.json({ status: 'ok' });
+			} catch {
+				return c.json({ status: 'unavailable' }, 503);
+			}
+		});
 	}
 
 	configureApiDocs() {
