@@ -33,7 +33,7 @@ This project is organized as a monorepo:
 
 - Node.js 24+
 - npm
-- PostgreSQL database
+- Docker, for the local PostgreSQL database
 
 ### Install dependencies
 
@@ -51,6 +51,7 @@ The API expects these variables:
 - `EMAIL_FROM`
 - `FRONTEND_URL`
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to enable Google sign in
+- `COOKIE_DOMAIN` in production (`.insightswall.com`), so the session cookie works on the web and API subdomains
 
 The web app expects:
 
@@ -64,6 +65,13 @@ http://localhost:3000/api/auth/callback/google
 ```
 
 ### Run locally
+
+Start PostgreSQL and apply the migrations:
+
+```bash
+docker compose up -d --wait db
+npm run db:migrate --workspace=@app/api
+```
 
 Run both applications:
 

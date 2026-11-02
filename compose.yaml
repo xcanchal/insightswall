@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: insightswall
+      POSTGRES_USER: insightswall
+      POSTGRES_PASSWORD: insightswall_local
+    ports:
+      - '5432:5432'
+    volumes:
+      - insightswall_postgres:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U insightswall -d insightswall']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  insightswall_postgres:
